@@ -7,13 +7,23 @@
     ok-text="保存"
     @on-ok="ok"
     @on-cancel="cancel">
-    <Tabs>
+    <Tabs
+      :animated="false"
+      class="h-full ido-excel-tabs"
+      @on-click="onTabClick">
       <TabPane
+        class="h-full"
         :label="tab.label"
         :name="tab.label"
         v-for="tab in tabs"
         :key="tab.label">
-        {{ tab.label }}
+        <div class="tab-content-wrap w-full h-full">
+          <DataGrid
+            :name="tab.label"
+            :sheetdata="tab.value"
+            :data-sheet="tab.label"
+            :ws="originSheets[tab.label]" />
+        </div>
       </TabPane>
     </Tabs>
   </Modal>
@@ -21,13 +31,15 @@
 
 <script>
 import { Modal, Tabs, TabPane } from 'iview'
+import DataGrid from '@/components/DataGrid'
 
 export default {
   name: 'Excel',
   components: {
     Modal,
     Tabs,
-    TabPane
+    TabPane,
+    DataGrid
   },
   props: {
     visible: {
@@ -39,6 +51,10 @@ export default {
       required: true
     },
     sheets: {
+      type: Object,
+      required: true
+    },
+    originSheets: {
       type: Object,
       required: true
     }
@@ -53,13 +69,31 @@ export default {
       return tabs
     }
   },
+  watch: {
+    visible (next, pre) {
+      // canvasDatagrid be blank if not trigger window resize
+      this.$nextTick(() => {
+        window.dispatchEvent(new Event('resize'))
+      })
+    }
+  },
   methods: {
     ok () {
       this.$emit('on-ok')
     },
     cancel () {
       this.$emit('on-cancel')
+    },
+    onTabClick () {
+      this.$nextTick(() => {
+        window.dispatchEvent(new Event('resize'))
+      })
     }
   }
 }
 </script>
+<style>
+  .ido-excel-tabs .ivu-tabs-content {
+    height: calc(100% - 50px);
+  }
+</style>

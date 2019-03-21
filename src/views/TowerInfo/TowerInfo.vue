@@ -60,6 +60,13 @@
                   @click="viewTable">
                   查看
                 </span>
+                <Excel
+                  title="塔架设计参数表"
+                  :visible="visible"
+                  :sheets="sheets"
+                  :originSheets="originSheets"
+                  @on-ok="onExcelOk"
+                  @on-cancel="onExcelCancel" />
               </div>
             </FormItem>
           </ICol>
@@ -125,12 +132,6 @@
           </ICol>
         </Row>
       </Form>
-      <Excel
-        title="塔架设计参数表"
-        :visible="visible"
-        :sheets="sheets"
-        @on-ok="onExcelOk"
-        @on-cancel="onExcelCancel" />
     </Fiche>
   </div>
 </template>
@@ -139,7 +140,7 @@ import { Upload, Button, Row, Col, Input, Form, FormItem, Select, Option, Switch
 import Fiche from '@/components/Fiche'
 import Excel from '@/components/Excel'
 import XLSX from 'xlsx'
-import { sheetJSFT, makeCols } from '@/config'
+import { sheetJSFT } from '@/config'
 
 export default {
   name: 'TowerInfo',
@@ -163,6 +164,7 @@ export default {
       visible: false,
       sheetJSFT,
       sheets: {},
+      originSheets: {},
       file: { name: '' },
       formValidate: {
         projectName: 'xxx项目H1-2',
@@ -222,6 +224,7 @@ export default {
         }
 
         this.sheets = sheets
+        this.originSheets = wb.Sheets
         console.log(sheets)
         // this.cols = makeCols(ws['!ref'])
       }
@@ -229,6 +232,8 @@ export default {
     },
     removeFile () {
       this.file = {}
+      this.sheets = {}
+      this.originSheets = {}
     },
     viewTable () {
       this.visible = true

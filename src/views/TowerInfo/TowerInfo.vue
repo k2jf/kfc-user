@@ -147,7 +147,7 @@
   </div>
 </template>
 <script>
-import { Upload, Button, Row, Col, Input, Form, FormItem, Select, Option, Switch, Icon } from 'iview'
+import { Upload, Button, Row, Col, Input, Form, FormItem, Select, Option, Switch, Icon, Message } from 'iview'
 import Fiche from '@/components/Fiche'
 import Excel from '@/components/Excel'
 import XLSX from 'xlsx'
@@ -177,18 +177,18 @@ export default {
       sheets: {},
       originSheets: {},
       file: { name: '' },
-      action: baseUrl + 'towerTasks/1/upload',
+      action: baseUrl + 'towerTasks/1/upload?fileKey=towerInput',
       formValidate: {
-        projectName: 'xxx项目H1-2',
-        taskName: 'xxxxxx',
-        towerHeight: 100,
-        towerDiameter: 0.5,
-        towerLegNum: 3,
-        dataOrigin: '',
-        fatiguePalyload: 0.5,
-        limitPayload: 0.5,
-        switch: true,
-        comment: ''
+        // projectName: 'xxx项目H1-2',
+        // taskName: 'xxxxxx',
+        // towerHeight: 100,
+        // towerDiameter: 0.5,
+        // towerLegNum: 3,
+        // dataOrigin: '',
+        // fatiguePalyload: 0.5,
+        // limitPayload: 0.5,
+        // switch: true,
+        // comment: ''
       },
       ruleValidate: {
         dataOrigin: [
@@ -212,11 +212,30 @@ export default {
       }
     }
   },
-  async mounted () {
-    const res = await this.$get('towerTasks/' + this.$route.params.taskId).json()
-    console.log(res)
+  mounted () {
+    this.getTaskInfo()
   },
   methods: {
+    async getTaskInfo () {
+      try {
+        const res = await this.$get('towerTasks/' + this.$route.params.taskId)
+        const formValidate = {
+          projectName: res.body.projectName,
+          taskName: res.body.taskName
+          // towerHeight: 100,
+          // towerDiameter: 0.5,
+          // towerLegNum: 3,
+          // dataOrigin: '',
+          // fatiguePalyload: 0.5,
+          // limitPayload: 0.5,
+          // switch: true,
+          // comment: ''
+        }
+        this.formValidate = formValidate
+      } catch (error) {
+
+      }
+    },
     handleUpload (file) {
       console.log(file)
       this.file = file
@@ -233,17 +252,13 @@ export default {
         const bstr = e.target.result
         const wb = XLSX.read(bstr, { type: 'array', cellStyles: true })
         const sheets = {}
-        console.log(wb.Sheets)
         for (let wsname in wb.Sheets) {
           const ws = wb.Sheets[wsname]
           const data = XLSX.utils.sheet_to_json(ws, { header: 1 })
           sheets[wsname] = data
         }
-
         this.sheets = sheets
         this.originSheets = wb.Sheets
-        console.log(sheets)
-        // this.cols = makeCols(ws['!ref'])
       }
       reader.readAsArrayBuffer(file)
     },
@@ -263,12 +278,12 @@ export default {
       this.visible = false
     },
     onUploadError (err, file, fileList) {
-      console.log(err, file, fileList)
+      console.error(err)
+      Message.error(file.message)
     },
     async onUploadSuccess (res, file, fileList) {
       this.file = file
-      const fileKey = file.name.split('.')[0]
-      const data = await this.$get('towerTasks/1/stream?fileKey=' + fileKey).arrayBuffer()
+      const data = await this.$get('towerTasks/1/stream?fileKey=towerInput').arrayBuffer()
       var workbook = XLSX.read(data, { type: 'array' })
       console.log(data, workbook)
       const sheets = {}

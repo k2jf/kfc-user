@@ -13,32 +13,40 @@ const requestMethods = [
 
 export default {
   install: function (Vue, options) {
-    const api = ky.extend({
+    const _ky = ky.extend({
       prefixUrl: baseUrl,
+      retry: 0,
       hooks: {
-        // beforeRequest: [
-        //   req => {
-        //     console.log(req)
-        //     return req
-        //   }
-        // ],
         afterResponse: [
           res => {
-            console.log(res)
-            // switch (res.status) {
-            // case 404:
-            //   Message.error('404')
-            // }
             if (!res.ok) {
-              Message.error('error')
+              console.log(res)
+              Message.error(res.status + '')
             }
             return res
           }
         ]
-      } })
-    Vue.prototype.$fetch = api
+      }
+    })
+
+    const _fetch = (input, options) => {
+      return new Promise((resolve, reject) => {
+        _ky(input, options)
+          .then(res => res.json())
+          .then(json => {
+            if (json.code === 0) {
+              resolve(json)
+            } else {
+              Message.error(json.message || '未知')
+              reject(json.message)
+            }
+          })
+      })
+    }
+
+    Vue.prototype.$fetch = _fetch
     for (const method of requestMethods) {
-      Vue.prototype[`$${method}`] = api[method]
+      Vue.prototype[`$${method}`] = (input, options) => _fetch(input, { method, ...options })
     }
   }
 }

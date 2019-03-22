@@ -5,7 +5,7 @@ export default [
   },
   {
     title: '项目名称',
-    key: 'projectId'
+    key: 'projectName'
   },
   {
     title: '状态',

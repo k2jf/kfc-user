@@ -39,8 +39,11 @@
               <Upload
                 class="float-left"
                 style="height: 33px;"
-                :before-upload="handleUpload"
-                action="ilikeyou">
+                :action="action"
+                :show-upload-list="false"
+                :on-preview="onPreview"
+                :on-error="onUploadError"
+                :on-success="onUploadSuccess">
                 <Button size="small" icon="ios-cloud-upload-outline">
                   上传文件
                 </Button>
@@ -88,17 +91,25 @@
             </FormItem>
           </ICol>
           <ICol span="12">
+            <FormItem label="马尔科夫矩阵：" prop="markov" class="w-9/10">
+              <Button>点击上传</Button>
+            </FormItem>
+          </ICol>
+        </Row>
+        <!-- 第五行 -->
+        <Row>
+          <ICol span="12">
             <FormItem label="塔底极限载荷Mxy(kNm)：" prop="limitPayload" class="w-9/10">
               <Input v-model="formValidate.limitPayload" />
             </FormItem>
           </ICol>
-          <!-- 第五行 -->
           <ICol span="12">
             <FormItem label="塔架段数：" prop="towerLegNum" class="w-9/10">
               <Input v-model="formValidate.towerLegNum" />
             </FormItem>
           </ICol>
-          <ICol span="12">
+          <!-- 第六行 -->
+          <ICol span="24">
             <FormItem label="单工况：" prop="towerDiameter" class="w-9/10">
               <ISwitch v-model="formValidate.switch">
                 <span slot="open">开</span>
@@ -106,7 +117,7 @@
               </ISwitch>
             </FormItem>
           </ICol>
-          <!-- 第六行 -->
+          <!-- 第七行 -->
           <ICol span="24">
             <FormItem label="备注：" prop="comment" style="width: 95%;">
               <Input
@@ -140,7 +151,7 @@ import { Upload, Button, Row, Col, Input, Form, FormItem, Select, Option, Switch
 import Fiche from '@/components/Fiche'
 import Excel from '@/components/Excel'
 import XLSX from 'xlsx'
-import { sheetJSFT } from '@/config'
+import { baseUrl, sheetJSFT } from '@/config'
 
 export default {
   name: 'TowerInfo',
@@ -166,6 +177,7 @@ export default {
       sheets: {},
       originSheets: {},
       file: { name: '' },
+      action: baseUrl + 'towerTasks/1/upload',
       formValidate: {
         projectName: 'xxx项目H1-2',
         taskName: 'xxxxxx',
@@ -200,8 +212,13 @@ export default {
       }
     }
   },
+  async mounted () {
+    const res = await this.$get('towerTasks/' + this.$route.params.taskId).json()
+    console.log(res)
+  },
   methods: {
     handleUpload (file) {
+      console.log(file)
       this.file = file
       this.readFile(file)
       return false
@@ -231,6 +248,7 @@ export default {
       reader.readAsArrayBuffer(file)
     },
     removeFile () {
+      // delete server excel file
       this.file = {}
       this.sheets = {}
       this.originSheets = {}
@@ -243,6 +261,29 @@ export default {
     },
     onExcelCancel () {
       this.visible = false
+    },
+    onUploadError (err, file, fileList) {
+      console.log(err, file, fileList)
+    },
+    async onUploadSuccess (res, file, fileList) {
+      this.file = file
+      const fileKey = file.name.split('.')[0]
+      const data = await this.$get('towerTasks/1/stream?fileKey=' + fileKey).arrayBuffer()
+      var workbook = XLSX.read(data, { type: 'array' })
+      console.log(data, workbook)
+      const sheets = {}
+      console.log(workbook.Sheets)
+      for (let wsname in workbook.Sheets) {
+        const ws = workbook.Sheets[wsname]
+        const data = XLSX.utils.sheet_to_json(ws, { header: 1 })
+        sheets[wsname] = data
+      }
+
+      this.sheets = sheets
+      this.originSheets = workbook.Sheets
+    },
+    onPreview (file) {
+
     }
   }
 }

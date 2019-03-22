@@ -10,7 +10,9 @@
         icon="ios-search"
         style="width: 160px"
         v-model="value" />
-      <a class="float-right" href="http://jira.goldwind.com.cn/" target="_blank">进入jira管理页面</a>
+      <a class="float-right underline ido-link" href="http://jira.goldwind.com.cn/" target="_blank">
+        进入jira管理页面
+      </a>
     </div>
     <div class="h-calc-16 flex flex-wrap justify-between">
       <div
@@ -67,3 +69,24 @@ export default {
   }
 }
 </script>
+<style lang="less">
+  .ido-link {
+    padding: 2px 0;
+
+    &:hover {
+    text-decoration: none;
+    background: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 5'><path fill='none' stroke='%232d8cf0' d='M0 3.5c5 0 5-3 10-3s5 3 10 3 5-3 10-3 5 3 10 3'/></svg>") repeat-x 0 100%;
+    background-size: 20px auto;
+    animation: waveMove 1s infinite linear;
+    }
+  }
+
+  @keyframes waveMove {
+    0% {
+    background-position: 0 100%;
+    }
+    100% {
+    background-position: -20px 100%;
+    }
+  }
+</style>

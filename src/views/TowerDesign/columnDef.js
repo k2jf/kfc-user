@@ -1,11 +1,11 @@
 export default [
   {
     title: '任务名称',
-    key: 'title'
+    key: 'taskName'
   },
   {
     title: '项目名称',
-    key: 'projectName'
+    key: 'projectId'
   },
   {
     title: '状态',
@@ -13,18 +13,18 @@ export default [
   },
   {
     title: '塔架高度',
-    key: 'height'
+    key: 'towerHeight'
   },
   {
     title: '塔底直径',
-    key: 'diameter'
+    key: 'bottomDiameter'
   },
   {
     title: '创建时间',
     key: 'createTime'
   },
   {
-    title: '备注',
+    title: 'remark',
     key: 'comment'
   },
   {

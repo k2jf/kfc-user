@@ -57,7 +57,7 @@
       </Modal>
     </div>
     <div class="h-calc-12">
-      <div class="table h-calc-10">
+      <div class="ido-table h-calc-16">
         <Table
           stripe
           :columns="columns"
@@ -65,7 +65,7 @@
           <template slot="operation" slot-scope="{ row }">
             <div class="text-grey">
               <a href="javascript:;">提交</a> |
-              <a href="javascript:;">查看</a> |
+              <a href="javascript:;" @click="viewTask(row)">查看</a> |
               <a href="javascript:;">编辑</a> |
               <a href="javascript:;">结果</a> |
               <a href="javascript:;" @click="deleteTask(row)">删除</a>
@@ -73,8 +73,17 @@
           </template>
         </Table>
       </div>
-      <div class="footer h-10 pt-2">
-        <Page class="float-right" :total="100" show-total />
+      <div class="footer h-16 pt-4">
+        <Page
+          show-total
+          show-elevator
+          show-sizer
+          class="float-right"
+          :page-size="pageInfo.pageSize"
+          :total="pageInfo.total"
+          :current="pageInfo.pageNum"
+          @on-change="onPageChange"
+          @on-page-size-change="onPageSizeChange" />
       </div>
     </div>
   </div>
@@ -82,7 +91,6 @@
 <script>
 import { Input, Button, Table, Page, Modal, Form, FormItem, Select, Option } from 'iview'
 import columns from './columnDef'
-import { setTimeout } from 'timers'
 
 export default {
   name: 'TowerDesign',
@@ -102,6 +110,10 @@ export default {
       value: '',
       columns,
       data: [],
+      pageInfo: {
+        pageNum: 1,
+        pageSize: 10
+      },
       loading: true,
       visible: false,
       formValidate: {
@@ -115,23 +127,62 @@ export default {
     }
   },
   async mounted () {
-    const res = await this.$get('http://localhost:3334/ido/towers').json()
-    this.data = res.body.list
+    this.getTaskList(this.pageInfo)
   },
   methods: {
+    async getTaskList ({ pageNum, pageSize }) {
+      try {
+        const res = await this.$get('towerTasks', {
+          searchParams: { pageNum, pageSize }
+        }).json()
+        if (res.code === 0) {
+          this.data = res.body.items
+          this.pageInfo = res.body.pageInfo
+        } else {
+
+        }
+      } catch (error) {
+        console.log(error.name)
+      }
+    },
+    onPageChange (pageNum) {
+      this.pageInfo = Object.assign(this.pageInfo, { pageNum })
+      this.getTaskList(this.pageInfo)
+    },
+    onPageSizeChange (pageSize) {
+      this.pageInfo = Object.assign(this.pageInfo, { pageSize })
+      this.getTaskList(this.pageInfo)
+    },
     createNewTask () {
       this.visible = true
     },
     deleteTask (row) {
       alert(`删除-${row.title}`)
     },
-    asyncOK () {
-      this.$refs.formValidate.validate((valid) => {
+    viewTask (row) {
+      this.$router.push({ name: 'new-tower-design', params: { taskId: row.id } })
+    },
+    async asyncOK () {
+      this.loading = true
+      this.$refs.formValidate.validate(async (valid) => {
         if (valid) {
-          setTimeout(() => {
-            this.visible = false
-            this.$router.push({ name: 'new-tower-design' })
-          }, 1000)
+          try {
+            const res = await this.$post('towerTasks', {
+              json: {
+                projectId: 567,
+                taskName: '氪星塔架设计'
+              }
+            }).json()
+            if (res.code === 0) {
+              this.visible = false
+              this.loading = false
+              this.$router.push({ name: 'new-tower-design', params: { taskId: res.body.id } })
+            }
+          } catch (error) {
+            this.loading = false
+          }
+        } else {
+          this.loading = false
         }
       })
     },
@@ -141,6 +192,16 @@ export default {
   }
 }
 </script>
-<style lang="less" scoped>
+<style lang="less">
+// support table height to auto full size
+.ido-table .ivu-table-wrapper {
+  height: 100%;
 
+  .ivu-table-body {
+    height: calc(100% - 40px);
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+}
 </style>

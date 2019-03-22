@@ -1,8 +1,6 @@
 import XLSX from 'xlsx'
 
-export default {
-  baseUrl: process.env.VUE_APP_BASE_URL || 'http://localhost:9080/'
-}
+export const baseUrl = process.env.VUE_APP_BASE_URL || 'http://localhost:9080/'
 
 /**
  * use of tailwindcss

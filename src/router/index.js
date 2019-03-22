@@ -44,7 +44,7 @@ export default new Router({
           component: () => import(/* webpackChunkName: "Towers" */ '@/views/TowerDesign')
         },
         {
-          path: 'new-tower-design',
+          path: 'new-tower-design/:taskId',
           name: 'new-tower-design',
           meta: {
             breadName: '创建任务'

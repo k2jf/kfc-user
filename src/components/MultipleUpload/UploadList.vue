@@ -6,7 +6,6 @@
       :key="i"
       @click="handleClick(file)">
       <span @click="handlePreview(file)">
-        hhh
         <Icon :type="format(file)"></Icon> {{ file.name }}
       </span>
       <Icon

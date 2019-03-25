@@ -74,7 +74,7 @@ const navList = [
   { id: 0, name: '项目管理', to: 'projects', icon: 'ios-folder' },
   { id: 1, name: '载荷门户', link: 'http://payload.goldwind.com.cn', icon: 'ios-search' },
   { id: 2, name: '塔架设计', to: 'towers', icon: 'md-build' },
-  { id: 3, name: '基础设计', to: 'basic', icon: 'md-document' },
+  { id: 3, name: '基础设计', to: 'basics', icon: 'md-document' },
   { id: 4, name: '数据分析', to: 'data-analytics', icon: 'md-analytics' },
   { id: 5, name: '数据管理', to: 'data-management', icon: 'md-podium' },
   { id: 6, name: '用户管理', to: 'users', icon: 'md-contact' }

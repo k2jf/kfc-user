@@ -41,7 +41,7 @@ export default new Router({
             // NEED TO DO: MAY BE THERE IS A BETTER WAY
             ignore: true
           },
-          component: () => import(/* webpackChunkName: "Towers" */ '@/views/TowerDesign')
+          component: () => import(/* webpackChunkName: "Towers" */ '@/views/Towers/TowerDesign')
         },
         {
           path: 'new-tower-design/:taskId',
@@ -49,17 +49,35 @@ export default new Router({
           meta: {
             breadName: '创建任务'
           },
-          component: () => import(/* webpackChunkName: "Towers" */ '@/views/TowerInfo')
+          component: () => import(/* webpackChunkName: "Towers" */ '@/views/Towers/TowerInfo')
         }
       ]
     },
     {
-      path: '/basic',
-      name: 'basic',
+      path: '/basics',
       meta: {
-        breadName: '基础设计'
+        breadName: '基础设计任务列表'
       },
-      component: () => import(/* webpackChunkName: "projects" */ '@/views/BasicDesign')
+      component: () => import(/* webpackChunkName: "Basics" */ '@/views/Basics'),
+      children: [
+        {
+          path: '',
+          name: 'basics',
+          meta: {
+            breadName: '基础设计任务列表',
+            ignore: true
+          },
+          component: () => import(/* webpackChunkName: "Basics" */ '@/views/Basics/BasicDesign')
+        },
+        {
+          path: 'new-basic-design/:basicId',
+          name: 'new-basic-design',
+          meta: {
+            breadName: '创建任务'
+          },
+          component: () => import(/* webpackChunkName: "Basics" */ '@/views/Basics/BasicInfo')
+        }
+      ]
     },
     {
       path: '/data-analytics',

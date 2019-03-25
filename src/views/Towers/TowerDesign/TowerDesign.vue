@@ -1,5 +1,5 @@
 <template>
-  <div class="basic-design h-full p-3">
+  <div class="tower-design h-full p-3">
     <div class="h-12">
       <span>项目名称：</span>
       <Input
@@ -59,6 +59,7 @@
     <div class="h-calc-12">
       <div class="ido-table h-calc-16">
         <Table
+          class="ido-table"
           stripe
           :columns="columns"
           :data="data">
@@ -89,10 +90,111 @@
   </div>
 </template>
 <script>
-export default {
+import { Input, Button, Table, Page, Modal, Form, FormItem, Select, Option } from 'iview'
+import columns from './columnDef'
 
+export default {
+  name: 'TowerDesign',
+  components: {
+    Input,
+    Button,
+    Table,
+    Page,
+    Modal,
+    Form,
+    FormItem,
+    Select,
+    Option
+  },
+  data () {
+    return {
+      value: '',
+      columns,
+      data: [],
+      pageInfo: {
+        pageNum: 1,
+        pageSize: 10
+      },
+      loading: true,
+      visible: false,
+      formValidate: {
+        projectId: 0
+      },
+      ruleValidate: {
+        projectId: [
+          { required: true, message: '项目不能为空', trigger: 'blur' }
+        ]
+      }
+    }
+  },
+  async mounted () {
+    this.getTaskList(this.pageInfo)
+  },
+  methods: {
+    async getTaskList ({ pageNum, pageSize }) {
+      const res = await this.$get('towerTasks', {
+        searchParams: { pageNum, pageSize }
+      })
+      this.data = res.body.items
+      this.pageInfo = res.body.pageInfo
+    },
+    onPageChange (pageNum) {
+      this.pageInfo = Object.assign(this.pageInfo, { pageNum })
+      this.getTaskList(this.pageInfo)
+    },
+    onPageSizeChange (pageSize) {
+      this.pageInfo = Object.assign(this.pageInfo, { pageSize })
+      this.getTaskList(this.pageInfo)
+    },
+    createNewTask () {
+      this.visible = true
+    },
+    deleteTask (row) {
+      alert(`删除-${row.title}`)
+    },
+    viewTask (row) {
+      this.$router.push({ name: 'new-tower-design', params: { taskId: row.id } })
+    },
+    async asyncOK () {
+      this.loading = true
+      this.$refs.formValidate.validate(async (valid) => {
+        if (valid) {
+          try {
+            const res = await this.$post('towerTasks', {
+              json: {
+                projectId: 567,
+                taskName: '泰坦星塔架设计'
+              }
+            })
+            if (res.code === 0) {
+              this.visible = false
+              this.loading = false
+              this.$router.push({ name: 'new-tower-design', params: { taskId: res.body.id } })
+            }
+          } catch (error) {
+            this.loading = false
+          }
+        } else {
+          this.loading = false
+        }
+      })
+    },
+    onCancel () {
+      this.$refs.formValidate.resetFields()
+    }
+  }
 }
 </script>
-<style lang="less" scoped>
+<style lang="less">
+// support table height to auto full size
+.ido-table .ivu-table-wrapper {
+  height: 100%;
 
+  .ivu-table-body {
+    height: calc(100% - 40px);
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+}
 </style>

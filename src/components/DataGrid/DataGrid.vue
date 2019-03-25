@@ -3,7 +3,7 @@
   </div>
 </template>
 <script>
-import XLSX from 'xlsx'
+// import XLSX from 'xlsx'
 import canvasDatagrid from 'canvas-datagrid'
 
 export default {
@@ -28,7 +28,6 @@ export default {
     }
   },
   mounted () {
-    console.log(this.$refs[this.name])
     const cDg = canvasDatagrid({
       parentNode: this.$refs[this.name],
       data: this.sheetdata

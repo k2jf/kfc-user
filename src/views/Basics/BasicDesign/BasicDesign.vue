@@ -1,22 +1,10 @@
 <template>
-  <div class="tower-design h-full p-3">
+  <div class="basic-design h-full p-3">
     <div class="h-12">
       <span>项目名称：</span>
       <Input
         style="width: 180px;margin-right: 20px;"
         placeholder="请输入项目名称"
-        icon="ios-search"
-        v-model="value" />
-      <span>塔架高度（m）：</span>
-      <Input
-        style="width: 180px;margin-right: 20px;"
-        placeholder="请输入塔底高度"
-        icon="ios-search"
-        v-model="value" />
-      <span>塔底直径（m）：</span>
-      <Input
-        style="width: 180px"
-        placeholder="请输入塔底直径"
         icon="ios-search"
         v-model="value" />
       <Button class="ml-3" type="primary">
@@ -26,7 +14,7 @@
         新增任务
       </Button>
       <Modal
-        title="新增塔架设计任务"
+        title="新增基础设计任务"
         :loading="loading"
         ok-text="创建任务"
         v-model="visible"
@@ -59,6 +47,8 @@
     <div class="h-calc-12">
       <div class="ido-table h-calc-16">
         <Table
+          class="ido-table"
+          border
           stripe
           :columns="columns"
           :data="data">
@@ -93,7 +83,7 @@ import { Input, Button, Table, Page, Modal, Form, FormItem, Select, Option } fro
 import columns from './columnDef'
 
 export default {
-  name: 'TowerDesign',
+  name: 'BasicDesign',
   components: {
     Input,
     Button,
@@ -131,7 +121,7 @@ export default {
   },
   methods: {
     async getTaskList ({ pageNum, pageSize }) {
-      const res = await this.$get('towerTasks', {
+      const res = await this.$get('baseTasks', {
         searchParams: { pageNum, pageSize }
       })
       this.data = res.body.items
@@ -152,23 +142,23 @@ export default {
       alert(`删除-${row.title}`)
     },
     viewTask (row) {
-      this.$router.push({ name: 'new-tower-design', params: { taskId: row.id } })
+      this.$router.push({ name: 'new-basic-design', params: { basicId: row.id } })
     },
     async asyncOK () {
       this.loading = true
       this.$refs.formValidate.validate(async (valid) => {
         if (valid) {
           try {
-            const res = await this.$post('towerTasks', {
+            const res = await this.$post('baseTasks', {
               json: {
-                projectId: 567,
-                taskName: '泰坦星塔架设计'
+                projectId: 123,
+                taskName: '泰坦星基础设计'
               }
             })
             if (res.code === 0) {
               this.visible = false
               this.loading = false
-              this.$router.push({ name: 'new-tower-design', params: { taskId: res.body.id } })
+              this.$router.push({ name: 'new-basic-design', params: { basicId: res.body.id } })
             }
           } catch (error) {
             this.loading = false
@@ -185,15 +175,11 @@ export default {
 }
 </script>
 <style lang="less">
-// support table height to auto full size
-.ido-table .ivu-table-wrapper {
-  height: 100%;
-
-  .ivu-table-body {
-    height: calc(100% - 40px);
-    overflow-y: auto;
+  .basic-design .ivu-table-body {
     overflow-x: hidden;
   }
-
-}
+  .ido-table .ivu-table-tip {
+    overflow-x: hidden;
+    overflow-y: hidden;
+  }
 </style>

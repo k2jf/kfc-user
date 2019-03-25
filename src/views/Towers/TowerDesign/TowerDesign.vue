@@ -39,14 +39,8 @@
           ref="formValidate">
           <FormItem label="项目名称" prop="projectId">
             <Select placeholder="请选择一个项目" v-model="formValidate.projectId">
-              <Option value="beijing">
-                New York
-              </Option>
-              <Option value="shanghai">
-                London
-              </Option>
-              <Option value="shenzhen">
-                Sydney
+              <Option :value="item.projectId + ''" v-for="item in projects" :key="item.id">
+                {{ item.projectName }}
               </Option>
             </Select>
           </FormItem>
@@ -60,6 +54,7 @@
       <div class="ido-table h-calc-16">
         <Table
           class="ido-table"
+          border
           stripe
           :columns="columns"
           :data="data">
@@ -111,6 +106,7 @@ export default {
       value: '',
       columns,
       data: [],
+      projects: [],
       pageInfo: {
         pageNum: 1,
         pageSize: 10
@@ -122,7 +118,7 @@ export default {
       },
       ruleValidate: {
         projectId: [
-          { required: true, message: '项目不能为空', trigger: 'blur' }
+          { required: true, trigger: 'change', message: '不能为空' }
         ]
       }
     }
@@ -146,7 +142,9 @@ export default {
       this.pageInfo = Object.assign(this.pageInfo, { pageSize })
       this.getTaskList(this.pageInfo)
     },
-    createNewTask () {
+    async createNewTask () {
+      const res = await this.$get('projects')
+      this.projects = res.body.items
       this.visible = true
     },
     deleteTask (row) {
@@ -162,7 +160,7 @@ export default {
           try {
             const res = await this.$post('towerTasks', {
               json: {
-                projectId: 567,
+                projectId: this.formValidate.projectId,
                 taskName: '泰坦星塔架设计'
               }
             })

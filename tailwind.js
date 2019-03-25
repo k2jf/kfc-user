@@ -494,7 +494,21 @@ module.exports = {
     '5/6': '83.33333%',
     '9/10': '90%',
     'full': '100%',
-    'screen': '100vw'
+    'screen': '100vw',
+    'calc-1': 'calc(100% - 0.25rem)',
+    'calc-2': 'calc(100% - 0.5rem)',
+    'calc-3': 'calc(100% - 0.75rem)',
+    'calc-4': 'calc(100% - 1rem)',
+    'calc-5': 'calc(100% - 1.25rem)',
+    'calc-6': 'calc(100% - 1.5rem)',
+    'calc-8': 'calc(100% - 2rem)',
+    'calc-10': 'calc(100% - 2.5rem)',
+    'calc-12': 'calc(100% - 3rem)',
+    'calc-16': 'calc(100% - 4rem)',
+    'calc-24': 'calc(100% - 6rem)',
+    'calc-32': 'calc(100% - 8rem)',
+    'calc-48': 'calc(100% - 12rem)',
+    'calc-64': 'calc(100% - 016rem)'
   },
 
   /*

@@ -13,7 +13,7 @@
       <Button class="ml-3" type="primary" @click="createNewTask">
         新增任务
       </Button>
-      <Modal
+      <!-- <Modal
         title="新增基础设计任务"
         :loading="loading"
         ok-text="创建任务"
@@ -42,7 +42,7 @@
             (接口返回xxxxxx)
           </FormItem>
         </Form>
-      </Modal>
+      </Modal> -->
     </div>
     <div class="h-calc-12">
       <div class="ido-table h-calc-16">
@@ -136,37 +136,13 @@ export default {
       this.getTaskList(this.pageInfo)
     },
     createNewTask () {
-      this.visible = true
+      this.$router.push({ name: 'new-basic-design', params: { basicId: 'create' } })
     },
     deleteTask (row) {
       alert(`删除-${row.title}`)
     },
     viewTask (row) {
       this.$router.push({ name: 'new-basic-design', params: { basicId: row.id } })
-    },
-    async asyncOK () {
-      this.loading = true
-      this.$refs.formValidate.validate(async (valid) => {
-        if (valid) {
-          try {
-            const res = await this.$post('baseTasks', {
-              json: {
-                projectId: 123,
-                taskName: '泰坦星基础设计'
-              }
-            })
-            if (res.code === 0) {
-              this.visible = false
-              this.loading = false
-              this.$router.push({ name: 'new-basic-design', params: { basicId: res.body.id } })
-            }
-          } catch (error) {
-            this.loading = false
-          }
-        } else {
-          this.loading = false
-        }
-      })
     },
     onCancel () {
       this.$refs.formValidate.resetFields()

@@ -2,26 +2,26 @@
   <div class="tower-info h-full p-3">
     <Fiche title="塔架信息">
       <Form
-        :model="formValidate"
-        :rules="ruleValidate"
+        :model="towerFormValidate"
+        :rules="towerRuleValidate"
         :label-width="180"
-        ref="formValidate">
+        ref="towerFormValidate">
         <Row>
           <!-- 第一行 -->
           <ICol span="12">
             <FormItem label="项目名称：" class="w-9/10">
-              <span>{{ formValidate.projectName }}</span>
+              <span>{{ towerFormValidate.projectName }}</span>
             </FormItem>
           </ICol>
           <ICol span="12">
             <FormItem label="任务名称：">
-              <span>{{ formValidate.taskName }}</span>
+              <span>{{ towerFormValidate.taskName }}</span>
             </FormItem>
           </ICol>
           <!-- 第二行 -->
           <ICol span="12">
             <FormItem label="载荷数据来源：" prop="dataOrigin" class="w-9/10">
-              <Select placeholder="请选择载荷数据来源" v-model="formValidate.dataOrigin">
+              <Select placeholder="请选择载荷数据来源" v-model="towerFormValidate.dataOrigin">
                 <Option value="beijing">
                   New York
                 </Option>
@@ -76,23 +76,26 @@
           <!-- 第三行 -->
           <ICol span="12">
             <FormItem label="塔架高度：" prop="towerHeight" class="w-9/10">
-              <Input v-model="formValidate.towerHeight" />
+              <Input v-model="towerFormValidate.towerHeight" />
             </FormItem>
           </ICol>
           <ICol span="12">
             <FormItem label="塔底直径（m）：" prop="towerDiameter" class="w-9/10">
-              <Input v-model="formValidate.towerDiameter" />
+              <Input v-model="towerFormValidate.towerDiameter" />
             </FormItem>
           </ICol>
           <!-- 第四行 -->
           <ICol span="12">
             <FormItem label="塔底疲劳载荷Mxy(kNm)：" prop="fatiguePalyload" class="w-9/10">
-              <Input v-model="formValidate.fatiguePalyload" />
+              <Input v-model="towerFormValidate.fatiguePalyload" />
             </FormItem>
           </ICol>
           <ICol span="12">
             <FormItem label="马尔科夫矩阵：" prop="markov" class="w-9/10">
-              <Button>点击上传</Button>
+              <UploadButton />
+              <!-- <Button size="small" type="info">
+                点击上传
+              </Button> -->
             </FormItem>
           </ICol>
         </Row>
@@ -100,18 +103,18 @@
         <Row>
           <ICol span="12">
             <FormItem label="塔底极限载荷Mxy(kNm)：" prop="limitPayload" class="w-9/10">
-              <Input v-model="formValidate.limitPayload" />
+              <Input v-model="towerFormValidate.limitPayload" />
             </FormItem>
           </ICol>
           <ICol span="12">
             <FormItem label="塔架段数：" prop="towerLegNum" class="w-9/10">
-              <Input v-model="formValidate.towerLegNum" />
+              <Input v-model="towerFormValidate.towerLegNum" />
             </FormItem>
           </ICol>
           <!-- 第六行 -->
           <ICol span="24">
             <FormItem label="单工况：" prop="towerDiameter" class="w-9/10">
-              <ISwitch v-model="formValidate.switch">
+              <ISwitch v-model="towerFormValidate.switch">
                 <span slot="open">开</span>
                 <span slot="close">关</span>
               </ISwitch>
@@ -123,20 +126,22 @@
               <Input
                 type="textarea"
                 :autosize="{minRows: 2,maxRows: 5}"
-                v-model="formValidate.comment"></Input>
+                v-model="towerFormValidate.comment"></Input>
             </FormItem>
           </ICol>
           <!-- 按钮 -->
           <ICol span="24">
             <div class="buttons float-right" style="margin-right: 60px;">
-              <Button>塔架校核</Button>
-              <Button class="ml-3">
+              <Button style="background-color:#9561e2;border-color:#9561e2;" type="primary">
+                塔架校核
+              </Button>
+              <Button class="ml-3" type="primary">
                 法兰校核
               </Button>
-              <Button class="ml-3">
+              <Button class="ml-3" type="primary">
                 门洞校核
               </Button>
-              <Button class="ml-3">
+              <Button class="ml-3" disabled>
                 保存审核结果
               </Button>
             </div>
@@ -144,12 +149,79 @@
         </Row>
       </Form>
     </Fiche>
+    <Fiche title="算法配置" class="mt-6">
+      <Form
+        :model="algorithmFormValidate"
+        :rules="algorithmRuleValidate"
+        :label-width="100"
+        ref="algorithmFormValidate">
+        <Row>
+          <ICol span="12">
+            <FormItem label="寻优算法" prop="betterAlgorithm" class="w-9/10">
+              <Select placeholder="请选择寻优算法" v-model="algorithmFormValidate.betterAlgorithm">
+                <Option value="beijing">
+                  算法一
+                </Option>
+              </Select>
+            </FormItem>
+          </ICol>
+          <ICol span="12">
+            <FormItem label="迭代参数" prop="iterationParams" class="w-9/10">
+              <Select placeholder="请选择迭代参数" v-model="algorithmFormValidate.iterationParams">
+                <Option value="beijing">
+                  迭代参数一
+                </Option>
+              </Select>
+            </FormItem>
+          </ICol>
+          <ICol span="24">
+            <FormItem label="迭代参数" prop="iterationParams" class="w-9/10">
+              <Table />
+            </FormItem>
+          </ICol>
+        </Row>
+      </Form>
+    </Fiche>
+    <Fiche title="约束条件" class="my-6">
+      <Form
+        :model="conditionFormValidate"
+        :rules="conditionRuleValidate"
+        :label-width="120"
+        ref="conditionFormValidate">
+        <Row>
+          <ICol span="6">
+            <FormItem label="SRF_BCKlimt >= " prop="SRF_BCKlimt" class="w-9/10">
+              <Input v-model="conditionFormValidate.SRF_BCKlimt" />
+            </FormItem>
+          </ICol>
+          <ICol span="6">
+            <FormItem label="SRF_ULSlimt >= " prop="SRF_ULSlimt" class="w-9/10">
+              <Input v-model="conditionFormValidate.SRF_ULSlimt" />
+            </FormItem>
+          </ICol>
+          <ICol span="6">
+            <FormItem label="SRF_FLSlimt >= " prop="SRF_FLSlimt" class="w-9/10">
+              <Input v-model="conditionFormValidate.SRF_FLSlimt" />
+            </FormItem>
+          </ICol>
+        </Row>
+      </Form>
+    </Fiche>
+    <div class="text-center mb-6">
+      <Button type="primary">
+        保存
+      </Button>
+      <Button class="ml-3">
+        取消
+      </Button>
+    </div>
   </div>
 </template>
 <script>
-import { Upload, Button, Row, Col, Input, Form, FormItem, Select, Option, Switch, Icon, Message } from 'iview'
+import { Upload, Button, Row, Col, Input, Form, FormItem, Select, Table, Option, Switch, Icon, Message } from 'iview'
 import Fiche from '@/components/Fiche'
 import Excel from '@/components/Excel'
+import { UploadButton } from '@/components/MultipleUpload'
 import XLSX from 'xlsx'
 import { baseUrl, sheetJSFT } from '@/config'
 
@@ -168,7 +240,9 @@ export default {
     Option,
     ISwitch: Switch,
     Icon,
-    Excel
+    Excel,
+    UploadButton,
+    Table
   },
   data () {
     return {
@@ -177,8 +251,8 @@ export default {
       sheets: {},
       originSheets: {},
       file: { name: '' },
-      action: baseUrl + 'towerTasks/1/upload?fileKey=towerInput',
-      formValidate: {
+      action: '',
+      towerFormValidate: {
         // projectName: 'xxx项目H1-2',
         // taskName: 'xxxxxx',
         // towerHeight: 100,
@@ -190,7 +264,19 @@ export default {
         // switch: true,
         // comment: ''
       },
-      ruleValidate: {
+      algorithmFormValidate: {
+
+      },
+      conditionFormValidate: {
+
+      },
+      algorithmRuleValidate: {
+
+      },
+      conditionRuleValidate: {
+
+      },
+      towerRuleValidate: {
         dataOrigin: [
           { required: true, message: '不能为空', trigger: 'none' }
         ],
@@ -213,13 +299,14 @@ export default {
     }
   },
   mounted () {
+    this.action = `${baseUrl}towerTasks/${this.$route.params.taskId}/upload?fileKey=towerInput`
     this.getTaskInfo()
   },
   methods: {
     async getTaskInfo () {
       try {
         const res = await this.$get('towerTasks/' + this.$route.params.taskId)
-        const formValidate = {
+        const towerFormValidate = {
           projectName: res.body.projectName,
           taskName: res.body.taskName
           // towerHeight: 100,
@@ -231,9 +318,39 @@ export default {
           // switch: true,
           // comment: ''
         }
-        this.formValidate = formValidate
+        this.towerFormValidate = towerFormValidate
+
+        if (res.body.fileInputs.length > 0) {
+          const towerInput = res.body.fileInputs.find(f => f.fileKey === 'towerInput')
+          if (towerInput) {
+            this.file = {
+              name: towerInput.fileNames[0]
+            }
+            this.getSingleExcel()
+          }
+        }
       } catch (error) {
 
+      }
+    },
+    async getSingleExcel () {
+      const id = this.$route.params.taskId
+      try {
+        const data = await this.$ky.get(`towerTasks/${id}/stream?fileKey=towerInput`).arrayBuffer()
+        var workbook = XLSX.read(data, { type: 'array' })
+        console.log(data, workbook)
+        const sheets = {}
+        console.log(workbook.Sheets)
+        for (let wsname in workbook.Sheets) {
+          const ws = workbook.Sheets[wsname]
+          const data = XLSX.utils.sheet_to_json(ws, { header: 1 })
+          sheets[wsname] = data
+        }
+
+        this.sheets = sheets
+        this.originSheets = workbook.Sheets
+      } catch (error) {
+        console.log('see errors ======> ', error)
       }
     },
     handleUpload (file) {
@@ -283,19 +400,7 @@ export default {
     },
     async onUploadSuccess (res, file, fileList) {
       this.file = file
-      const data = await this.$get('towerTasks/1/stream?fileKey=towerInput').arrayBuffer()
-      var workbook = XLSX.read(data, { type: 'array' })
-      console.log(data, workbook)
-      const sheets = {}
-      console.log(workbook.Sheets)
-      for (let wsname in workbook.Sheets) {
-        const ws = workbook.Sheets[wsname]
-        const data = XLSX.utils.sheet_to_json(ws, { header: 1 })
-        sheets[wsname] = data
-      }
-
-      this.sheets = sheets
-      this.originSheets = workbook.Sheets
+      this.getSingleExcel()
     },
     onPreview (file) {
 

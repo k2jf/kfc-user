@@ -131,19 +131,11 @@ export default {
   },
   methods: {
     async getTaskList ({ pageNum, pageSize }) {
-      try {
-        const res = await this.$get('towerTasks', {
-          searchParams: { pageNum, pageSize }
-        }).json()
-        if (res.code === 0) {
-          this.data = res.body.items
-          this.pageInfo = res.body.pageInfo
-        } else {
-
-        }
-      } catch (error) {
-        console.log(error.name)
-      }
+      const res = await this.$get('towerTasks', {
+        searchParams: { pageNum, pageSize }
+      })
+      this.data = res.body.items
+      this.pageInfo = res.body.pageInfo
     },
     onPageChange (pageNum) {
       this.pageInfo = Object.assign(this.pageInfo, { pageNum })
@@ -170,9 +162,9 @@ export default {
             const res = await this.$post('towerTasks', {
               json: {
                 projectId: 567,
-                taskName: '氪星塔架设计'
+                taskName: '泰坦星塔架设计'
               }
-            }).json()
+            })
             if (res.code === 0) {
               this.visible = false
               this.loading = false

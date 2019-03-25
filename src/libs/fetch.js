@@ -44,6 +44,7 @@ export default {
       })
     }
 
+    Vue.prototype.$ky = _ky
     Vue.prototype.$fetch = _fetch
     for (const method of requestMethods) {
       Vue.prototype[`$${method}`] = (input, options) => _fetch(input, { method, ...options })

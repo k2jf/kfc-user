@@ -72,7 +72,7 @@ import BreadCrumb from '@/components/BreadCrumb'
 
 const navList = [
   { id: 0, name: '项目管理', to: 'projects', icon: 'ios-folder' },
-  { id: 1, name: '载荷门户', link: 'http://payload.goldwind.com.cn', icon: 'ios-search' },
+  { id: 1, name: '载荷门户', link: 'http://internal-dev-loadportal-front-1393092945.cn-north-1.elb.amazonaws.com.cn', icon: 'ios-search' },
   { id: 2, name: '塔架设计', to: 'towers', icon: 'md-build' },
   { id: 3, name: '基础设计', to: 'basics', icon: 'md-document' },
   { id: 4, name: '数据分析', to: 'data-analytics', icon: 'md-analytics' },

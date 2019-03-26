@@ -24,8 +24,8 @@ export default [
     key: 'createTime'
   },
   {
-    title: 'remark',
-    key: 'comment'
+    title: '备注',
+    key: 'remark'
   },
   {
     title: '操作',

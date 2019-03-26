@@ -1,8 +1,9 @@
 <template>
   <Modal
     :closable="false"
-    fullscreen
+    :mask-closable="false"
     :title="title"
+    width="860"
     :value="visible"
     ok-text="保存"
     @on-ok="ok"
@@ -17,7 +18,7 @@
         :name="tab.label"
         v-for="tab in tabs"
         :key="tab.label">
-        <div class="tab-content-wrap w-full h-full">
+        <div class="tab-content-wrap" style="width: 826px;height: 400px;">
           <DataGrid
             :name="tab.label"
             :sheetdata="tab.value"

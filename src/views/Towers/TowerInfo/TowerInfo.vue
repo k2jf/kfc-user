@@ -249,6 +249,7 @@ export default {
       originSheets: {},
       file: { name: '' },
       action: '',
+      originData: null,
       towerFormValidate: {
         // projectName: 'xxx项目H1-2',
         // taskName: 'xxxxxx',
@@ -334,6 +335,7 @@ export default {
       const id = this.$route.params.taskId
       try {
         const data = await this.$ky.get(`towerTasks/${id}/stream?fileKey=towerInput`).arrayBuffer()
+        this.originData = data
         var workbook = XLSX.read(data, { type: 'array' })
         console.log(data, workbook)
         const sheets = {}
@@ -390,6 +392,13 @@ export default {
     },
     onExcelCancel () {
       this.visible = false
+      const sheets = {}
+      for (let wsname in this.originSheets) {
+        const ws = this.originSheets[wsname]
+        const data = XLSX.utils.sheet_to_json(ws, { header: 1 })
+        sheets[wsname] = data
+      }
+      this.sheets = sheets
     },
     onUploadError (err, file, fileList) {
       console.error(err)

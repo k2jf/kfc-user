@@ -27,6 +27,11 @@ export default {
       dataGrid: null
     }
   },
+  watch: {
+    sheetdata (value) {
+      this.dataGrid.data = value
+    }
+  },
   mounted () {
     const cDg = canvasDatagrid({
       parentNode: this.$refs[this.name],
@@ -63,6 +68,5 @@ export default {
       e.preventDefault()
     }
   }
-
 }
 </script>

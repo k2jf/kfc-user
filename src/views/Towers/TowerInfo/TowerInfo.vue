@@ -350,9 +350,10 @@ export default {
       const id = this.$route.params.taskId
       try {
         const data = await this.$ky.get(`towerTasks/${id}/stream?fileKey=towerInput`).arrayBuffer()
+        console.log(data)
         this.originData = data
         var workbook = XLSX.read(data, { type: 'array' })
-        // console.log(data, workbook)
+        console.log(data, workbook)
         const sheets = {}
         // console.log(workbook.Sheets)
         for (let wsname in workbook.Sheets) {
@@ -376,7 +377,20 @@ export default {
     viewTable () {
       this.visible = true
     },
-    onExcelOk () {
+    async onExcelOk (wbout) {
+      var formdata = new FormData()
+      const data = new Blob([wbout], { type: 'application/octet-stream' })
+      console.log(data)
+      formdata.append('file', data)
+      const url = `towerTasks/${this.$route.params.taskId}/upload?fileKey=towerInput`
+      const res = await this.$post(url, {
+        headers: null,
+        body: formdata
+      })
+      if (res.code === 0) {
+        this.getSingleExcel()
+      }
+
       this.visible = false
     },
     onExcelCancel () {

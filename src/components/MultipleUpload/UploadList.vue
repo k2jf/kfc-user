@@ -12,22 +12,16 @@
         type="ios-close"
         :class="[prefixCls + '-list-remove']"
         @click.native="handleRemove(file)" />
-      <transition name="fade">
-        <Progress
-          :stroke-width="2"
-          :percent="parsePercentage(file.percentage)"
-          :status="file.status === 'finished' && file.showProgress ? 'success' : 'normal'" />
-      </transition>
     </li>
   </ul>
 </template>
 <script>
-import { Icon, Progress } from 'iview'
+import { Icon } from 'iview'
 const prefixCls = 'ivu-upload'
 
 export default {
   name: 'UploadList',
-  components: { Icon, Progress },
+  components: { Icon },
   props: {
     files: {
       type: Array,
@@ -80,9 +74,6 @@ export default {
       }
 
       return type
-    },
-    parsePercentage (val) {
-      return parseInt(val, 10)
     }
   }
 }

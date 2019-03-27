@@ -22,7 +22,8 @@
           <DataGrid
             :name="tab.label"
             :sheetdata="tab.value"
-            :ws="originSheets[tab.label]" />
+            :ws="originSheets[tab.label]"
+            :ref="tab.label" />
         </div>
       </TabPane>
     </Tabs>
@@ -32,6 +33,7 @@
 <script>
 import { Modal, Tabs, TabPane } from 'iview'
 import DataGrid from '@/components/DataGrid'
+import XLSX from 'xlsx'
 
 export default {
   name: 'Excel',
@@ -59,13 +61,9 @@ export default {
       required: true
     }
   },
-  // data () {
-  //   return {
-  //     copySheets: {}
-  //   }
-  // },
   computed: {
     tabs () {
+      console.log(this.sheets)
       const tabs = []
       Object.keys(this.sheets).forEach(s => {
         tabs.push({ label: s, value: this.sheets[s] })
@@ -80,13 +78,28 @@ export default {
         window.dispatchEvent(new Event('resize'))
       })
     }
-    // sheets (value) {
-    //   this.copySheets = Object.assign({}, value)
-    // }
   },
   methods: {
     ok () {
       console.log(this.sheets)
+      const workbook = XLSX.utils.book_new()
+      this.tabs.forEach((t) => {
+        const _ws = this.$refs[t.label][0].dataGrid.data
+        // _ws is an array of arrays of JS values,
+        // MUST use `XLSX.utils.aoa_to_sheet` to transfrom it
+        // to a worksheet resembling the excel data
+        const ws = XLSX.utils.aoa_to_sheet(_ws.map(w => Object.values(w)))
+        console.log(ws)
+        XLSX.utils.book_append_sheet(workbook, ws, t.label)
+      })
+      console.log(workbook)
+      XLSX.writeFile(workbook, 'sheetjs.xlsx')
+      const wopts = { bookType: 'xlsx', bookSST: false, type: 'array' }
+
+      const wbout = XLSX.write(workbook, wopts)
+
+      console.log(wbout)
+
       this.$emit('on-ok')
     },
     cancel () {

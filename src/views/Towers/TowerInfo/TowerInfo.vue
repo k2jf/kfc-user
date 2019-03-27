@@ -7,7 +7,7 @@
         :label-width="180"
         ref="towerFormValidate">
         <Row>
-          <!-- 第一行 -->
+          <!-- First Row -->
           <ICol span="12">
             <FormItem label="项目名称：" class="w-9/10">
               <span>{{ towerFormValidate.projectName }}</span>
@@ -18,7 +18,7 @@
               <span>{{ towerFormValidate.taskName }}</span>
             </FormItem>
           </ICol>
-          <!-- 第二行 -->
+          <!-- Second Row -->
           <ICol span="12">
             <FormItem label="载荷数据来源：" prop="dataOrigin" class="w-9/10">
               <Select placeholder="请选择载荷数据来源" v-model="towerFormValidate.dataOrigin">
@@ -70,7 +70,7 @@
               </div>
             </FormItem>
           </ICol>
-          <!-- 第三行 -->
+          <!-- Third Row -->
           <ICol span="12">
             <FormItem label="塔架高度：" prop="towerHeight" class="w-9/10">
               <Input v-model="towerFormValidate.towerHeight" />
@@ -81,7 +81,7 @@
               <Input v-model="towerFormValidate.towerDiameter" />
             </FormItem>
           </ICol>
-          <!-- 第四行 -->
+          <!-- Fourth Row -->
           <ICol span="12">
             <FormItem label="塔底疲劳载荷Mxy(kNm)：" prop="fatiguePalyload" class="w-9/10">
               <Input v-model="towerFormValidate.fatiguePalyload" />
@@ -89,26 +89,27 @@
           </ICol>
           <ICol span="12">
             <FormItem label="马尔科夫矩阵：" prop="markov" class="w-9/10">
-              <UploadButton />
-              <!-- <Button size="small" type="info">
-                点击上传
-              </Button> -->
+              <UploadButton :action="markovAction" :files="markovFiles" :display="display" />
             </FormItem>
           </ICol>
         </Row>
-        <!-- 第五行 -->
+        <!-- Fifth Row -->
         <Row>
-          <ICol span="12">
+          <ICol
+            span="
+                12">
             <FormItem label="塔底极限载荷Mxy(kNm)：" prop="limitPayload" class="w-9/10">
               <Input v-model="towerFormValidate.limitPayload" />
             </FormItem>
+            </uploadbutton>
+            </formitem></uploadbutton>
           </ICol>
           <ICol span="12">
             <FormItem label="塔架段数：" prop="towerLegNum" class="w-9/10">
               <Input v-model="towerFormValidate.towerLegNum" />
             </FormItem>
           </ICol>
-          <!-- 第六行 -->
+          <!-- Sixth Row -->
           <ICol span="24">
             <FormItem label="单工况：" prop="towerDiameter" class="w-9/10">
               <ISwitch v-model="towerFormValidate.switch">
@@ -117,7 +118,7 @@
               </ISwitch>
             </FormItem>
           </ICol>
-          <!-- 第七行 -->
+          <!-- Seventh Row -->
           <ICol span="24">
             <FormItem label="备注：" prop="comment" style="width: 95%;">
               <Input
@@ -126,7 +127,7 @@
                 v-model="towerFormValidate.comment"></Input>
             </FormItem>
           </ICol>
-          <!-- 按钮 -->
+          <!-- Btns -->
           <ICol span="24">
             <div class="buttons float-right" style="margin-right: 60px;">
               <Button style="background-color:#9561e2;border-color:#9561e2;" type="primary">
@@ -248,7 +249,9 @@ export default {
       sheets: {},
       originSheets: {},
       file: { name: '' },
+      markovFiles: [],
       action: '',
+      markovAction: '',
       originData: null,
       towerFormValidate: {
         // projectName: 'xxx项目H1-2',
@@ -296,11 +299,18 @@ export default {
       }
     }
   },
+  computed: {
+    display () {
+      return this.markovFiles.length > 0 ? '点击查看' : '文件上传'
+    }
+  },
   mounted () {
     this.action = `${baseUrl}towerTasks/${this.$route.params.taskId}/upload?fileKey=towerInput`
+    this.markovAction = `${baseUrl}towerTasks/${this.$route.params.taskId}/upload?fileKey=markov`
     this.getTaskInfo()
   },
   methods: {
+    // Task Infos
     async getTaskInfo () {
       try {
         const res = await this.$get('towerTasks/' + this.$route.params.taskId)
@@ -320,26 +330,31 @@ export default {
 
         if (res.body.fileInputs.length > 0) {
           const towerInput = res.body.fileInputs.find(f => f.fileKey === 'towerInput')
+          const markov = res.body.fileInputs.find(f => f.fileKey === 'markov')
           if (towerInput) {
             this.file = {
               name: towerInput.fileNames[0]
             }
             this.getSingleExcel()
           }
+          if (markov) {
+            this.markovFiles = markov.fileNames.map(f => ({ name: f }))
+          }
         }
       } catch (error) {
 
       }
     },
+    // Get task design excel form server
     async getSingleExcel () {
       const id = this.$route.params.taskId
       try {
         const data = await this.$ky.get(`towerTasks/${id}/stream?fileKey=towerInput`).arrayBuffer()
         this.originData = data
         var workbook = XLSX.read(data, { type: 'array' })
-        console.log(data, workbook)
+        // console.log(data, workbook)
         const sheets = {}
-        console.log(workbook.Sheets)
+        // console.log(workbook.Sheets)
         for (let wsname in workbook.Sheets) {
           const ws = workbook.Sheets[wsname]
           const data = XLSX.utils.sheet_to_json(ws, { header: 1 })
@@ -351,32 +366,6 @@ export default {
       } catch (error) {
         console.log('see errors ======> ', error)
       }
-    },
-    handleUpload (file) {
-      console.log(file)
-      this.file = file
-      this.readFile(file)
-      return false
-    },
-    handleFileChange (evt) {
-      const files = evt.target.files
-      if (files && files[0]) this.readFile(files[0])
-    },
-    readFile (file) {
-      const reader = new FileReader()
-      reader.onload = (e) => {
-        const bstr = e.target.result
-        const wb = XLSX.read(bstr, { type: 'array', cellStyles: true })
-        const sheets = {}
-        for (let wsname in wb.Sheets) {
-          const ws = wb.Sheets[wsname]
-          const data = XLSX.utils.sheet_to_json(ws, { header: 1 })
-          sheets[wsname] = data
-        }
-        this.sheets = sheets
-        this.originSheets = wb.Sheets
-      }
-      reader.readAsArrayBuffer(file)
     },
     removeFile () {
       // delete server excel file

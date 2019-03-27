@@ -9,7 +9,6 @@ import 'iview/dist/styles/iview.css'
 import 'dayjs/locale/zh-cn'
 
 Vue.config.productionTip = false
-Vue.config.ignoredElements = ['canvas-datagrid']
 
 Vue.use(fetch)
 

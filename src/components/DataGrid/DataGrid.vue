@@ -65,7 +65,7 @@ export default {
 
     this.dataGrid = cDg
     this.dataGrid.addEventListener('beforesortcolumn', this.preventDefault)
-    this.dataGrid.addEventListener('appendeditinput', this.endedit)
+    this.dataGrid.addEventListener('beforeendedit', this.endedit)
   },
   beforeDestroy () {
     this.dataGrid.removeEventListener('beforesortcolumn', this.preventDefault)
@@ -75,9 +75,22 @@ export default {
       e.preventDefault()
     },
     endedit (e) {
-      console.log(e)
-      // e.value = parseFloat(e.value)
-      e.input.value = parseFloat(e.input.value)
+      // Abort the edit, We self take over it!!!
+      e.abort()
+      // If value doesn't change, do nothing
+      if (e.newValue !== e.oldValue) {
+        // canvas-datagrid default set value to stirng,so we need to
+        // manually transform to number
+        if (typeof e.oldValue === 'number') {
+          const value = Number(e.newValue)
+          const [i, k] = e.cell.gridId.split(':')
+          const data = this.dataGrid.data
+          const key = Object.keys(data[i])[k]
+          data[i][key] = value
+          this.dataGrid.data = data
+        }
+      }
+      // BUG: doesn't work!!
       e.ctx.fillStyle = 'red'
     },
     transformData (data) {

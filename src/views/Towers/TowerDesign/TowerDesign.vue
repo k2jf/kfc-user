@@ -161,7 +161,7 @@ export default {
             const res = await this.$post('towerTasks', {
               json: {
                 projectId: this.formValidate.projectId,
-                taskName: '泰坦星塔架设计'
+                taskName: 'kk的塔架设计'
               }
             })
             if (res.code === 0) {

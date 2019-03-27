@@ -33,27 +33,37 @@ export default {
     }
   },
   mounted () {
+    console.log('%c 新的开始====================', 'color: red')
+    console.log(this.sheetdata)
+    const formatSheetdata = []
+    const schema = []
+    const maxColNum = Math.max.apply(null, this.sheetdata.map(s => s.length))
+    const range = XLSX.utils.decode_range(this.ws['!ref'])
+    for (let i = 0; i < this.sheetdata.length; i++) {
+      const objData = {}
+      for (var k = range.s.c; k <= range.e.c; k++) {
+        const key = XLSX.utils.encode_col(k)
+        // console.log('hhhhh====> ', maxColNum, XLSX.utils.encode_col(i))
+        objData[key] = this.sheetdata[i][k] || ''
+      }
+      console.log('objData is ===> ', objData)
+      formatSheetdata.push(objData)
+    }
+    console.log('formatSheetdata is =======> ', formatSheetdata)
+    console.log('%c 结束====================', 'color: blue')
+
     const cDg = canvasDatagrid({
       parentNode: this.$refs[this.name],
-      data: this.sheetdata,
+      data: formatSheetdata,
       allowSorting: false,
       allowFreezingColumns: true
     })
     cDg.style.width = '826px'
     cDg.style.height = '400px'
     cDg.style.cellWidth = 80
-
-    // const range = XLSX.utils.decode_range(this.ws['!ref'])
-    // console.log(range, this.sheetdata)
-    // const schema = []
     // for (var i = range.s.c; i <= range.e.c; ++i) {
-    //   schema.push({
-    //     title: XLSX.utils.encode_col(i),
-    //     name: ''
-
-    //   })
-    //   //   cDg.schema[i - range.s.c].title = XLSX.utils.encode_col(i)
-    //   console.log(XLSX.utils.encode_col(i))
+    //   //   //   cDg.schema[i - range.s.c].title = XLSX.utils.encode_col(i)
+    //   console.log('hhhhh====> ', maxColNum, XLSX.utils.encode_col(i))
     // }
     // console.log(schema)
     // cDg.schema = schema

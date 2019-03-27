@@ -139,6 +139,7 @@ export default {
   },
   mounted () {
     this.updateActiveName()
+    this.$refs.side1.toggleCollapse()
   },
   methods: {
     collapsedSider () {

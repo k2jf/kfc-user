@@ -59,18 +59,17 @@ export default {
       required: true
     }
   },
-  data () {
-    return {
-      copySheets: {}
-    }
-  },
+  // data () {
+  //   return {
+  //     copySheets: {}
+  //   }
+  // },
   computed: {
     tabs () {
       const tabs = []
-      Object.keys(this.copySheets).forEach(s => {
-        tabs.push({ label: s, value: this.copySheets[s] })
+      Object.keys(this.sheets).forEach(s => {
+        tabs.push({ label: s, value: this.sheets[s] })
       })
-      console.log(tabs)
       return tabs
     }
   },
@@ -80,15 +79,14 @@ export default {
       this.$nextTick(() => {
         window.dispatchEvent(new Event('resize'))
       })
-    },
-    sheets (value) {
-      console.log(value)
-      this.copySheets = Object.assign({}, value)
     }
+    // sheets (value) {
+    //   this.copySheets = Object.assign({}, value)
+    // }
   },
   methods: {
     ok () {
-      console.log(this.sheets, this.copySheets)
+      console.log(this.sheets)
       this.$emit('on-ok')
     },
     cancel () {

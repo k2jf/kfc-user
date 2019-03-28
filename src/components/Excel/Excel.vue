@@ -80,7 +80,6 @@ export default {
   },
   methods: {
     ok () {
-      console.log(this.sheets)
       const workbook = XLSX.utils.book_new()
       this.tabs.forEach((t) => {
         const _ws = this.$refs[t.label][0].dataGrid.data
@@ -88,17 +87,12 @@ export default {
          * _ws is an array of arrays of JS values,
          * MUST use `XLSX.utils.aoa_to_sheet` to transfrom it
          * to a worksheet resembling the excel data
-         *
          */
         const ws = XLSX.utils.aoa_to_sheet(_ws.map(w => Object.values(w)))
-        console.log(ws)
         XLSX.utils.book_append_sheet(workbook, ws, t.label)
       })
-      console.log(workbook)
-      // XLSX.writeFile(workbook, 'sheetjs.xlsx')
       const wopts = { bookType: 'xlsx', type: 'array' }
       const wbout = XLSX.write(workbook, wopts)
-      console.log(wbout)
       this.$emit('on-ok', wbout)
     },
     cancel () {

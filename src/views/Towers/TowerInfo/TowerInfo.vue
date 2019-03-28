@@ -89,20 +89,21 @@
           </ICol>
           <ICol span="12">
             <FormItem label="马尔科夫矩阵：" prop="markov" class="w-9/10">
-              <UploadButton :action="markovAction" :files="markovFiles" :display="display" />
+              <UploadButton
+                :action="markovAction"
+                :files="markovFiles"
+                :display="display"
+                @multiple-upload="multipleUpload"
+                @on-clear="removeMarkov" />
             </FormItem>
           </ICol>
         </Row>
         <!-- Fifth Row -->
         <Row>
-          <ICol
-            span="
-                12">
+          <ICol span="12">
             <FormItem label="塔底极限载荷Mxy(kNm)：" prop="limitPayload" class="w-9/10">
               <Input v-model="towerFormValidate.limitPayload" />
             </FormItem>
-            </uploadbutton>
-            </formitem></uploadbutton>
           </ICol>
           <ICol span="12">
             <FormItem label="塔架段数：" prop="towerLegNum" class="w-9/10">
@@ -350,10 +351,8 @@ export default {
       const id = this.$route.params.taskId
       try {
         const data = await this.$ky.get(`towerTasks/${id}/stream?fileKey=towerInput`).arrayBuffer()
-        console.log(data)
         this.originData = data
         var workbook = XLSX.read(data, { type: 'array' })
-        console.log(data, workbook)
         const sheets = {}
         // console.log(workbook.Sheets)
         for (let wsname in workbook.Sheets) {
@@ -368,11 +367,30 @@ export default {
         console.log('see errors ======> ', error)
       }
     },
-    removeFile () {
+    async removeFile () {
       // delete server excel file
-      this.file = {}
-      this.sheets = {}
-      this.originSheets = {}
+      try {
+        const res = await this.$delete(`towerTasks/${this.$route.params.taskId}/inputFile?fileKey=towerInput`, { silent: true })
+        if (res.code === 0) {
+          Message.success('删除成功')
+          this.file = {}
+          this.sheets = {}
+          this.originSheets = {}
+        }
+      } catch (error) {
+        Message.error('删除失败')
+      }
+    },
+    async removeMarkov () {
+      try {
+        const res = await this.$delete(`towerTasks/${this.$route.params.taskId}/inputFile?fileKey=markov`, { silent: true })
+        if (res.code === 0) {
+          this.markovFiles = []
+          Message.success('删除成功')
+        }
+      } catch (error) {
+        Message.error('删除失败')
+      }
     },
     viewTable () {
       this.visible = true
@@ -381,7 +399,7 @@ export default {
       var formdata = new FormData()
       const data = new Blob([wbout], { type: 'application/octet-stream' })
       console.log(data)
-      formdata.append('file', data)
+      formdata.append('file', data, this.file.name)
       const url = `towerTasks/${this.$route.params.taskId}/upload?fileKey=towerInput`
       const res = await this.$post(url, {
         headers: null,
@@ -405,14 +423,30 @@ export default {
     },
     onUploadError (err, file, fileList) {
       console.error(err)
-      Message.error(file.message)
+      Message.error('上传失败：' + file.message)
     },
     async onUploadSuccess (res, file, fileList) {
+      Message.success('上传成功')
       this.file = file
       this.getSingleExcel()
     },
     onPreview (file) {
 
+    },
+    async multipleUpload (toBeUploadList) {
+      let formData = new FormData()
+      toBeUploadList.forEach(t => {
+        formData.append('files', t.file, t.name)
+      })
+      try {
+        const res = await this.$post(`towerTasks/${this.$route.params.taskId}/batchUpload?fileKey=markov`, {
+          headers: null,
+          body: formData
+        })
+        Message.success('马尔科夫文件上传成功')
+      } catch (error) {
+        Message.error('马尔科夫文件上传失败')
+      }
     }
   }
 }

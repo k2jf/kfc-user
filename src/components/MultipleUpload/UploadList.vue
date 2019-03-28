@@ -48,7 +48,8 @@ export default {
       this.$emit('on-file-preview', file)
     },
     handleRemove (file) {
-      this.$emit('on-file-remove', file)
+      const index = this.files.findIndex(f => f.name === file.name)
+      this.files.splice(index, 1)
     },
     format (file) {
       const format = file.name.split('.').pop().toLocaleLowerCase() || ''

@@ -81,14 +81,15 @@ export default {
       if (e.newValue !== e.oldValue) {
         // canvas-datagrid default set value to stirng,so we need to
         // manually transform to number
+        let value = e.newValue
         if (typeof e.oldValue === 'number') {
-          const value = Number(e.newValue)
-          const [i, k] = e.cell.gridId.split(':')
-          const data = this.dataGrid.data
-          const key = Object.keys(data[i])[k]
-          data[i][key] = value
-          this.dataGrid.data = data
+          value = Number(e.newValue)
         }
+        const [i, k] = e.cell.gridId.split(':')
+        const data = this.dataGrid.data
+        const key = Object.keys(data[i])[k]
+        data[i][key] = value
+        this.dataGrid.data = data
       }
       // BUG: doesn't work!!
       e.ctx.fillStyle = 'red'

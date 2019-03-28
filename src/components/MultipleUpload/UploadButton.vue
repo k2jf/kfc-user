@@ -8,6 +8,8 @@
       {{ display }}
     </Button>
     <Modal
+      :closable="false"
+      :mark-closable="false"
       title="批量上传文件"
       v-model="visible"
       @on-ok="onOk"
@@ -17,6 +19,8 @@
         <Upload
           multiple
           type="drag"
+          :show-upload-list="false"
+          :before-upload="beforeUpload"
           :on-success="onSuccess"
           :action="action">
           <div style="padding: 20px 0">
@@ -29,7 +33,26 @@
         </Upload>
         <div class="overflow-y-auto" style="max-height: 400px">
           <UploadList :files="files" />
+          <UploadList :files="toBeUploadList" />
         </div>
+      </div>
+      <div slot="footer">
+        <Button :disabled="toBeUploadList.length === 0" @click="upload">
+          上传
+        </Button>
+        <Button
+          :disabled="files.length === 0"
+          ghost
+          type="error"
+          @click="clear">
+          清空
+        </Button>
+        <Button
+          ghost
+          type="primary"
+          @click="onOk">
+          关闭
+        </Button>
       </div>
     </Modal>
   </div>
@@ -76,15 +99,38 @@ export default {
     return {
       type: 'info',
       list: [],
-      visible: false
+      visible: false,
+      toBeUploadList: []
+    }
+  },
+  computed: {
+    loadingFiles () {
+      return this.toBeUploadList.map(({ name }) => ({ name }))
     }
   },
   methods: {
     onOk () {
-
+      this.visible = !this.visible
     },
     onCancel () {
 
+    },
+    upload () {
+      this.$emit('multiple-upload', this.toBeUploadList)
+    },
+    clear () {
+      this.$emit('on-clear')
+    },
+    beforeUpload (file) {
+      this.toBeUploadList.push({
+        file,
+        name: file.name
+      })
+      console.log(this.toBeUploadList)
+      return false
+    },
+    onRemove (file) {
+      console.log(file)
     },
     onSuccess (res, file, fileList) {
       console.log(res, file, fileList)

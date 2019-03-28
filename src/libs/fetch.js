@@ -18,9 +18,8 @@ export default {
       retry: 0,
       hooks: {
         afterResponse: [
-          res => {
-            if (!res.ok) {
-              console.log(res)
+          (res, silent) => {
+            if (!res.ok && !silent) {
               Message.error(res.status + '')
             }
             return res
@@ -40,6 +39,9 @@ export default {
               Message.error(json.message || '未知')
               reject(json.message)
             }
+          })
+          .catch(err => {
+            reject(err)
           })
       })
     }

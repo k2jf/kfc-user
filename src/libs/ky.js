@@ -212,13 +212,11 @@ class Ky {
 
       for (const hook of this._hooks.afterResponse) {
         // eslint-disable-next-line no-await-in-loop
-        const modifiedResponse = await hook(response.clone())
-
+        // support silent in afterResponse hooks
+        // modified by Kk
+        const modifiedResponse = await hook(response.clone(), this._silent)
         if (modifiedResponse instanceof Response) {
           response = modifiedResponse
-          // support silent in afterResponse hooks
-          // modified by Kk
-          response.silent = this._silent
         }
       }
 

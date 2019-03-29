@@ -9,47 +9,40 @@
     </Button>
     <Modal
       :closable="false"
-      :mark-closable="false"
+      :mask-closable="false"
       title="批量上传文件"
       v-model="visible"
       @on-ok="onOk"
       @on-cancel="onCancel">
       <div>
         <!-- <MultipleUpload :list="list" :action="action" /> -->
-        <div class="relative">
-          <div class="absolute w-full h-full z-50 bg-grey-light opacity-25 cursor-not-allowed"></div>
-          <Upload
-            multiple
-            type="drag"
-            :show-upload-list="false"
-            :before-upload="beforeUpload"
-            :on-success="onSuccess"
-            :action="action">
-            <div style="padding: 20px 0">
-              <Icon type="ios-cloud-upload" size="52" style="color: #3399ff"></Icon>
-              <p>点击或将文件拖拽到这里上传</p>
-              <p class="text-grey">
-                支持扩展名：.xlsx .xls
-              </p>
-            </div>
-          </Upload>
-        </div>
-        <div class="overflow-y-auto" style="max-height: 400px">
-          <UploadList :files="files" />
-          <UploadList :files="toBeUploadList" />
+        <Upload
+          multiple
+          type="drag"
+          :show-upload-list="false"
+          :before-upload="beforeUpload"
+          :on-progress="onProgress"
+          :on-success="onSuccess"
+          :action="action">
+          <div style="padding: 20px 0">
+            <Icon type="ios-cloud-upload" size="52" style="color: #3399ff"></Icon>
+            <p>点击或将文件拖拽到这里上传</p>
+            <p class="text-grey">
+              支持扩展名：.xlsx .xls
+            </p>
+          </div>
+        </Upload>
+        <div class="ido-upload-list overflow-y-auto relative" v-if="files.length > 0">
+          <div class="ido-clear-btn absolute w-16 h-8 pin-r">
+            <a class="underline ido-link" href="javascript: void();" @click="clear">清空列表</a>
+          </div>
+          <div class="w-4/5">
+            <UploadList :files="files" @on-file-remove="onRemove" />
+          </div>
+          <!-- <UploadList :files="toBeUploadList" /> -->
         </div>
       </div>
       <div slot="footer">
-        <Button :disabled="toBeUploadList.length === 0" @click="upload">
-          上传
-        </Button>
-        <Button
-          :disabled="files.length === 0"
-          ghost
-          type="error"
-          @click="clear">
-          清空
-        </Button>
         <Button
           ghost
           type="primary"
@@ -75,6 +68,10 @@ export default {
     Modal,
     Icon,
     UploadList
+  },
+  model: {
+    prop: 'files',
+    event: 'file-change'
   },
   props: {
     display: {
@@ -125,15 +122,19 @@ export default {
       this.$emit('on-clear')
     },
     beforeUpload (file) {
-      this.toBeUploadList.push({
-        file,
-        name: file.name
-      })
-      console.log(this.toBeUploadList)
-      return false
+      // this.toBeUploadList.push({
+      //   file,
+      //   name: file.name
+      // })
+      // console.log(this.toBeUploadList)
+      // return false
+    },
+    onProgress (e, file, fileList) {
+      // this.files = fileList
+      this.$emit('file-change', fileList)
     },
     onRemove (file) {
-      console.log(file)
+      this.$emit('on-remove', file.name)
     },
     onSuccess (res, file, fileList) {
       console.log(res, file, fileList)
@@ -141,3 +142,11 @@ export default {
   }
 }
 </script>
+<style lang="less" scoped>
+.ido-upload-list {
+  max-height: 400px;
+}
+.ido-clear-btn {
+  top: 10px;
+}
+</style>

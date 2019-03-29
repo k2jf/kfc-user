@@ -108,9 +108,10 @@
             <FormItem label="马尔科夫矩阵：" prop="markov" class="w-9/10">
               <UploadButton
                 :action="markovAction"
-                :files="markovFiles"
                 :display="display"
+                v-model="markovFiles"
                 @multiple-upload="multipleUpload"
+                @on-remove="removeSigleFile"
                 @on-clear="removeMarkov" />
             </FormItem>
           </div>
@@ -319,7 +320,7 @@ export default {
   },
   computed: {
     display () {
-      return this.markovFiles.length > 0 ? '点击查看' : '文件上传'
+      return this.markovFiles.length > 0 ? '重新上传' : '上传文件'
     }
   },
   mounted () {
@@ -404,10 +405,21 @@ export default {
         const res = await this.$delete(`towerTasks/${this.$route.params.taskId}/inputFile?fileKey=markov`, { silent: true })
         if (res.code === 0) {
           this.markovFiles = []
-          Message.success('删除成功')
+          Message.success('清空成功')
         }
       } catch (error) {
-        Message.error('删除失败')
+        Message.error('清空失败')
+      }
+    },
+    async removeSigleFile (fileName) {
+      try {
+        const res = await this.$delete(`towerTasks/${this.$route.params.taskId}/inputFile?fileKey=markov&fileName=${fileName}`, { silent: true })
+        if (res.code === 0) {
+          console.log(this.markovFiles)
+          this.markovFiles = this.markovFiles.filter(m => m.name !== fileName)
+        }
+      } catch (error) {
+        Message.error('清空失败')
       }
     },
     viewTable () {

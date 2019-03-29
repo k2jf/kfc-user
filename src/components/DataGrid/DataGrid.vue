@@ -36,6 +36,7 @@ export default {
     const cDg = canvasDatagrid({
       parentNode: this.$refs[this.name],
       data: this.transformData(this.sheetdata),
+      editable: !['Ultimate', 'Buckling', 'Fatigue'].includes(this.name),
       allowSorting: false,
       allowFreezingColumns: true
     })

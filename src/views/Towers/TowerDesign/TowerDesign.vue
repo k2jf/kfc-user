@@ -35,17 +35,27 @@
         <Form
           :model="formValidate"
           :rules="ruleValidate"
-          :label-width="80"
+          :label-width="120"
           ref="formValidate">
-          <FormItem label="项目名称" prop="projectId">
+          <FormItem label="项目名称：" prop="projectId">
             <Select placeholder="请选择一个项目" v-model="formValidate.projectId">
               <Option :value="item.projectId + ''" v-for="item in projects" :key="item.id">
                 {{ item.projectName }}
               </Option>
             </Select>
           </FormItem>
-          <FormItem label="任务名称">
-            (接口返回xxxxxx)
+          <FormItem label="载荷数据来源：" prop="dataOrigin">
+            <Select placeholder="请选择载荷数据来源" v-model="formValidate.dataOrigin">
+              <Option value="0">
+                LCC载荷
+              </Option>
+              <Option value="1">
+                载荷门户
+              </Option>
+            </Select>
+          </FormItem>
+          <FormItem label="任务名称：">
+            <Input v-model="formValidate.taskName" />
           </FormItem>
         </Form>
       </Modal>
@@ -114,10 +124,15 @@ export default {
       loading: true,
       visible: false,
       formValidate: {
-        projectId: 0
+        projectId: 0,
+        dataOrigin: '',
+        taskName: '泰坦星塔架设计'
       },
       ruleValidate: {
         projectId: [
+          { required: true, trigger: 'change', message: '不能为空' }
+        ],
+        dataOrigin: [
           { required: true, trigger: 'change', message: '不能为空' }
         ]
       }
@@ -161,7 +176,8 @@ export default {
             const res = await this.$post('towerTasks', {
               json: {
                 projectId: this.formValidate.projectId,
-                taskName: 'kk的塔架设计'
+                isOnline: this.formValidate.dataOrigin === '1',
+                taskName: this.formValidate.taskName
               }
             })
             if (res.code === 0) {

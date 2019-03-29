@@ -61,6 +61,15 @@ export default {
       required: true
     }
   },
+  // data () {
+  //   return {
+  //     customLabel: h => {
+  //       return h('span', {
+  //         class:
+  //       })
+  //     }
+  //   }
+  // },
   computed: {
     tabs () {
       const tabs = []

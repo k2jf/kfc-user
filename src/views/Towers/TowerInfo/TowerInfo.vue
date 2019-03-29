@@ -6,32 +6,49 @@
         :rules="towerRuleValidate"
         :label-width="180"
         ref="towerFormValidate">
-        <Row>
-          <!-- First Row -->
-          <ICol span="12">
+        <div class="flex flex-wrap">
+          <!-- Section 1 Info and Payload Origin -->
+          <div class="w-1/2">
             <FormItem label="项目名称：" class="w-9/10">
               <span>{{ towerFormValidate.projectName }}</span>
             </FormItem>
-          </ICol>
-          <ICol span="12">
+          </div>
+          <div class="w-1/2">
             <FormItem label="任务名称：">
               <span>{{ towerFormValidate.taskName }}</span>
             </FormItem>
-          </ICol>
-          <!-- Second Row -->
-          <ICol span="12">
+          </div>
+          <div class="w-1/2">
             <FormItem label="载荷数据来源：" prop="dataOrigin" class="w-9/10">
-              <Select placeholder="请选择载荷数据来源" v-model="towerFormValidate.dataOrigin">
+              {{ towerFormValidate.dataOrigin }}
+              <!-- <Select disabled placeholder="请选择载荷数据来源" v-model="towerFormValidate.dataOrigin">
                 <Option value="0">
                   LCC载荷
                 </Option>
                 <Option value="1">
                   载荷门户
                 </Option>
-              </Select>
+              </Select> -->
             </FormItem>
-          </ICol>
-          <ICol span="12">
+          </div>
+          <div class="w-1/2" v-if="isOnline">
+            <FormItem label="仿真任务标号：" prop="simulationId" class="w-9/10">
+              <Input v-model="towerFormValidate.simulationId" />
+            </FormItem>
+          </div>
+          <div class="w-1/2" v-if="isOnline">
+            <FormItem label="极限后处理任务编号：" prop="limitBackTaskId" class="w-9/10">
+              <Input v-model="towerFormValidate.limitBackTaskId" />
+            </FormItem>
+          </div>
+          <div class="w-1/2" v-if="isOnline">
+            <FormItem label="疲劳后处理任务编号：" prop="fatigueBackTaskId" class="w-9/10">
+              <Input v-model="towerFormValidate.fatigueBackTaskId" />
+            </FormItem>
+          </div>
+          <Divider style="margin-top:0;" />
+          <!-- Section 2 Params Excel -->
+          <div class="w-1/2">
             <FormItem label="塔架设计参数表：" prop="towerDiameter" class="w-9/10">
               <Upload
                 class="float-left"
@@ -69,25 +86,25 @@
                   @on-cancel="onExcelCancel" />
               </div>
             </FormItem>
-          </ICol>
-          <!-- Third Row -->
-          <ICol span="12">
+          </div>
+          <div class="w-1/2">
             <FormItem label="塔架高度：" prop="towerHeight" class="w-9/10">
               <Input v-model="towerFormValidate.towerHeight" />
             </FormItem>
-          </ICol>
-          <ICol span="12">
+          </div>
+          <div class="w-1/2">
             <FormItem label="塔底直径（m）：" prop="towerDiameter" class="w-9/10">
               <Input v-model="towerFormValidate.towerDiameter" />
             </FormItem>
-          </ICol>
-          <!-- Fourth Row -->
-          <ICol span="12">
+          </div>
+          <div class="w-1/2">
             <FormItem label="塔底疲劳载荷Mxy(kNm)：" prop="fatiguePalyload" class="w-9/10">
               <Input v-model="towerFormValidate.fatiguePalyload" />
             </FormItem>
-          </ICol>
-          <ICol span="12">
+          </div>
+          <Divider style="margin-top:0;" />
+          <!-- Section 3 Markov -->
+          <div class="w-1/2">
             <FormItem label="马尔科夫矩阵：" prop="markov" class="w-9/10">
               <UploadButton
                 :action="markovAction"
@@ -96,40 +113,36 @@
                 @multiple-upload="multipleUpload"
                 @on-clear="removeMarkov" />
             </FormItem>
-          </ICol>
-        </Row>
-        <!-- Fifth Row -->
-        <Row>
-          <ICol span="12">
+          </div>
+          <div class="w-1/2">
             <FormItem label="塔底极限载荷Mxy(kNm)：" prop="limitPayload" class="w-9/10">
               <Input v-model="towerFormValidate.limitPayload" />
             </FormItem>
-          </ICol>
-          <ICol span="12">
+          </div>
+          <div class="w-1/2">
             <FormItem label="塔架段数：" prop="towerLegNum" class="w-9/10">
               <Input v-model="towerFormValidate.towerLegNum" />
             </FormItem>
-          </ICol>
-          <!-- Sixth Row -->
-          <ICol span="24">
+          </div>
+          <div class="w-1/2">
             <FormItem label="单工况：" prop="towerDiameter" class="w-9/10">
               <ISwitch v-model="towerFormValidate.switch">
                 <span slot="open">开</span>
                 <span slot="close">关</span>
               </ISwitch>
             </FormItem>
-          </ICol>
+          </div>
           <!-- Seventh Row -->
-          <ICol span="24">
+          <div class="w-full">
             <FormItem label="备注：" prop="comment" style="width: 95%;">
               <Input
                 type="textarea"
                 :autosize="{minRows: 2,maxRows: 5}"
                 v-model="towerFormValidate.comment"></Input>
             </FormItem>
-          </ICol>
+          </div>
           <!-- Btns -->
-          <ICol span="24">
+          <div class="w-full">
             <div class="buttons float-right" style="margin-right: 60px;">
               <Button style="background-color:#9561e2;border-color:#9561e2;" type="primary">
                 塔架校核
@@ -144,8 +157,10 @@
                 保存审核结果
               </Button>
             </div>
-          </ICol>
-        </Row>
+          </div>
+          <!-- </Row>
+        </div> -->
+        </div>
       </Form>
     </Fiche>
     <Fiche title="算法配置" class="mt-6">
@@ -217,7 +232,7 @@
   </div>
 </template>
 <script>
-import { Upload, Button, Row, Col, Input, Form, FormItem, Select, Table, Option, Switch, Icon, Message } from 'iview'
+import { Upload, Button, Row, Col, Input, Form, FormItem, Select, Table, Option, Switch, Icon, Message, Divider } from 'iview'
 import Fiche from '@/components/Fiche'
 import Excel from '@/components/Excel'
 import { UploadButton } from '@/components/MultipleUpload'
@@ -241,7 +256,8 @@ export default {
     Icon,
     Excel,
     UploadButton,
-    Table
+    Table,
+    Divider
   },
   data () {
     return {
@@ -252,6 +268,7 @@ export default {
       file: { name: '' },
       markovFiles: [],
       action: '',
+      isOnline: false,
       markovAction: '',
       originData: null,
       towerFormValidate: {
@@ -317,16 +334,17 @@ export default {
         const res = await this.$get('towerTasks/' + this.$route.params.taskId)
         const towerFormValidate = {
           projectName: res.body.projectName,
-          taskName: res.body.taskName
+          taskName: res.body.taskName,
           // towerHeight: 100,
           // towerDiameter: 0.5,
           // towerLegNum: 3,
-          // dataOrigin: '',
+          dataOrigin: res.body.isOnline ? '载荷门户' : 'LCC载荷'
           // fatiguePalyload: 0.5,
           // limitPayload: 0.5,
           // switch: true,
           // comment: ''
         }
+        this.isOnline = res.body.isOnline
         this.towerFormValidate = towerFormValidate
 
         if (res.body.fileInputs.length > 0) {
@@ -443,7 +461,7 @@ export default {
           headers: null,
           body: formData
         })
-        Message.success('马尔科夫文件上传成功')
+        if (res.code === 0) Message.success('马尔科夫文件上传成功')
       } catch (error) {
         Message.error('马尔科夫文件上传失败')
       }

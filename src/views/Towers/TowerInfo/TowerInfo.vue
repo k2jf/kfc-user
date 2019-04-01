@@ -33,17 +33,20 @@
           </div>
           <div class="w-1/2" v-if="isOnline">
             <FormItem label="仿真任务标号：" prop="simulationId" class="w-9/10">
-              <Input v-model="towerFormValidate.simulationId" />
+              <!-- <Input v-model="towerFormValidate.simulationId" /> -->
+              {{ towerFormValidate.simulationId }}
             </FormItem>
           </div>
           <div class="w-1/2" v-if="isOnline">
             <FormItem label="极限后处理任务编号：" prop="limitBackTaskId" class="w-9/10">
-              <Input v-model="towerFormValidate.limitBackTaskId" />
+              <!-- <Input v-model="towerFormValidate.limitBackTaskId" /> -->
+              {{ towerFormValidate.limitBackTaskId }}
             </FormItem>
           </div>
           <div class="w-1/2" v-if="isOnline">
             <FormItem label="疲劳后处理任务编号：" prop="fatigueBackTaskId" class="w-9/10">
-              <Input v-model="towerFormValidate.fatigueBackTaskId" />
+              <!-- <Input v-model="towerFormValidate.fatigueBackTaskId" /> -->
+              {{ towerFormValidate.fatigueBackTaskId }}
             </FormItem>
           </div>
           <Divider style="margin-top:0;" />
@@ -64,11 +67,13 @@
               </Upload>
               <div class="float-left ml-3 text-blue overflow-hidden h-8" v-if="file.name">
                 <span class="inline-block overflow-hidden"><Icon type="ios-link" />&ensp;</span>
-                <span
+                <a
+                  target="_blank"
+                  :href="href"
                   class="inline-block whitespace-no-wrap overflow-hidden"
                   style="text-overflow: ellipsis;max-width: 250px;">
                   {{ file.name }}
-                </span>
+                </a>
                 <span class="text-grey-darker overflow-hidden inline-block ml-4 cursor-pointer">
                   <Icon type="md-close" style="margin-top: -1px;" @click.native="removeFile" />
                 </span>
@@ -89,17 +94,23 @@
           </div>
           <div class="w-1/2">
             <FormItem label="塔架高度：" prop="towerHeight" class="w-9/10">
-              <Input v-model="towerFormValidate.towerHeight" />
+              <Input disabled v-model="towerFormValidate.towerHeight" />
             </FormItem>
           </div>
           <div class="w-1/2">
-            <FormItem label="塔底直径（m）：" prop="towerDiameter" class="w-9/10">
-              <Input v-model="towerFormValidate.towerDiameter" />
+            <FormItem
+              label="塔底直径（m）："
+              prop="towerDiameter"
+              class="w-9/10">
+              <Input disabled v-model="towerFormValidate.towerDiameter" />
             </FormItem>
           </div>
           <div class="w-1/2">
-            <FormItem label="塔底疲劳载荷Mxy(kNm)：" prop="fatiguePalyload" class="w-9/10">
-              <Input v-model="towerFormValidate.fatiguePalyload" />
+            <FormItem
+              label="塔底极限载荷Mxy(kNm)："
+              prop="limitPayload"
+              class="w-9/10">
+              <Input disabled v-model="towerFormValidate.limitPayload" />
             </FormItem>
           </div>
           <Divider style="margin-top:0;" />
@@ -116,8 +127,11 @@
             </FormItem>
           </div>
           <div class="w-1/2">
-            <FormItem label="塔底极限载荷Mxy(kNm)：" prop="limitPayload" class="w-9/10">
-              <Input v-model="towerFormValidate.limitPayload" />
+            <FormItem
+              label="塔底疲劳载荷Mxy(kNm)："
+              prop="fatiguePalyload"
+              class="w-9/10">
+              <Input disabled v-model="towerFormValidate.fatiguePalyload" />
             </FormItem>
           </div>
           <div class="w-1/2">
@@ -222,7 +236,7 @@
         </Row>
       </Form>
     </Fiche>
-    <div class="text-center mb-6">
+    <div class="text-center my-6">
       <Button type="primary">
         保存
       </Button>
@@ -272,12 +286,13 @@ export default {
       isOnline: false,
       markovAction: '',
       originData: null,
+      href: '',
       btnChecks: [0, 0, 0],
       towerFormValidate: {
         // projectName: 'xxx项目H1-2',
         // taskName: 'xxxxxx',
         // towerHeight: 100,
-        // towerDiameter: 0.5,
+        // towerDiameter: 0.5
         // towerLegNum: 3,
         // dataOrigin: '',
         // fatiguePalyload: 0.5,
@@ -337,44 +352,56 @@ export default {
         const towerFormValidate = {
           projectName: res.body.projectName,
           taskName: res.body.taskName,
-          // towerHeight: 100,
-          // towerDiameter: 0.5,
+          towerHeight: 100,
+          towerDiameter: 0.5,
           // towerLegNum: 3,
-          dataOrigin: res.body.isOnline ? '载荷门户' : 'LCC载荷'
+          dataOrigin: res.body.isOnline ? '载荷门户' : 'LCC载荷',
           // fatiguePalyload: 0.5,
-          // limitPayload: 0.5,
+          limitPayload: 0.5
           // switch: true,
           // comment: ''
         }
         this.isOnline = res.body.isOnline
         this.towerFormValidate = towerFormValidate
 
-        if (res.body.fileInputs.length > 0) {
-          const towerInput = res.body.fileInputs.find(f => f.fileKey === 'towerInput')
-          const markov = res.body.fileInputs.find(f => f.fileKey === 'markov')
-          if (towerInput) {
-            this.file = {
-              name: towerInput.fileNames[0]
-            }
-            this.getSingleExcel()
+        if (res.body.towerInput.length > 0) {
+          this.file = {
+            name: res.body.towerInput[0].fileName,
+            fileId: res.body.towerInput[0].fileId
           }
-          if (markov) {
-            this.markovFiles = markov.fileNames.map(f => ({ name: f }))
-          }
+          this.href = `${baseUrl}towerTasks/stream?fileId=${this.file.fileId}`
+          this.getSingleExcel()
         }
+
+        if (res.body.markov.length > 0) {
+
+        }
+
+        // if (res.body.fileInputs.length > 0) {
+        //   const towerInput = res.body.fileInputs.find(f => f.fileKey === 'towerInput')
+        //   const markov = res.body.fileInputs.find(f => f.fileKey === 'markov')
+        //   if (towerInput) {
+        //     this.file = {
+        //       name: towerInput.fileNames[0]
+        //     }
+        //     this.href = `${baseUrl}towerTasks/${this.$route.params.taskId}/stream?fileKey=towerInput`
+        //     this.getSingleExcel()
+        //   }
+        //   if (markov) {
+        //     this.markovFiles = markov.fileNames.map(f => ({ name: f }))
+        //   }
+        // }
       } catch (error) {
 
       }
     },
     // Get task design excel form server
     async getSingleExcel () {
-      const id = this.$route.params.taskId
       try {
-        const data = await this.$ky.get(`towerTasks/${id}/stream?fileKey=towerInput`).arrayBuffer()
+        const data = await this.$ky.get(`towerTasks/stream?fileId=${this.file.fileId}`).arrayBuffer()
         this.originData = data
         var workbook = XLSX.read(data, { type: 'array' })
         const sheets = {}
-        // console.log(workbook.Sheets)
         for (let wsname in workbook.Sheets) {
           const ws = workbook.Sheets[wsname]
           const data = XLSX.utils.sheet_to_json(ws, { header: 1 })
@@ -436,7 +463,12 @@ export default {
         headers: null,
         body: formdata
       })
+      console.log(res)
       if (res.code === 0) {
+        this.file = {
+          ...this.file,
+          fileId: res.body.fileId
+        }
         this.getSingleExcel()
       }
 
@@ -458,7 +490,11 @@ export default {
     },
     async onUploadSuccess (res, file, fileList) {
       Message.success('上传成功')
-      this.file = file
+      this.file = {
+        ...file,
+        fileId: res.body.fileId
+
+      }
       this.getSingleExcel()
     },
     onPreview (file) {

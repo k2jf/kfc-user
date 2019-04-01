@@ -47,7 +47,7 @@ export default new Router({
           path: 'new-tower-design/:taskId',
           name: 'new-tower-design',
           meta: {
-            breadName: '创建任务'
+            breadName: '编辑塔架任务'
           },
           component: () => import(/* webpackChunkName: "Towers" */ '@/views/Towers/TowerInfo')
         }
@@ -73,7 +73,7 @@ export default new Router({
           path: 'new-basic-design/:basicId',
           name: 'new-basic-design',
           meta: {
-            breadName: '创建任务'
+            breadName: '编辑基础任务'
           },
           component: () => import(/* webpackChunkName: "Basics" */ '@/views/Basics/BasicInfo')
         }

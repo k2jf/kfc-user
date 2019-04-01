@@ -1,3 +1,6 @@
+import { Tooltip } from 'iview'
+import D from 'dayjs'
+
 export default [
   {
     title: '任务名称',
@@ -21,7 +24,17 @@ export default [
   },
   {
     title: '创建时间',
-    key: 'createTime'
+    key: 'createTime',
+    render: (h, params) => {
+      return h('div', [
+        h(Tooltip, {
+          props: {
+            placement: 'top',
+            content: D(params.row.createTime).format('YYYY-MM-DD hh:mm:ss')
+          }
+        }, [D(params.row.createTime).format('YYYY-MM-DD')])
+      ])
+    }
   },
   {
     title: '备注',
@@ -30,6 +43,6 @@ export default [
   {
     title: '操作',
     slot: 'operation',
-    width: 200
+    width: 100
   }
 ]

@@ -1,7 +1,7 @@
 <template>
   <div class="tower-design h-full p-3">
     <div class="h-12">
-      <span>项目名称：</span>
+      <!-- <span>项目名称：</span>
       <Input
         style="width: 180px;margin-right: 20px;"
         placeholder="请输入项目名称"
@@ -21,8 +21,8 @@
         v-model="value" />
       <Button class="ml-3" type="primary">
         查询
-      </Button>
-      <Button class="ml-3" type="primary" @click="createNewTask">
+      </Button> -->
+      <Button type="primary" @click="createNewTask">
         新增任务
       </Button>
       <Modal
@@ -35,7 +35,7 @@
         <Form
           :model="formValidate"
           :rules="ruleValidate"
-          :label-width="120"
+          :label-width="140"
           ref="formValidate">
           <FormItem label="项目名称：" prop="projectId">
             <Select placeholder="请选择一个项目" v-model="formValidate.projectId">
@@ -45,7 +45,7 @@
             </Select>
           </FormItem>
           <FormItem label="载荷数据来源：" prop="dataOrigin">
-            <Select placeholder="请选择载荷数据来源" v-model="formValidate.dataOrigin">
+            <Select placeholder="请选择载荷数据来源" v-model="formValidate.dataOrigin" @on-change="onChange">
               <Option value="0">
                 LCC载荷
               </Option>
@@ -54,9 +54,17 @@
               </Option>
             </Select>
           </FormItem>
-          <FormItem label="任务名称：">
-            <Input v-model="formValidate.taskName" />
-          </FormItem>
+          <div v-if="isOnline">
+            <FormItem label="仿真任务标号：" prop="simulationId">
+              <Input v-model="formValidate.simulationId" />
+            </FormItem>
+            <FormItem label="极限后处理任务编号：" prop="limitBackTaskId">
+              <Input v-model="formValidate.limitBackTaskId" />
+            </FormItem>
+            <FormItem label="疲劳后处理任务编号：" prop="fatigueBackTaskId">
+              <Input v-model="formValidate.fatigueBackTaskId" />
+            </FormItem>
+          </div>
         </Form>
       </Modal>
     </div>
@@ -70,11 +78,10 @@
           :data="data">
           <template slot="operation" slot-scope="{ row }">
             <div class="text-grey">
-              <a href="javascript:;">提交</a> |
-              <a href="javascript:;" @click="viewTask(row)">查看</a> |
-              <a href="javascript:;">编辑</a> |
-              <a href="javascript:;">结果</a> |
-              <a href="javascript:;" @click="deleteTask(row)">删除</a>
+              <!-- <a href="javascript:;">提交</a> | -->
+              <a href="javascript:;" @click="viewTask(row)">编辑</a>
+              <!-- <a href="javascript:;">结果</a> | -->
+              <!-- <a href="javascript:;" @click="deleteTask(row)">删除</a> -->
             </div>
           </template>
         </Table>
@@ -97,6 +104,7 @@
 <script>
 import { Input, Button, Table, Page, Modal, Form, FormItem, Select, Option } from 'iview'
 import columns from './columnDef'
+import D from 'dayjs'
 
 export default {
   name: 'TowerDesign',
@@ -116,6 +124,7 @@ export default {
       value: '',
       columns,
       data: [],
+      isOnline: false,
       projects: [],
       pageInfo: {
         pageNum: 1,
@@ -125,8 +134,7 @@ export default {
       visible: false,
       formValidate: {
         projectId: 0,
-        dataOrigin: '',
-        taskName: '泰坦星塔架设计'
+        dataOrigin: ''
       },
       ruleValidate: {
         projectId: [
@@ -157,6 +165,9 @@ export default {
       this.pageInfo = Object.assign(this.pageInfo, { pageSize })
       this.getTaskList(this.pageInfo)
     },
+    onChange (value) {
+      this.isOnline = value === '1'
+    },
     async createNewTask () {
       const res = await this.$get('projects')
       this.projects = res.body.items
@@ -177,7 +188,7 @@ export default {
               json: {
                 projectId: this.formValidate.projectId,
                 isOnline: this.formValidate.dataOrigin === '1',
-                taskName: this.formValidate.taskName
+                taskName: '塔架设计' + D(new Date()).format('MDDhhmmsss')
               }
             })
             if (res.code === 0) {

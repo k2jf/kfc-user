@@ -1,6 +1,9 @@
 <template>
   <div class="ido-projects h-full">
-    <div class="h-16 p-3">
+    <div v-if="true">
+      项目列表
+    </div>
+    <div class="h-16 p-3" v-if="0">
       <RadioGroup type="button">
         <Radio :label="item.value" v-for="item in radioGroup" :key="item.id" />
       </RadioGroup>
@@ -14,7 +17,7 @@
         进入jira管理页面
       </a>
     </div>
-    <div class="h-calc-16 flex flex-wrap justify-between">
+    <div class="h-calc-16 flex flex-wrap justify-between" v-if="0">
       <div
         class="w-full sm:w-1/2 md:w-1/2 lg:w-1/3 xl:w-1/3 mb-4 p-3"
         v-for="item in projects"

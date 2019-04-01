@@ -111,6 +111,11 @@ export default {
       this.$nextTick(() => {
         window.dispatchEvent(new Event('resize'))
       })
+    },
+    editable (value) {
+      if (['Ultimate', 'Buckling', 'Fatigue'].includes(value)) {
+        return 'text-red-light'
+      }
     }
   }
 }

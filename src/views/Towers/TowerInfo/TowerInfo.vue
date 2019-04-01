@@ -272,6 +272,7 @@ export default {
       isOnline: false,
       markovAction: '',
       originData: null,
+      btnChecks: [0, 0, 0],
       towerFormValidate: {
         // projectName: 'xxx项目H1-2',
         // taskName: 'xxxxxx',

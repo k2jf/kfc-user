@@ -138,10 +138,39 @@ export default {
       this.$emit('on-remove', file.fileId)
     },
     onSuccess (res, file, fileList) {
-      this.files.push({
+      const existIndex = this.files.findIndex(file => file.fileId === res.body.fileId)
+      const newFile = {
         ...file,
         fileId: res.body.fileId
-      })
+      }
+      /**
+       * ivew upload.vue
+       *
+       * if (_file) {
+            _file.status = 'finished';
+            _file.response = res;
+
+            this.onSuccess(res, _file, this.fileList);
+            this.dispatch('FormItem', 'on-form-change', _file);
+
+            setTimeout(() => {
+              _file.showProgress = false;
+            }, 1000);
+          }
+
+       * Inside onSuccess callback, _file address has been changed,
+       * must manully implement the fade out of progress
+       */
+      setTimeout(() => {
+        newFile.showProgress = false
+      }, 1000)
+      if (existIndex > -1) {
+        this.file.splice(existIndex, 1, newFile)
+      } else {
+        this.files.push(newFile)
+      }
+      // Array.splice or Array.push could responsively change data,
+      // so there has no need to emit event.
       // this.$emit('file-change', fileList)
     },
     onError (err, file, fileList) {

@@ -37,11 +37,13 @@ export default {
     }
   },
   mounted () {
+    console.log(this.sheetdata)
     const width = this.gridStyle.width.slice(0, -2)
+    const isPayload = ['Ultimate', 'Buckling', 'Fatigue'].includes(this.name)
     const cDg = canvasDatagrid({
       parentNode: this.$refs[this.name],
       data: this.transformData(this.sheetdata),
-      editable: !['Ultimate', 'Buckling', 'Fatigue'].includes(this.name),
+      editable: !isPayload,
       allowSorting: false,
       allowFreezingColumns: true,
       allowColumnReordering: false,
@@ -62,7 +64,7 @@ export default {
     cDg.style.rowHeaderCellFont       = '12px sans-serif'
     cDg.style.columnHeaderCellFont    = '12px sans-serif'
 
-    if (['Ultimate', 'Buckling', 'Fatigue'].includes(this.name)) {
+    if (isPayload) {
       cDg.style.cellColor                            = '#555'
       cDg.style.cellHoverColor                       = '#555'
       cDg.style.activeCellColor                      = '#555'
@@ -95,14 +97,27 @@ export default {
     this.dataGrid.addEventListener('beforesortcolumn', this.preventDefault)
     this.dataGrid.addEventListener('contextmenu', this.preventDefault)
     this.dataGrid.addEventListener('beforeendedit', this.endedit)
+    if (this.name === 'Ultimate') {
+      // this.dataGrid.addEventListener('rendercell', this.rendertext)
+    }
   },
   beforeDestroy () {
     this.dataGrid.removeEventListener('beforesortcolumn', this.preventDefault)
     this.dataGrid.removeEventListener('contextmenu', this.preventDefault)
+    this.dataGrid.removeEventListener('beforeendedit', this.endedit)
+    if (this.name === 'Ultimate') {
+      // this.dataGrid.removeEventListener('rendercell', this.rendertext)
+    }
   },
   methods: {
     preventDefault (e) {
       e.preventDefault()
+    },
+    rendertext (e) {
+      // console.log(e)
+      // if (e.value === '') {
+      //   e.cell.width = 20
+      // }
     },
     endedit (e) {
       // Abort the edit, We self take over it!!!

@@ -3,7 +3,8 @@
     :closable="false"
     :mask-closable="false"
     :title="title"
-    width="860"
+    :width="size.width"
+    :styles="{ top: '40px'}"
     :value="visible"
     ok-text="保存"
     @on-ok="ok"
@@ -18,8 +19,9 @@
         :name="tab.label"
         v-for="tab in tabs"
         :key="tab.label">
-        <div class="tab-content-wrap" style="width: 826px;height: 400px;">
+        <div class="tab-content-wrap" :style="gridStyle">
           <DataGrid
+            :gridStyle="gridStyle"
             :name="tab.label"
             :sheetdata="tab.value"
             :ws="originSheets[tab.label]"
@@ -59,6 +61,10 @@ export default {
     originSheets: {
       type: Object,
       required: true
+    },
+    size: {
+      type: Object,
+      required: true
     }
   },
   // data () {
@@ -77,6 +83,12 @@ export default {
         tabs.push({ label: s, value: this.sheets[s] })
       })
       return tabs
+    },
+    gridStyle () {
+      return {
+        width: this.size.width - 34 + 'px',
+        height: this.size.height - 180 + 'px'
+      }
     }
   },
   watch: {

@@ -177,6 +177,7 @@ html, body {
 // 超链接波浪
 .ido-link {
   padding: 2px 0;
+  text-decoration: underline;
 
   &:hover {
   text-decoration: none;

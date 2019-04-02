@@ -23,6 +23,7 @@
           :before-upload="beforeUpload"
           :on-progress="onProgress"
           :on-success="onSuccess"
+          :on-error="onError"
           :action="action">
           <div style="padding: 20px 0">
             <Icon type="ios-cloud-upload" size="52" style="color: #3399ff"></Icon>
@@ -55,7 +56,7 @@
 </template>
 
 <script>
-import { Upload, Button, Modal, Icon } from 'iview'
+import { Upload, Button, Modal, Icon, Message } from 'iview'
 import UploadList from './UploadList'
 
 const isObject = value => value !== null && typeof value === 'object'
@@ -76,7 +77,7 @@ export default {
   props: {
     display: {
       type: String,
-      default: '点击上传'
+      default: '上传文件'
     },
     size: {
       type: String,
@@ -131,13 +132,25 @@ export default {
     },
     onProgress (e, file, fileList) {
       // this.files = fileList
-      this.$emit('file-change', fileList)
+
     },
     onRemove (file) {
-      this.$emit('on-remove', file.name)
+      this.$emit('on-remove', file.fileId)
     },
     onSuccess (res, file, fileList) {
-      console.log(res, file, fileList)
+      this.files.push({
+        ...file,
+        fileId: res.body.fileId
+      })
+      // this.$emit('file-change', fileList)
+    },
+    onError (err, file, fileList) {
+      console.error(err)
+      Message.error({
+        content: '上传失败：' + file.message,
+        duration: 3,
+        closable: true
+      })
     }
   }
 }

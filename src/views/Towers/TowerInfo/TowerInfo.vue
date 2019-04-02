@@ -58,7 +58,6 @@
                 style="height: 33px;"
                 :action="action"
                 :show-upload-list="false"
-                :on-preview="onPreview"
                 :on-error="onUploadError"
                 :on-success="onUploadSuccess">
                 <Button size="small" icon="ios-cloud-upload-outline">
@@ -75,7 +74,7 @@
                   {{ file.name }}
                 </a>
                 <span class="text-grey-darker overflow-hidden inline-block ml-4 cursor-pointer">
-                  <Icon type="md-close" style="margin-top: -1px;" @click.native="removeFile" />
+                  <Icon type="md-close" style="margin-top: -1px;" @click.native="removeTowerInput" />
                 </span>
                 <span
                   class="overflow-hidden inline-block ml-2 cursor-pointer font-bold"
@@ -84,6 +83,7 @@
                 </span>
                 <Excel
                   title="塔架设计参数表"
+                  :size="size"
                   :visible="visible"
                   :sheets="sheets"
                   :originSheets="originSheets"
@@ -119,11 +119,15 @@
             <FormItem label="马尔科夫矩阵：" prop="markov" class="w-9/10">
               <UploadButton
                 :action="markovAction"
-                :display="display"
                 v-model="markovFiles"
-                @multiple-upload="multipleUpload"
-                @on-remove="removeSigleFile"
-                @on-clear="removeMarkov" />
+                @on-remove="removeSigleMarkov"
+                @on-clear="clearMarkov" />
+              <span class="inline-block ml-3">
+                已上传
+                <!-- <a class="ido-link">&ensp;{{ markovFiles.length }}&ensp;</a> -->
+                <b>{{ markovFiles.length }}</b>
+                个文件
+              </span>
             </FormItem>
           </div>
           <div class="w-1/2">
@@ -136,7 +140,7 @@
           </div>
           <div class="w-1/2">
             <FormItem label="塔架段数：" prop="towerLegNum" class="w-9/10">
-              <Input v-model="towerFormValidate.towerLegNum" />
+              <Input disabled v-model="towerFormValidate.towerLegNum" />
             </FormItem>
           </div>
           <div class="w-1/2">
@@ -331,7 +335,8 @@ export default {
         limitPayload: [
           { required: true, message: '不能为空', trigger: 'none' }
         ]
-      }
+      },
+      size: {}
     }
   },
   computed: {
@@ -343,23 +348,29 @@ export default {
     this.action = `${baseUrl}towerTasks/${this.$route.params.taskId}/upload?fileKey=towerInput`
     this.markovAction = `${baseUrl}towerTasks/${this.$route.params.taskId}/upload?fileKey=markov`
     this.getTaskInfo()
+    const width = document.body.clientWidth
+    const height = document.body.clientHeight
+    this.size = {
+      width: width - 120,
+      height: height - 80
+    }
   },
   methods: {
-    // Task Infos
+    // Get task detail infos
     async getTaskInfo () {
       try {
         const res = await this.$get('towerTasks/' + this.$route.params.taskId)
         const towerFormValidate = {
           projectName: res.body.projectName,
           taskName: res.body.taskName,
-          towerHeight: 100,
-          towerDiameter: 0.5,
-          // towerLegNum: 3,
+          towerHeight: res.body.towerHeight,
+          towerDiameter: res.body.bottomDiameter,
+          towerLegNum: res.body.sectionNumber,
           dataOrigin: res.body.isOnline ? '载荷门户' : 'LCC载荷',
-          // fatiguePalyload: 0.5,
-          limitPayload: 0.5
+          fatiguePalyload: res.body.bottomFatigue,
+          limitPayload: res.body.bottomUltimate,
           // switch: true,
-          // comment: ''
+          comment: res.body.remark
         }
         this.isOnline = res.body.isOnline
         this.towerFormValidate = towerFormValidate
@@ -374,7 +385,10 @@ export default {
         }
 
         if (res.body.markov.length > 0) {
-
+          this.markovFiles = res.body.markov.map(f => ({
+            name: f.fileName,
+            fileId: f.fileId
+          }))
         }
 
         // if (res.body.fileInputs.length > 0) {
@@ -414,23 +428,25 @@ export default {
         console.log('see errors ======> ', error)
       }
     },
-    async removeFile () {
-      // delete server excel file
+    // remove tower input file
+    async removeTowerInput () {
       try {
-        const res = await this.$delete(`towerTasks/${this.$route.params.taskId}/inputFile?fileKey=towerInput`, { silent: true })
+        const res = await this.$delete(`towerTasks/file?fileId=${this.file.fileId}`, { silent: true })
         if (res.code === 0) {
           Message.success('删除成功')
           this.file = {}
           this.sheets = {}
           this.originSheets = {}
+          this.getTaskInfo()
         }
       } catch (error) {
         Message.error('删除失败')
       }
     },
-    async removeMarkov () {
+    // clear up all markov files
+    async clearMarkov () {
       try {
-        const res = await this.$delete(`towerTasks/${this.$route.params.taskId}/inputFile?fileKey=markov`, { silent: true })
+        const res = await this.$delete(`towerTasks/file/batch?taskId=${this.$route.params.taskId}&fileKey=markov`, { silent: true })
         if (res.code === 0) {
           this.markovFiles = []
           Message.success('清空成功')
@@ -439,12 +455,12 @@ export default {
         Message.error('清空失败')
       }
     },
-    async removeSigleFile (fileName) {
+    // remove single markov file when close btn triggered
+    async removeSigleMarkov (fileId) {
       try {
-        const res = await this.$delete(`towerTasks/${this.$route.params.taskId}/inputFile?fileKey=markov&fileName=${fileName}`, { silent: true })
+        const res = await this.$delete(`towerTasks/file?fileId=${fileId}`, { silent: true })
         if (res.code === 0) {
-          console.log(this.markovFiles)
-          this.markovFiles = this.markovFiles.filter(m => m.name !== fileName)
+          this.markovFiles = this.markovFiles.filter(m => m.fileId !== fileId)
         }
       } catch (error) {
         Message.error('清空失败')
@@ -453,27 +469,27 @@ export default {
     viewTable () {
       this.visible = true
     },
+    // excel saving
     async onExcelOk (wbout) {
       var formdata = new FormData()
       const data = new Blob([wbout], { type: 'application/octet-stream' })
-      console.log(data)
       formdata.append('file', data, this.file.name)
       const url = `towerTasks/${this.$route.params.taskId}/upload?fileKey=towerInput`
       const res = await this.$post(url, {
         headers: null,
         body: formdata
       })
-      console.log(res)
       if (res.code === 0) {
         this.file = {
           ...this.file,
           fileId: res.body.fileId
         }
-        this.getSingleExcel()
+        this.getTaskInfo()
       }
 
       this.visible = false
     },
+    // excel closing, remove all changes
     onExcelCancel () {
       this.visible = false
       const sheets = {}
@@ -486,35 +502,39 @@ export default {
     },
     onUploadError (err, file, fileList) {
       console.error(err)
-      Message.error('上传失败：' + file.message)
+      Message.error({
+        content: '上传失败：' + file.message,
+        duration: 3,
+        closable: true
+
+      })
     },
+    // tower input upload succeed
     async onUploadSuccess (res, file, fileList) {
       Message.success('上传成功')
       this.file = {
         ...file,
         fileId: res.body.fileId
-
       }
-      this.getSingleExcel()
-    },
-    onPreview (file) {
-
-    },
-    async multipleUpload (toBeUploadList) {
-      let formData = new FormData()
-      toBeUploadList.forEach(t => {
-        formData.append('files', t.file, t.name)
-      })
-      try {
-        const res = await this.$post(`towerTasks/${this.$route.params.taskId}/batchUpload?fileKey=markov`, {
-          headers: null,
-          body: formData
-        })
-        if (res.code === 0) Message.success('马尔科夫文件上传成功')
-      } catch (error) {
-        Message.error('马尔科夫文件上传失败')
-      }
+      this.getTaskInfo()
+      // this.getSingleExcel()
     }
+    // Markov 批量上传接口
+    // async multipleUpload (toBeUploadList) {
+    //   let formData = new FormData()
+    //   toBeUploadList.forEach(t => {
+    //     formData.append('files', t.file, t.name)
+    //   })
+    //   try {
+    //     const res = await this.$post(`towerTasks/${this.$route.params.taskId}/batchUpload?fileKey=markov`, {
+    //       headers: null,
+    //       body: formData
+    //     })
+    //     if (res.code === 0) Message.success('马尔科夫文件上传成功')
+    //   } catch (error) {
+    //     Message.error('马尔科夫文件上传失败')
+    //   }
+    // }
   }
 }
 </script>

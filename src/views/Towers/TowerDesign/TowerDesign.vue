@@ -189,6 +189,7 @@ export default {
                 projectId: this.formValidate.projectId,
                 isOnline: this.formValidate.dataOrigin === '1',
                 taskName: '塔架设计' + D(new Date()).format('MDDhhmmsss')
+
               }
             })
             if (res.code === 0) {

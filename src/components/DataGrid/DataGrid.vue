@@ -37,7 +37,6 @@ export default {
     }
   },
   mounted () {
-    console.log(this.sheetdata)
     const width = this.gridStyle.width.slice(0, -2)
     const isPayload = ['Ultimate', 'Buckling', 'Fatigue'].includes(this.name)
     const cDg = canvasDatagrid({

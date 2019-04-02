@@ -123,22 +123,22 @@ export default {
       this.$emit('on-clear')
     },
     beforeUpload (file) {
-      // this.toBeUploadList.push({
-      //   file,
-      //   name: file.name
-      // })
-      // console.log(this.toBeUploadList)
-      // return false
+      // const existIndex = this.files.findIndex(f => f.name === file.name)
+      // if (existIndex > -1) {
+      //   this.files.splice(existIndex, 1)
+      // }
     },
     onProgress (e, file, fileList) {
       // this.files = fileList
-
+      const existIndex = this.files.findIndex(f => f.name === file.name)
+      if (existIndex > -1) {
+        this.files.splice(existIndex, 1)
+      }
     },
     onRemove (file) {
       this.$emit('on-remove', file.fileId)
     },
     onSuccess (res, file, fileList) {
-      const existIndex = this.files.findIndex(file => file.fileId === res.body.fileId)
       const newFile = {
         ...file,
         fileId: res.body.fileId
@@ -164,11 +164,8 @@ export default {
       setTimeout(() => {
         newFile.showProgress = false
       }, 1000)
-      if (existIndex > -1) {
-        this.file.splice(existIndex, 1, newFile)
-      } else {
-        this.files.push(newFile)
-      }
+
+      this.files.push(newFile)
       // Array.splice or Array.push could responsively change data,
       // so there has no need to emit event.
       // this.$emit('file-change', fileList)

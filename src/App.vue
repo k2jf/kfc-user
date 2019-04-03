@@ -79,8 +79,8 @@ import BreadCrumb from '@/components/BreadCrumb'
 
 const navList = [
   // { id: 0, name: '项目管理', to: 'projects', icon: 'ios-folder' },
-  { id: 1, name: '载荷门户', link: 'http://internal-gw-zhy-loadportal-prod-front-474455559.cn-northwest-1.elb.amazonaws.com.cn/#/', icon: 'ios-search' },
-  { id: 2, name: '塔架设计', to: 'towers', icon: 'md-build' },
+  { id: 0, name: '载荷门户', link: 'http://internal-gw-zhy-loadportal-prod-front-474455559.cn-northwest-1.elb.amazonaws.com.cn/#/', icon: 'ios-search' },
+  { id: 1, name: '塔架设计', to: 'towers', icon: 'md-build' }
   // { id: 3, name: '基础设计', to: 'basics', icon: 'md-document' },
   // { id: 4, name: '数据分析', to: 'data-analytics', icon: 'md-analytics' },
   // { id: 5, name: '数据管理', to: 'data-management', icon: 'md-podium' },
@@ -113,7 +113,7 @@ export default {
       user: 'DEV',
       breadList: [],
       navList,
-      activeName: 0
+      activeName: 1
     }
   },
   computed: {
@@ -223,11 +223,11 @@ html, body {
   background-color: #40485a;
 
   img {
-    width: 30px;
+    width: 36px;
   }
 
   .text-logo {
-    width: 60px;
+    width: 80px;
     transition: width .2s ease;
   }
 }

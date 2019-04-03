@@ -214,7 +214,22 @@
                 border
                 stripe
                 :columns="columns"
-                :data="data"/>
+                :data="data">
+                <template slot="mode" slot-scope="{ row }">
+                  <Select v-model="row.mode">
+                    <Option value="continuous">
+                      连续
+                    </Option>
+                  </Select>
+                </template>
+                <template slot="config" slot-scope="{ row }">
+                  <div>
+                    min: &ensp;&ensp;<Input style="width:40px" v-model="row.config[0]" />&ensp;&ensp;
+                    max: &ensp;&ensp;<Input style="width:40px" v-model="row.config[1]" />&ensp;&ensp;
+                    step: &ensp;&ensp;<Input style="width:40px" v-model="row.config[2]" />&ensp;&ensp;
+                  </div>
+                </template>
+              </Table>
             </FormItem>
           </ICol>
         </Row>
@@ -246,7 +261,7 @@
       </Form>
     </Fiche>
     <div class="text-center my-6">
-      <Button type="primary">
+      <Button type="primary" @click="save">
         保存
       </Button>
       <Button class="ml-3">
@@ -267,7 +282,7 @@ import columns from './columnDef'
 const data = [{
   variableName: '壁厚',
   unit: 'mm',
-  hhh: 'continuous',
+  mode: 'continuous',
   config: [250, 260, 0.5]
 }]
 
@@ -523,6 +538,29 @@ export default {
       }
       this.getTaskInfo()
       // this.getSingleExcel()
+    },
+    async save () {
+      this.$refs.conditionFormValidate.validate(async valid => {
+        if (valid) {
+          try {
+            const res = await this.$put(`towerTasks/${this.$route.params.taskId}`, {
+              silent: true,
+              json: {
+                algConstraint: {
+                  SRF_BCKlimt: this.conditionFormValidate.SRF_BCKlimt,
+                  SRF_ULSlimt: this.conditionFormValidate.SRF_ULSlimt,
+                  SRF_FLSlimt: this.conditionFormValidate.SRF_FLSlimt
+                }
+              }
+            })
+            if (res.code === 0) {
+              Message.success('保存成功')
+            }
+          } catch (error) {
+            Message.error('网络问题，保存失败')
+          }
+        }
+      })
     }
     // Markov 批量上传接口
     // async multipleUpload (toBeUploadList) {

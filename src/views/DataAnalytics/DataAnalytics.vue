@@ -61,8 +61,6 @@ const data1 = [
   }
 ]
 
-
-
 export default {
   components: {
 

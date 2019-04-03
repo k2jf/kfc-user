@@ -11,7 +11,7 @@ export default new Router({
     {
       path: '/',
       name: 'index',
-      redirect: '/projects'
+      redirect: '/towers'
     },
     {
       path: '/projects',

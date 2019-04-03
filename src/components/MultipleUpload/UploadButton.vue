@@ -136,7 +136,7 @@ export default {
       }
     },
     onRemove (file) {
-      this.$emit('on-remove', file.fileId)
+      this.$emit('on-remove', file)
     },
     onSuccess (res, file, fileList) {
       const newFile = {

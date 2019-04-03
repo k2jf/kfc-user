@@ -4,6 +4,7 @@ import router from './router'
 import store from './store'
 import fetch from './libs/fetch'
 
+
 import './index.css'
 import 'iview/dist/styles/iview.css'
 import 'dayjs/locale/zh-cn'

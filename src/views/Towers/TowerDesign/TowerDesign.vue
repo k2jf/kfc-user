@@ -187,9 +187,7 @@ export default {
             const res = await this.$post('towerTasks', {
               json: {
                 projectId: this.formValidate.projectId,
-                isOnline: this.formValidate.dataOrigin === '1',
-                taskName: '塔架设计' + D(new Date()).format('MDDhhmmsss')
-
+                isOnline: this.formValidate.dataOrigin === '1'
               }
             })
             if (res.code === 0) {

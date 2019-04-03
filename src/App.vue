@@ -1,15 +1,20 @@
 <template>
-  <div class="layout" id="ido">
+  <div class="layout">
     <Layout>
       <Sider
         hide-trigger
         collapsible
+        :width="160"
         :collapsed-width="78"
         ref="side1"
         v-model="isCollapsed">
-        <h1 class="logo">
+        <h2 class="gw-logo">
+          <img :src="logo_1" alt="logo_1" />
+          <img :src="logo_2" alt="logo_2" class="text-logo" />
+        </h2>
+        <h1 class="logo-wrap">
           <img :src="logo" alt="logo" />
-          <img :src="IDO" class="ido-logo" alt="IDO" />
+          <img :src="IDO" alt="IDO" class="text-logo" />
         </h1>
         <Menu
           :active-name="activeName"
@@ -37,7 +42,7 @@
             @click.native="collapsedSider" />
           <span class="text-2xl">IDO 海上风机一体化设计平台</span>
           <aside class="float-right mr-6">
-            <Avatar :src="logo" />
+            <Avatar icon="ios-person"></Avatar>
             <Dropdown trigger="click" v-if="user" @on-click="onDropdownClick">
               <b class="px-4 text-base cursor-pointer">{{ user }} <Icon type="ios-arrow-down" /></b>
               <DropdownMenu slot="list">
@@ -55,7 +60,7 @@
           <div class="h-10 pl-5 pt-3">
             <BreadCrumb :breadList="breadList"></BreadCrumb>
           </div>
-          <main class="h-calc-10" style="min-width: 1100px">
+          <main class="h-calc-10" style="min-width: 1100px" id="ido-body">
             <router-view />
           </main>
         </Content>
@@ -68,16 +73,18 @@
 import { Layout, Sider, Menu, MenuItem, Header, Icon, Content, Avatar, Dropdown, DropdownMenu, DropdownItem } from 'iview'
 import logo from '@/assets/logo.png'
 import IDO from '@/assets/IDO.png'
+import logo_1 from '@/assets/gw_logo_1.png'
+import logo_2 from '@/assets/gw_logo_2.png'
 import BreadCrumb from '@/components/BreadCrumb'
 
 const navList = [
-  { id: 0, name: '项目管理', to: 'projects', icon: 'ios-folder' },
-  { id: 1, name: '载荷门户', link: 'http://internal-dev-loadportal-front-1393092945.cn-north-1.elb.amazonaws.com.cn', icon: 'ios-search' },
+  // { id: 0, name: '项目管理', to: 'projects', icon: 'ios-folder' },
+  { id: 1, name: '载荷门户', link: 'http://internal-gw-zhy-loadportal-prod-front-474455559.cn-northwest-1.elb.amazonaws.com.cn/#/', icon: 'ios-search' },
   { id: 2, name: '塔架设计', to: 'towers', icon: 'md-build' },
-  { id: 3, name: '基础设计', to: 'basics', icon: 'md-document' },
-  { id: 4, name: '数据分析', to: 'data-analytics', icon: 'md-analytics' },
-  { id: 5, name: '数据管理', to: 'data-management', icon: 'md-podium' },
-  { id: 6, name: '用户管理', to: 'users', icon: 'md-contact' }
+  // { id: 3, name: '基础设计', to: 'basics', icon: 'md-document' },
+  // { id: 4, name: '数据分析', to: 'data-analytics', icon: 'md-analytics' },
+  // { id: 5, name: '数据管理', to: 'data-management', icon: 'md-podium' },
+  // { id: 6, name: '用户管理', to: 'users', icon: 'md-contact' }
 ]
 
 export default {
@@ -101,7 +108,9 @@ export default {
       isCollapsed: false,
       logo: logo,
       IDO: IDO,
-      user: 'Dev',
+      logo_1,
+      logo_2,
+      user: 'DEV',
       breadList: [],
       navList,
       activeName: 0
@@ -124,7 +133,6 @@ export default {
   },
   watch: {
     $route (next) {
-      // console.log(next)
       const matched = next.matched.filter(m => !m.meta.ignore)
       const breadList = [{ name: 'IDO', to: '/' }]
       matched.forEach((m, i) => {
@@ -139,7 +147,7 @@ export default {
   },
   mounted () {
     this.updateActiveName()
-    this.$refs.side1.toggleCollapse()
+    // this.$refs.side1.toggleCollapse()
   },
   methods: {
     collapsedSider () {
@@ -195,6 +203,7 @@ html, body {
   background-position: -20px 100%;
   }
 }
+// override of iview.css
 @import './override.less';
 </style>
 <style scoped lang="less">
@@ -203,21 +212,28 @@ html, body {
   overflow: hidden;
   height: 100%;
 }
-.logo {
+.logo-wrap {
+  display: none;
+}
+.gw-logo {
+  display: block;
   height: 60px;
-  // background: #5b6270;
   text-align: center;
-  padding-top: 10px;
+  padding-top: 16px;
+  background-color: #40485a;
 
   img {
     width: 30px;
   }
 
-  .ido-logo {
-    width: 90px;
+  .text-logo {
+    width: 60px;
     transition: width .2s ease;
   }
-
+}
+.ivu-layout-sider-collapsed .gw-logo .text-logo{
+  transition: width .2s ease;
+  width: 0;
 }
 .layout-header-bar{
     background: #fff;
@@ -261,9 +277,5 @@ html, body {
     transition: font-size .2s ease .2s, transform .2s ease .2s;
     vertical-align: middle;
     font-size: 22px;
-}
-.ivu-layout-sider-collapsed .ido-logo{
-  transition: width .2s ease;
-  width: 0px;
 }
 </style>

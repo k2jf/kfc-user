@@ -51,8 +51,8 @@
           </div>
           <Divider style="margin-top:0;" />
           <!-- Section 2 Params Excel -->
-          <div class="w-1/2">
-            <FormItem label="塔架设计参数表：" prop="towerDiameter" class="w-9/10">
+          <div class="w-full">
+            <FormItem label="塔架设计参数表：" prop="towerInput" class="w-9/10">
               <Upload
                 class="float-left"
                 style="height: 33px;"
@@ -106,6 +106,11 @@
             </FormItem>
           </div>
           <div class="w-1/2">
+            <FormItem label="塔架段数：" prop="towerLegNum" class="w-9/10">
+              <Input disabled v-model="towerFormValidate.towerLegNum" />
+            </FormItem>
+          </div>
+          <div class="w-1/2">
             <FormItem
               label="塔底极限载荷Mxy(kNm)："
               prop="limitPayload"
@@ -136,11 +141,6 @@
               prop="fatiguePalyload"
               class="w-9/10">
               <Input disabled v-model="towerFormValidate.fatiguePalyload" />
-            </FormItem>
-          </div>
-          <div class="w-1/2">
-            <FormItem label="塔架段数：" prop="towerLegNum" class="w-9/10">
-              <Input disabled v-model="towerFormValidate.towerLegNum" />
             </FormItem>
           </div>
           <div class="w-1/2">
@@ -192,24 +192,29 @@
           <ICol span="12">
             <FormItem label="寻优算法" prop="betterAlgorithm" class="w-9/10">
               <Select placeholder="请选择寻优算法" v-model="algorithmFormValidate.betterAlgorithm">
-                <Option value="beijing">
-                  算法一
+                <Option value="default-algorithm">
+                  默认算法
                 </Option>
               </Select>
             </FormItem>
           </ICol>
           <ICol span="12">
             <FormItem label="迭代参数" prop="iterationParams" class="w-9/10">
-              <Select placeholder="请选择迭代参数" v-model="algorithmFormValidate.iterationParams">
-                <Option value="beijing">
-                  迭代参数一
+              <Select placeholder="请选择迭代参数" multiple v-model="algorithmFormValidate.iterationParams">
+                <Option value="thickness">
+                  壁厚
                 </Option>
               </Select>
             </FormItem>
           </ICol>
           <ICol span="24">
             <FormItem label="迭代参数" prop="iterationParams" class="w-9/10">
-              <Table />
+              <Table
+                disabled-hover
+                border
+                stripe
+                :columns="columns"
+                :data="data"/>
             </FormItem>
           </ICol>
         </Row>
@@ -257,6 +262,14 @@ import Excel from '@/components/Excel'
 import { UploadButton } from '@/components/MultipleUpload'
 import XLSX from 'xlsx'
 import { baseUrl, sheetJSFT } from '@/config'
+import columns from './columnDef'
+
+const data = [{
+  variableName: '壁厚',
+  unit: 'mm',
+  hhh: 'continuous',
+  config: [250, 260, 0.5]
+}]
 
 export default {
   name: 'TowerInfo',
@@ -291,6 +304,8 @@ export default {
       markovAction: '',
       originData: null,
       href: '',
+      columns,
+      data,
       btnChecks: [0, 0, 0],
       towerFormValidate: {
         // projectName: 'xxx项目H1-2',
@@ -305,7 +320,8 @@ export default {
         // comment: ''
       },
       algorithmFormValidate: {
-
+        betterAlgorithm: 'default-algorithm',
+        iterationParams: ['thickness']
       },
       conditionFormValidate: {
 
@@ -317,22 +333,10 @@ export default {
 
       },
       towerRuleValidate: {
-        dataOrigin: [
+        towerInput: [
           { required: true, message: '不能为空', trigger: 'none' }
         ],
-        towerHeight: [
-          { required: true, message: '不能为空', trigger: 'none' }
-        ],
-        towerDiameter: [
-          { required: true, message: '不能为空', trigger: 'none' }
-        ],
-        towerLegNum: [
-          { required: true, message: '不能为空', trigger: 'none' }
-        ],
-        fatiguePalyload: [
-          { required: true, message: '不能为空', trigger: 'none' }
-        ],
-        limitPayload: [
+        markov: [
           { required: true, message: '不能为空', trigger: 'none' }
         ]
       },
@@ -456,14 +460,15 @@ export default {
       }
     },
     // remove single markov file when close btn triggered
-    async removeSigleMarkov (fileId) {
+    async removeSigleMarkov (file) {
       try {
-        const res = await this.$delete(`towerTasks/file?fileId=${fileId}`, { silent: true })
+        const res = await this.$delete(`towerTasks/file?fileId=${file.fileId}`, { silent: true })
         if (res.code === 0) {
-          this.markovFiles = this.markovFiles.filter(m => m.fileId !== fileId)
+          Message.success('已删除：' + file.name)
+          this.markovFiles = this.markovFiles.filter(m => m.fileId !== file.fileId)
         }
       } catch (error) {
-        Message.error('清空失败')
+        Message.error('删除失败')
       }
     },
     viewTable () {

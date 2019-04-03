@@ -60,6 +60,9 @@ const data1 = [
     date: '2016-10-04'
   }
 ]
+
+
+
 export default {
   components: {
 

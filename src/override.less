@@ -1,3 +1,4 @@
+// #ido ===> changes of layout styles
 #ido .ivu-layout-sider {
   background: url('./assets/ocean.jpg') no-repeat;
   background-size: cover;
@@ -16,8 +17,32 @@
 #ido .ivu-menu-item a {
   color: inherit;
 }
+#ido .logo-wrap {
+  display: block;
+  height: 60px;
+  color: #eee;
+  text-align: center;
+  padding-top: 16px;
 
-// table 为空时，不显示滚动条
-#ido .ivu-table-tip {
+  img {
+    width: 24px;
+  }
+
+  .text-logo {
+    width: 64px;
+    transition: width .2s ease;
+  }
+}
+#ido .ivu-layout-sider-collapsed .logo-wrap .text-logo{
+  transition: width .2s ease;
+  width: 0px;
+}
+#ido .gw-logo {
+  display: none;
+}
+
+// #ido-body ===> changes of pages styles
+// if table is blank, don't show scroll bar
+#ido-body .ivu-table-tip {
   overflow-x: hidden;
 }

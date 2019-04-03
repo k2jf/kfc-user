@@ -1,65 +1,65 @@
 <template>
-  <i-modal
+  <Modal
     title="创建用户"
     :loading="isModalLoading"
     v-model="isShowModal"
     @on-ok="onOkClick"
     @on-cancel="onCancelClick">
-    <i-form
+    <Form
       :model="formModel"
       :rules="formRules"
       :label-width="80"
       ref="formRef">
-      <i-form-item prop="username" label="用户名">
-        <i-input
+      <FormItem prop="username" label="用户名">
+        <Input
           placeholder="请输入用户名"
           v-model="formModel.username" />
-      </i-form-item>
-      <i-form-item prop="email" label="邮箱">
-        <i-input placeholder="请输入邮箱" v-model="formModel.email" />
-      </i-form-item>
-      <i-form-item
+      </FormItem>
+      <FormItem prop="email" label="邮箱">
+        <Input placeholder="请输入邮箱" v-model="formModel.email" />
+      </FormItem>
+      <FormItem
         prop="password"
         label="密码">
-        <i-input
+        <Input
           type="password"
           placeholder="请输入密码"
           v-model="formModel.password" />
-      </i-form-item>
-      <i-form-item
+      </FormItem>
+      <FormItem
         prop="confirmPassword"
         label="确认密码">
-        <i-input
+        <Input
           type="password"
           placeholder="请输入确认密码"
           v-model="formModel.confirmPassword" />
-      </i-form-item>
-      <i-form-item prop="roles" label="角色">
-        <i-select
+      </FormItem>
+      <FormItem prop="roles" label="角色">
+        <Select
           multiple
           v-model="formModel.roles">
-          <i-option
+          <Option
             :value="opt.id"
             v-for="opt in roleOpts"
             :key="opt.id">
             {{ opt.name }}
-          </i-option>
-        </i-select>
-      </i-form-item>
-      <i-form-item prop="roles" label="用户组">
-        <i-select
+          </Option>
+        </Select>
+      </FormItem>
+      <FormItem prop="roles" label="用户组">
+        <Select
           multiple
           v-model="formModel.groups">
-          <i-option
+          <Option
             :value="opt.id"
             v-for="opt in groupOpts"
             :key="opt.id">
             {{ opt.name }}
-          </i-option>
-        </i-select>
-      </i-form-item>
-    </i-form>
-  </i-modal>
+          </Option>
+        </Select>
+      </FormItem>
+    </Form>
+  </Modal>
 </template>
 
 <script>
@@ -68,12 +68,12 @@ import { Modal, Form, FormItem, Input, Select, Option } from 'iview'
 export default {
   name: 'UserEdit',
   components: {
-    'i-modal': Modal,
-    'i-form': Form,
-    'i-form-item': FormItem,
-    'i-input': Input,
-    'i-select': Select,
-    'i-option': Option
+    Modal,
+    Form,
+    FormItem,
+    Input,
+    Select,
+    Option
   },
   props: {
     isShowUserModal: {

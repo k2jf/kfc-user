@@ -89,6 +89,11 @@ export default {
       default: () => {
         return []
       }
+    },
+    appResTypeId: {
+      type: String,
+      required: false,
+      default: ''
     }
   },
   data () {
@@ -98,7 +103,7 @@ export default {
       operationNames: [], // 选中操作
       resourceData: {
         subjectType: 'role',
-        appResTypeId: '',
+        appResTypeId: this.appResTypeId,
         data: [],
         selectKeys: [],
         titles: ['未选权限', '已选权限']
@@ -127,7 +132,18 @@ export default {
         this.resourceData.appResTypeId = ''
         this.resourceData.data.splice(0, this.resourceData.data.length)
       }
+    },
+    appResTypeId: {
+      handler (curVal, oldVal) {
+        this.resourceData.appResTypeId = curVal
+        this.getResourceData()
+      }
     }
+  },
+  mounted () {
+    this.$nextTick(() => {
+      this.getResourceData()
+    })
   },
   methods: {
     // 新建权限

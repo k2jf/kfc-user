@@ -75,7 +75,7 @@ export default {
       let groups = []
       this.group.selectKeys.forEach(item => {
         groups.push({
-          name: item.name
+          name: item
         })
       })
       this.$emit('on-close')
@@ -91,7 +91,7 @@ export default {
       this.$axios.get(`${api.groups}?type=all`).then(res => {
         this.group.data = res.data.result.map(item => {
           return {
-            key: item.id,
+            key: item.name,
             label: item.name
           }
         })

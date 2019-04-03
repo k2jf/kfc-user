@@ -24,6 +24,11 @@
 .tab-pane {
   padding: 0 20px 10px;
 }
+.auth-detail {
+  padding: 10px;
+  max-height: calc(100vh - 320px);
+  overflow: auto;
+}
 .left-list-pane .ivu-cell-label {
   font-size: 14px !important;
   line-height: 36px;
@@ -55,36 +60,3 @@
 .ivu-page-options-sizer {
   margin-right: 0;
 }
-
-/* .container-split{
-  height: 100%;
-  border: 1px solid #dcdee2;
-  background: #fff;
-}
-.detail-pane {
-  padding: 10px;
-}
-.c-pointer {
-  cursor: pointer;
-}
-.left-pane {
-  height: calc(100vh - 180px);
-}
-.ivu-tabs-nav-container {
-  padding: 10px;
-}
-.tab-pane {
-  padding: 0 20px 10px;
-}
-.ivu-row {
-  line-height: 32px;
-}
-.margin-bottom {
-  margin-bottom: 10px;
-}
-.page-container {
-  float: right;
-}
-.ivu-page-options-sizer {
-  margin-right: 0;
-} */

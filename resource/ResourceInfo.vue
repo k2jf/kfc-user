@@ -2,12 +2,14 @@
 <template>
   <div style="height: 100%;">
     <Row :gutter="16" class="margin-bottom">
-      <Col span="6">资源类型管理</Col>
-      <Col span="7">
+      <Col span="16">
+      资源类型:
       <Select
         :transfer="true"
+        style="max-width:200px;margin-left:10px;"
         v-model="resourceData.appResTypeId"
-        @on-change="onTypeChange">
+        @on-change="onTypeChange"
+      >
         <template v-for="item in resourceTypeList">
           <Option
             :value="item.appResTypeId"
@@ -16,14 +18,29 @@
           </Option>
         </template>
       </Select>
+      <Button
+        type="primary"
+        style="margin-left: 10px"
+        @click="isShowAuthModal = true"
+      >
+        添加权限
+      </Button>
       </Col>
-      <Col span="11">
+      <Col span="8">
       <Input
         placeholder="搜索资源个例id"
         v-model="resourceData.appResInfoId"
         @on-blur="onSearchClick"></Input>
       </Col>
     </Row>
+    <ResourceEdit
+      :currentRole="currentRole"
+      :resourceTypeList="resourceTypeList"
+      :isShowAuthModal="isShowAuthModal"
+      :appResTypeId="resourceData.appResTypeId"
+      v-if="currentRole"
+      @on-submit="getPermission"
+      @on-close="isShowAuthModal = false" />
     <Table
       :columns="resourceData.columns"
       :data="resourceData.data"
@@ -39,7 +56,8 @@
 </template>
 <script>
 // eslint-disable-next-line
-import { Col, Row, Input, Select, Option, Table, Page, Icon } from 'iview'
+import { Col, Row, Input, Select, Option, Table, Page, Icon, Button } from 'iview'
+import ResourceEdit from './ResourceEdit.vue'
 
 import { api } from '../api'
 
@@ -52,25 +70,12 @@ export default {
     Select,
     Option,
     Table,
-    Page
+    Page,
+    Button,
+    ResourceEdit
   },
   props: {
     currentRole: {
-      type: Object,
-      required: false,
-      default: () => {
-        return {}
-      }
-    },
-    resourceTypeList: {
-      type: Array,
-      required: true,
-      default: () => {
-        return []
-      }
-    },
-    // 新增权限
-    permission: {
       type: Object,
       required: false,
       default: () => {
@@ -80,6 +85,8 @@ export default {
   },
   data () {
     return {
+      isShowAuthModal: false,
+      resourceTypeList: [],
       resourceData: {
         page: 1,
         size: 10,
@@ -142,15 +149,13 @@ export default {
           this.getResourceData()
         }
       }
-    },
-    permission: {
-      handler (curVal, oldVal) {
-        if (curVal && curVal.appResTypeId === this.resourceData.appResTypeId) {
-          // 新增权限类型为当前列表显示类型刷新页面
-          this.getResourceData()
-        }
-      }
     }
+  },
+  mounted () {
+    // 获取资源类型列表
+    this.$axios.get(`${api.resourceTypes}?type=all`).then(res => {
+      this.resourceTypeList = res.data.result
+    })
   },
   methods: {
     // 搜索资源
@@ -182,6 +187,13 @@ export default {
     // 资源类型改变
     onTypeChange () {
       this.getResourceData()
+    },
+    getPermission (permission) {
+      this.isShowAuthModal = false
+      if (permission && permission.appResTypeId === this.resourceData.appResTypeId) {
+        // 新增权限类型为当前列表显示类型刷新页面
+        this.getResourceData()
+      }
     },
     // 切换页数
     onPageChange (page) {

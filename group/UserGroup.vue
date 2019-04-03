@@ -1,6 +1,28 @@
 <!-- 用户组列表 -->
 <template>
   <div class="group-container" ref="groupContainer">
+    <Row :gutter="16" class="margin-bottom">
+      <Col span="14">
+      <Button
+        type="primary"
+        @click="isShowGroupModal = true"
+      >
+        添加已有用户组
+      </Button>
+      </Col>
+      <Col span="10">
+      <Input
+        placeholder="搜索用户组"
+        v-model="group.filterName"
+        @on-change="onSearchClick"></Input>
+      </Col>
+    </Row>
+    <UserGroupEdit
+      :currentUser="currentUser"
+      :isShowGroupModal="isShowGroupModal"
+      v-if="currentUser"
+      @on-submit="reloadGroupList"
+      @on-close="isShowGroupModal = false" />
     <Table
       :columns="group.columns"
       :data="group.data"
@@ -13,14 +35,20 @@
 
 <script>
 // eslint-disable-next-line
-import { Table, Icon } from 'iview'
+import { Table, Icon, Row, Col, Button, Input } from 'iview'
+import UserGroupEdit from './UserGroupEdit.vue'
 
 import { api } from '../api'
 
 export default {
   name: 'UserGroup',
   components: {
-    Table
+    Table,
+    Row,
+    Col,
+    Button,
+    Input,
+    UserGroupEdit
   },
   props: {
     currentUser: {
@@ -29,16 +57,14 @@ export default {
       default: () => {
         return {}
       }
-    },
-    isReloadGroupList: {
-      type: Boolean,
-      required: false
     }
   },
   data () {
     return {
       tableHeight: 400,
+      isShowGroupModal: false,
       group: {
+        filterName: '',
         loading: false,
         data: [],
         columns: [
@@ -89,14 +115,6 @@ export default {
           this.getGroupList()
         }
       }
-    },
-    isReloadGroupList: {
-      handler (curVal, oldVal) {
-        if (this.currentUser) {
-          // 添加用户组后刷新用户组列表页面
-          this.getGroupList()
-        }
-      }
     }
   },
   mounted () {
@@ -105,7 +123,7 @@ export default {
     }
     this.$nextTick(() => {
       let cur = this.$refs.groupContainer
-      this.tableHeight = cur.clientHeight
+      this.tableHeight = cur.clientHeight - 43
     })
   },
   methods: {
@@ -119,10 +137,32 @@ export default {
     getGroupList () {
       this.group.loading = true
 
-      this.$axios.get(`${api.groups}/?type=all`).then(res => {
+      let url = `${api.groups}/?type=all`
+
+      if (this.group.filterName) {
+        url += `&groupname=${this.group.filterName}`
+      }
+
+      this.$axios.get(url).then(res => {
         this.group.data = res.data.result
+        if (this.tableHeight > res.data.result.length * 40 + 32) {
+          this.tableHeight = res.data.result.length * 40 + 32
+        } else {
+          let cur = this.$refs.groupContainer
+          this.tableHeight = cur.clientHeight - 43
+        }
         this.group.loading = false
       })
+    },
+    onSearchClick () {
+      this.getGroupList()
+    },
+    reloadGroupList () {
+      this.isShowGroupModal = false
+      if (this.currentUser) {
+        // 添加用户组后刷新用户组列表页面
+        this.getGroupList()
+      }
     }
   }
 }
@@ -131,7 +171,7 @@ export default {
 <style lang="css" scoped>
 .group-container {
   position: relative;
-  height: calc(100vh - 204px);
+  height: calc(100vh - 206px);
   border-radius: 4px;
 }
 </style>

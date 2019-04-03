@@ -22,7 +22,7 @@
       :userList="userList"
       :currentUser="currentUser"
       @on-select="onChangeUser"
-      @on-delete="onDeleteGroup" />
+      @on-delete="onDeleteUser" />
   </div>
 </template>
 
@@ -78,8 +78,8 @@ export default {
       this.$emit('on-user-change', this.currentUser)
     },
     // 删除用户
-    onDeleteGroup (id) {
-      this.$axios.delete(`${api.groups}/${id}`).then(res => {
+    onDeleteUser (id) {
+      this.$axios.delete(`${api.users}/${id}`).then(res => {
         // 删除的用户为当前选中用户当前选中用户设置为null
         if (this.currentUser.id === id) {
           this.currentUser = null

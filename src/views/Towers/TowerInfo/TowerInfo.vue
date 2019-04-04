@@ -227,7 +227,7 @@
                 </Option>
               </Select>
             </template>
-            <template slot="config" scope="{ row }">
+            <template slot="config" slot-scope="{ row }">
               <div>
                 min: &ensp;&ensp;<Input style="width:40px" :value="row.config.algconfMin" @on-blur="inputChange($event, 'algconfMin')" />&ensp;&ensp;
                 max: &ensp;&ensp;<Input style="width:40px" :value="row.config.algconfMax" @on-blur="inputChange($event, 'algconfMax')" />&ensp;&ensp;

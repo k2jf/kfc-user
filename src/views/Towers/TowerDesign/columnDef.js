@@ -4,7 +4,8 @@ import D from 'dayjs'
 export default [
   {
     title: '任务名称',
-    key: 'taskName'
+    key: 'taskName',
+    width: 240
   },
   {
     title: '项目名称',

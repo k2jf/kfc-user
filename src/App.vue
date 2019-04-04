@@ -9,8 +9,8 @@
         ref="side1"
         v-model="isCollapsed">
         <h2 class="gw-logo">
-          <img :src="logo_1" alt="logo_1" />
-          <img :src="logo_2" alt="logo_2" class="text-logo" />
+          <img :src="logo1" alt="logo1" />
+          <img :src="logo2" alt="logo2" class="text-logo" />
         </h2>
         <h1 class="logo-wrap">
           <img :src="logo" alt="logo" />
@@ -73,8 +73,8 @@
 import { Layout, Sider, Menu, MenuItem, Header, Icon, Content, Avatar, Dropdown, DropdownMenu, DropdownItem } from 'iview'
 import logo from '@/assets/logo.png'
 import IDO from '@/assets/IDO.png'
-import logo_1 from '@/assets/gw_logo_1.png'
-import logo_2 from '@/assets/gw_logo_2.png'
+import logo1 from '@/assets/gw_logo_1.png'
+import logo2 from '@/assets/gw_logo_2.png'
 import BreadCrumb from '@/components/BreadCrumb'
 
 const navList = [
@@ -108,8 +108,8 @@ export default {
       isCollapsed: false,
       logo: logo,
       IDO: IDO,
-      logo_1,
-      logo_2,
+      logo1,
+      logo2,
       user: 'DEV',
       breadList: [],
       navList,
@@ -142,7 +142,7 @@ export default {
         })
       })
       this.breadList = breadList
-      this.activeName = navList.findIndex(n => n.to === next.name)
+      this.activeName = navList.findIndex(n => next.fullPath.includes(n.to))
     }
   },
   mounted () {

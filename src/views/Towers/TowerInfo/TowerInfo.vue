@@ -207,33 +207,36 @@
               </Select>
             </FormItem>
           </ICol>
-          <ICol span="24">
-            <FormItem label="迭代参数" prop="iterationParams" class="w-9/10">
-              <Table
-                disabled-hover
-                border
-                stripe
-                :columns="columns"
-                :data="data">
-                <template slot="mode" slot-scope="{ row }">
-                  <Select v-model="row.mode">
-                    <Option value="continuous">
-                      连续
-                    </Option>
-                  </Select>
-                </template>
-                <template slot="config" slot-scope="{ row }">
-                  <div>
-                    min: &ensp;&ensp;<Input style="width:40px" v-model="row.config[0]" />&ensp;&ensp;
-                    max: &ensp;&ensp;<Input style="width:40px" v-model="row.config[1]" />&ensp;&ensp;
-                    step: &ensp;&ensp;<Input style="width:40px" v-model="row.config[2]" />&ensp;&ensp;
-                  </div>
-                </template>
-              </Table>
-            </FormItem>
-          </ICol>
         </Row>
       </Form>
+      <Row>
+        <ICol span="2" style="text-align:right">
+          参数配置
+        </ICol>
+        <ICol span="20" style="padding-left:10px">
+          <Table
+            disabled-hover
+            border
+            stripe
+            :columns="columns"
+            :data="data">
+            <template slot="mode" slot-scope="{ row }">
+              <Select v-model="row.mode">
+                <Option value="continuous">
+                  连续
+                </Option>
+              </Select>
+            </template>
+            <template slot="config" scope="{ row }">
+              <div>
+                min: &ensp;&ensp;<Input style="width:40px" :value="row.config.algconfMin" @on-blur="inputChange($event, 'algconfMin')" />&ensp;&ensp;
+                max: &ensp;&ensp;<Input style="width:40px" :value="row.config.algconfMax" @on-blur="inputChange($event, 'algconfMax')" />&ensp;&ensp;
+                step: &ensp;&ensp;<Input style="width:40px" :value="row.config.algconfStep" @on-blur="inputChange($event, 'algconfStep')" />&ensp;&ensp;
+              </div>
+            </template>
+          </Table>
+        </ICol>
+      </Row>
     </Fiche>
     <Fiche title="约束条件" class="my-6">
       <Form
@@ -283,7 +286,11 @@ const data = [{
   variableName: '壁厚',
   unit: 'mm',
   mode: 'continuous',
-  config: [250, 260, 0.5]
+  config: {
+    algconfMin: 1,
+    algconfMax: 2,
+    algconfStep: 0.5
+  }
 }]
 
 export default {
@@ -323,16 +330,7 @@ export default {
       data,
       btnChecks: [0, 0, 0],
       towerFormValidate: {
-        // projectName: 'xxx项目H1-2',
-        // taskName: 'xxxxxx',
-        // towerHeight: 100,
-        // towerDiameter: 0.5
-        // towerLegNum: 3,
-        // dataOrigin: '',
-        // fatiguePalyload: 0.5,
-        // limitPayload: 0.5,
-        // switch: true,
-        // comment: ''
+
       },
       algorithmFormValidate: {
         betterAlgorithm: 'default-algorithm',
@@ -408,6 +406,25 @@ export default {
             name: f.fileName,
             fileId: f.fileId
           }))
+        }
+
+        if (res.body.algConfig) {
+          const algConfig = JSON.parse(res.body.algConfig)[0]
+          this.data = [{
+            ...this.data[0],
+            config: {
+              algconfMin: algConfig.lower,
+              algconfMax: algConfig.upper,
+              algconfStep: algConfig.step
+            }
+          }]
+        }
+
+        if (res.body.algConstraint) {
+          const algConstraint = JSON.parse(res.body.algConstraint)
+          algConstraint.forEach(alg => {
+            this.conditionFormValidate[alg.key] = alg.value
+          })
         }
 
         // if (res.body.fileInputs.length > 0) {
@@ -539,28 +556,42 @@ export default {
       this.getTaskInfo()
       // this.getSingleExcel()
     },
-    async save () {
-      this.$refs.conditionFormValidate.validate(async valid => {
-        if (valid) {
-          try {
-            const res = await this.$put(`towerTasks/${this.$route.params.taskId}`, {
-              silent: true,
-              json: {
-                algConstraint: {
-                  SRF_BCKlimt: this.conditionFormValidate.SRF_BCKlimt,
-                  SRF_ULSlimt: this.conditionFormValidate.SRF_ULSlimt,
-                  SRF_FLSlimt: this.conditionFormValidate.SRF_FLSlimt
-                }
-              }
-            })
-            if (res.code === 0) {
-              Message.success('保存成功')
-            }
-          } catch (error) {
-            Message.error('网络问题，保存失败')
-          }
+    inputChange (event, key) {
+      this.data = [{
+        ...this.data[0],
+        config: {
+          ...this.data[0].config,
+          [key]: event.target.value
         }
-      })
+      }]
+    },
+    async save () {
+      try {
+        const res = await this.$put(`towerTasks/${this.$route.params.taskId}`, {
+          silent: true,
+          json: {
+            remark: this.towerFormValidate.comment,
+            algConfig: JSON.stringify([{
+              lower: Number(this.data[0].config.algconfMin),
+              upper: Number(this.data[0].config.algconfMax),
+              step: Number(this.data[0].config.algconfStep)
+            }]),
+            algConstraint: JSON.stringify([{
+              key: 'SRF_BCKlimt', value: Number(this.conditionFormValidate.SRF_BCKlimt)
+            }, {
+              key: 'SRF_ULSlimt', value: Number(this.conditionFormValidate.SRF_ULSlimt)
+            }, {
+              key: 'SRF_FLSlimt', value: Number(this.conditionFormValidate.SRF_FLSlimt)
+            }])
+          }
+        })
+        if (res.code === 0) {
+          Message.success('保存成功')
+          this.getTaskInfo()
+        }
+      } catch (error) {
+        Message.error('网络问题，保存失败')
+      }
     }
     // Markov 批量上传接口
     // async multipleUpload (toBeUploadList) {

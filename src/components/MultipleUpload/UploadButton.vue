@@ -112,6 +112,7 @@ export default {
   methods: {
     onOk () {
       this.visible = !this.visible
+      this.$emit('on-close')
     },
     onCancel () {
 

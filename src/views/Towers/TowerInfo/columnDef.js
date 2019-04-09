@@ -39,6 +39,6 @@ export default [
   {
     title: '配置',
     slot: 'config',
-    width: 300
+    width: 360
   }
 ]

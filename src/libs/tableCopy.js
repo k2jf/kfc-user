@@ -10,6 +10,7 @@ export default function tableCopy (htmlToCopy, ...args) {
       def += args[k][i].title + '\t'
       titlekey.push(args[k][i].key)
     }
+    console.log(def)
     html += def + '\r\n'
     for (let i = 0; i < args[k + 1].length; i++) {
       let rowhtml = ''
@@ -22,6 +23,7 @@ export default function tableCopy (htmlToCopy, ...args) {
     }
   }
   el.value = html
+  console.log(html.toString())
   el.select()
   console.log(el.value)
   document.execCommand('Copy')

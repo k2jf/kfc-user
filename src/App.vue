@@ -55,12 +55,12 @@
           </aside>
         </Header>
         <Content
-          class="overflow-y-scroll mt-3 ml-3"
+          class="mt-3 ml-3"
           :style="{background: '#fff', minHeight: '260px'}">
           <div class="h-10 pl-5 pt-3">
             <BreadCrumb :breadList="breadList"></BreadCrumb>
           </div>
-          <main class="h-calc-10" style="min-width: 1100px" id="ido-body">
+          <main class="overflow-y-scroll h-calc-10" style="min-width: 1100px" id="ido-body">
             <router-view />
           </main>
         </Content>
@@ -78,11 +78,11 @@ import logo2 from '@/assets/gw_logo_2.png'
 import BreadCrumb from '@/components/BreadCrumb'
 
 const navList = [
-  // { id: 0, name: '项目管理', to: 'projects', icon: 'ios-folder' },
-  { id: 0, name: '载荷门户', link: 'http://internal-gw-zhy-loadportal-prod-front-474455559.cn-northwest-1.elb.amazonaws.com.cn/#/', icon: 'ios-search' },
-  { id: 1, name: '塔架设计', to: 'towers', icon: 'md-build' }
-  // { id: 3, name: '基础设计', to: 'basics', icon: 'md-document' },
-  // { id: 4, name: '数据分析', to: 'data-analytics', icon: 'md-analytics' },
+  { id: 0, name: '项目管理', to: 'projects', icon: 'ios-folder' },
+  { id: 1, name: '载荷门户', link: 'http://internal-gw-zhy-loadportal-prod-front-474455559.cn-northwest-1.elb.amazonaws.com.cn/#/', icon: 'ios-search' },
+  { id: 2, name: '塔架设计', to: 'towers', icon: 'md-build' },
+  { id: 3, name: '基础设计', to: 'basics', icon: 'md-document' },
+  { id: 4, name: '数据分析', to: 'data-analytics', icon: 'md-analytics' }
   // { id: 5, name: '数据管理', to: 'data-management', icon: 'md-podium' },
   // { id: 6, name: '用户管理', to: 'users', icon: 'md-contact' }
 ]
@@ -99,6 +99,7 @@ export default {
     Content,
     Avatar,
     Dropdown,
+
     DropdownMenu,
     DropdownItem,
     BreadCrumb
@@ -142,6 +143,7 @@ export default {
         })
       })
       this.breadList = breadList
+
       this.activeName = navList.findIndex(n => next.fullPath.includes(n.to))
     }
   },

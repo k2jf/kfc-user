@@ -23,6 +23,7 @@
     "canvas-datagrid": "^0.22.9",
     "clipboard": "^2.0.4",
     "dayjs": "^1.8.8",
+    "echarts": "^4.2.1",
     "iview": "^3.2.2",
     "ky": "^0.9.0",
     "vue": "^2.6.6",

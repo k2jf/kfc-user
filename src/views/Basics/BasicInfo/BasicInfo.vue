@@ -54,42 +54,7 @@
         约束条件配置：
       </p>
       <div class="px-6">
-        <Table
-          class="ido-table"
-          border
-          disabled-hover
-          :columns="columns"
-          :data="tableData"
-          ref="selection">
-          <template slot="config" slot-scope="{ row }">
-            <div>
-              <div
-                class="px-4"
-                :class="{
-                  'has-border': (row.multiple && ind < item.length - 1),
-                  'multiple-row': row.multiple
-                }"
-                v-for="(item,ind) in row.config"
-                :key="ind">
-                <Row>
-                  <ICol span="4">
-                    {{ item }}
-                  </ICol>
-                  <ICol span="6">
-                    <Select size="small" style="width: 60px" placeholder="">
-                      <Option :value="exp" v-for="(exp, index) in expressions" :key="index">
-                        {{ exp }}
-                      </Option>
-                    </Select>
-                  </ICol>
-                  <ICol span="14">
-                    <Input size="small" style="width: 160px" />
-                  </ICol>
-                </Row>
-              </div>
-            </div>
-          </template>
-        </Table>
+        <ConstraintTable />
       </div>
     </Fiche>
     <Fiche title="参数信息" class="my-6">
@@ -107,72 +72,14 @@
 </template>
 
 <script>
-import { Upload, Button, Row, Col, Input, Form, FormItem, Select, Table, Option, Switch, Icon, Message } from 'iview'
+import { Button, Row, Col, Input, Form, FormItem, Select, Option, Icon } from 'iview'
 import Fiche from '@/components/Fiche'
+import ConstraintTable from '@/components/ConstraintTable'
 // import { baseUrl } from '@/config'
-
-const columns = [
-  {
-    type: 'selection',
-    width: 60
-  },
-  {
-    title: '校核类型',
-    key: 'checkType'
-    // width: 100
-  },
-  {
-    title: '阈值配置',
-    key: 'config',
-    slot: 'config'
-    // width: 300
-  },
-  {
-    title: '表达式',
-    key: 'expression'
-    // width: 200
-  }
-]
-
-const tableData = [
-  {
-    checkType: '模态',
-    config: ['频率'],
-    expression: '',
-    multiple: false
-  },
-  {
-    checkType: '承受力',
-    config: ['承受度'],
-    expression: '',
-    multiple: false
-  },
-  {
-    checkType: '变形',
-    config: ['D泥面', 'D桩端', 'R转角'],
-    expression: '',
-    multiple: true
-  },
-  {
-    checkType: '应力',
-    config: ['P1', 'P2'],
-    expression: '',
-    multiple: true
-  },
-  {
-    checkType: '疲劳',
-    config: ['P1'],
-    expression: '',
-    multiple: false
-  }
-]
-
-const expressions = ['>', '<', '>=', '<=', '=']
 
 export default {
   name: 'BasicInfo',
   components: {
-    Upload,
     Button,
     Fiche,
     Row,
@@ -183,13 +90,11 @@ export default {
     Select,
     Option,
     Icon,
-    Table
+    ConstraintTable
   },
   data () {
     return {
-      columns,
-      tableData,
-      expressions,
+
       basicFormValidate: {
 
       },
@@ -208,18 +113,7 @@ export default {
   }
 }
 </script>
-<style lang="less">
-  .basic-info .ivu-table-tbody td:nth-of-type(3) .ivu-table-cell{
-    padding: 0
-  }
-  .has-border {
-    border-bottom: 1px solid #e8eaec;
-  }
-  .multiple-row {
-    padding-top: 10px;
-    padding-bottom: 10px;
-  }
-</style>
+
 <style>
   .ido-table .ivu-table-body.ivu-table-overflowX {
     overflow-x: hidden

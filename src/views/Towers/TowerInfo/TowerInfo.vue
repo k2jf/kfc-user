@@ -125,6 +125,7 @@
               <UploadButton
                 :action="markovAction"
                 v-model="markovFiles"
+                @on-close="onClose"
                 @on-remove="removeSigleMarkov"
                 @on-clear="clearMarkov" />
               <span class="inline-block ml-3">
@@ -161,20 +162,36 @@
             </FormItem>
           </div>
           <!-- Btns -->
-          <div class="w-full">
-            <div class="buttons float-right" style="margin-right: 60px;">
-              <Button style="background-color:#9561e2;border-color:#9561e2;" type="primary">
+          <div style="width:95%">
+            <div class="buttons float-right">
+              <Button
+                :disabled="checkDisabled"
+                :type="btnChecks[0] ? 'info' : 'default'"
+                @click="handleCheck('tower')">
                 塔架校核
               </Button>
-              <Button class="ml-3" type="primary">
+              <Button
+                class="ml-3"
+                :type="btnChecks[1] ? 'info' : 'default'"
+                :disabled="checkDisabled"
+                @click="handleCheck('flange')">
                 法兰校核
               </Button>
-              <Button class="ml-3" type="primary">
+              <Button
+                class="ml-3"
+                :type="btnChecks[2] ? 'info' : 'default'"
+                :disabled="checkDisabled"
+                @click="handleCheck('door')">
                 门洞校核
               </Button>
-              <Button class="ml-3" disabled>
+              <Button class="ml-3" :disabled="!canSave" type="success">
                 保存审核结果
               </Button>
+              <VisualModal
+                :multiple="checkMultiple"
+                :title="checkTitile"
+                :data="checkData"
+                v-model="checkVisible" />
             </div>
           </div>
           <!-- </Row>
@@ -274,10 +291,27 @@
   </div>
 </template>
 <script>
-import { Upload, Button, Row, Col, Input, Form, FormItem, Select, Table, Option, Switch, Icon, Message, Divider } from 'iview'
+import {
+  Upload,
+  Button,
+  Row,
+  Col,
+  Input,
+  Form,
+  FormItem,
+  Select,
+  Table,
+  Option,
+  Switch,
+  Icon,
+  Message,
+  Divider } from 'iview'
+
 import Fiche from '@/components/Fiche'
 import Excel from '@/components/Excel'
+import VisualModal from '@/components/VisualModal'
 import { UploadButton } from '@/components/MultipleUpload'
+
 import XLSX from 'xlsx'
 import { baseUrl, sheetJSFT } from '@/config'
 import columns from './columnDef'
@@ -311,7 +345,8 @@ export default {
     Excel,
     UploadButton,
     Table,
-    Divider
+    Divider,
+    VisualModal
   },
   data () {
     return {
@@ -328,9 +363,12 @@ export default {
       href: '',
       columns,
       data,
-      btnChecks: [0, 0, 0],
+      checkVisible: false,
+      checkMultiple: false,
+      checkTitile: '',
+      checkData: {},
+      btnChecks: [false, false, false],
       towerFormValidate: {
-
       },
       algorithmFormValidate: {
         betterAlgorithm: 'default-algorithm',
@@ -359,6 +397,12 @@ export default {
   computed: {
     display () {
       return this.markovFiles.length > 0 ? '重新上传' : '上传文件'
+    },
+    checkDisabled () {
+      return !(this.file.name && this.markovFiles.length > 0)
+    },
+    canSave () {
+      return this.btnChecks.some(Boolean)
     }
   },
   mounted () {
@@ -426,21 +470,6 @@ export default {
             this.conditionFormValidate[alg.key] = alg.value
           })
         }
-
-        // if (res.body.fileInputs.length > 0) {
-        //   const towerInput = res.body.fileInputs.find(f => f.fileKey === 'towerInput')
-        //   const markov = res.body.fileInputs.find(f => f.fileKey === 'markov')
-        //   if (towerInput) {
-        //     this.file = {
-        //       name: towerInput.fileNames[0]
-        //     }
-        //     this.href = `${baseUrl}towerTasks/${this.$route.params.taskId}/stream?fileKey=towerInput`
-        //     this.getSingleExcel()
-        //   }
-        //   if (markov) {
-        //     this.markovFiles = markov.fileNames.map(f => ({ name: f }))
-        //   }
-        // }
       } catch (error) {
 
       }
@@ -502,6 +531,9 @@ export default {
       } catch (error) {
         Message.error('删除失败')
       }
+    },
+    onClose () {
+      this.getTaskInfo()
     },
     viewTable () {
       this.visible = true
@@ -565,6 +597,36 @@ export default {
         }
       }]
     },
+    // triggered by btn clicks
+    handleCheck (type) {
+      let checkMultiple = false
+      const mapping = {
+        tower: '塔架主体',
+        flange: '法兰',
+        door: '门洞'
+      }
+      let list = ['tower', 'flange', 'door']
+      if (type === 'tower') {
+        checkMultiple = true
+      }
+      const index = list.findIndex(l => l === type)
+      this.btnChecks.splice(index, 1, true)
+      this.getCheckResult(type)
+      this.checkMultiple = checkMultiple
+      this.checkVisible = true
+      this.checkTitile = '安全域度校核 - ' + mapping[type]
+    },
+    async getCheckResult (type) {
+      try {
+        const res = await this.$get(`towerTasks/${this.$route.params.taskId}/checkedResult?type=${type}`)
+        if (res.code === 0) {
+          this.checkData = res.body
+        }
+      } catch (error) {
+
+      }
+    },
+    // update config of tower task
     async save () {
       try {
         const res = await this.$put(`towerTasks/${this.$route.params.taskId}`, {
@@ -593,25 +655,12 @@ export default {
         Message.error('网络问题，保存失败')
       }
     }
-    // Markov 批量上传接口
-    // async multipleUpload (toBeUploadList) {
-    //   let formData = new FormData()
-    //   toBeUploadList.forEach(t => {
-    //     formData.append('files', t.file, t.name)
-    //   })
-    //   try {
-    //     const res = await this.$post(`towerTasks/${this.$route.params.taskId}/batchUpload?fileKey=markov`, {
-    //       headers: null,
-    //       body: formData
-    //     })
-    //     if (res.code === 0) Message.success('马尔科夫文件上传成功')
-    //   } catch (error) {
-    //     Message.error('马尔科夫文件上传失败')
-    //   }
-    // }
   }
 }
 </script>
 <style lang="less" scoped>
-
+  .checked {
+    background-color: #9561e2;
+    border-color: #9561e2;
+  }
 </style>

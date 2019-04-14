@@ -5,5 +5,9 @@ module.exports = {
         data: '@import "@/variables.less";'
       }
     }
-  }
+  },
+  transpileDependencies: [
+    'vue-echarts',
+    'resize-detector'
+  ]
 }

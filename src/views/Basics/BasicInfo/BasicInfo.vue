@@ -6,46 +6,46 @@
         :rules="basicRuleValidate"
         :label-width="180"
         ref="basicFormValidate">
-        <Row>
-          <ICol span="12">
+        <div class="flex flex-wrap">
+          <div class="w-1/2">
             <FormItem label="项目名称：" prop="projectName" class="w-9/10">
-              <Input v-model="basicRuleValidate.projectName" />
+              <Input v-model="basicFormValidate.projectName" />
             </FormItem>
-          </ICol>
-          <ICol span="12">
+          </div>
+          <div class="w-1/2">
             <FormItem label="任务名称：" class="w-9/10">
-              <Input v-model="basicRuleValidate.taskName" />
+              {{ basicFormValidate.taskName || '根据规则生成' }}
             </FormItem>
-          </ICol>
-          <ICol span="12">
+          </div>
+          <div class="w-1/2">
             <FormItem label="基础形式：" prop="basicType" class="w-9/10">
-              <Select placeholder="请选择载荷数据来源" v-model="basicRuleValidate.basicType">
+              <Select placeholder="请选择载荷数据来源" v-model="basicFormValidate.basicType">
                 <Option value="beijing">
                   New York
                 </Option>
               </Select>
             </FormItem>
-          </ICol>
-          <ICol span="12">
+          </div>
+          <div class="w-1/2">
             <FormItem label="塔架设计任务名称：" prop="towerTaskName" class="w-9/10">
-              <Select placeholder="请选择载荷数据来源" v-model="basicRuleValidate.towerTaskName">
+              <Select placeholder="请选择载荷数据来源" v-model="basicFormValidate.towerTaskName">
                 <Option value="beijing">
                   New York
                 </Option>
               </Select>
             </FormItem>
-          </ICol>
-          <ICol span="12">
+          </div>
+          <div class="w-1/2">
             <FormItem label="基础极限载荷Mxy(kNm)：" prop="limitPayload" class="w-9/10">
-              <Input v-model="basicRuleValidate.limitPayload" />
+              <Input v-model="basicFormValidate.limitPayload" />
             </FormItem>
-          </ICol>
-          <ICol span="12">
+          </div>
+          <div class="w-1/2">
             <FormItem label="水深：" prop="waterDepth" class="w-9/10">
-              <Input v-model="basicRuleValidate.waterDepth" />
+              <Input v-model="basicFormValidate.waterDepth" />
             </FormItem>
-          </ICol>
-        </Row>
+          </div>
+        </div>
         </From>
       </form>
     </Fiche>
@@ -108,8 +108,12 @@ export default {
       return item.length > 1 && index < item.length - 1 ? 'has-border' : ''
     }
   },
-  mounted () {
-
+  async mounted () {
+    if (this.$route.params.basicId === 'create') return
+    const res = await this.$get(`baseTasks/${this.$route.params.basicId}`)
+    this.basicFormValidate = {
+      taskName: res.body.taskName
+    }
   }
 }
 </script>

@@ -1,6 +1,7 @@
 import XLSX from 'xlsx'
 
-export const baseUrl = process.env.VUE_APP_BASE_URL || 'http://10.1.30.220:9080/ido/api/v1/'
+export const baseUrl = process.env.VUE_APP_BASE_URL + 'ido/api/v1/'
+export const jiraUrl = process.env.VUE_APP_BASE_URL + 'jira/rest/api/2/'
 
 /**
  * use of tailwindcss

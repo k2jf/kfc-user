@@ -303,7 +303,9 @@ const createInstance = (defaults = {}) => {
     throw new TypeError('The `defaultOptions` argument must be an object')
   }
 
-  const ky = (input, options) => new Ky(input, deepMerge({}, defaults, options))
+  const ky = (input, options) => {
+    return new Ky(input, deepMerge({}, defaults, options))
+  }
 
   for (const method of requestMethods) {
     ky[method] = (input, options) => new Ky(input, deepMerge({}, defaults, options, { method }))

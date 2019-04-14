@@ -1,1 +1,1 @@
-VUE_APP_BASE_URL=http://10.80.39.201:9080/ido/api/v1/
+VUE_APP_BASE_URL=http://localhost:9080/

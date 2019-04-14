@@ -4,6 +4,7 @@ import router from './router'
 import store from './store'
 import fetch from './libs/fetch'
 import { Select, Option } from 'iview'
+import '@/plugins/echarts'
 
 import './index.css'
 import 'iview/dist/styles/iview.css'
@@ -12,6 +13,8 @@ import 'dayjs/locale/zh-cn'
 Vue.config.productionTip = false
 
 Vue.use(fetch)
+
+// TODO move to plugins/xx
 Vue.component('iSelect', Select)
 Vue.component('iOption', Option)
 new Vue({

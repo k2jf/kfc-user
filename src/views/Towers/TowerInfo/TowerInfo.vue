@@ -184,8 +184,12 @@
                 @click="handleCheck('door')">
                 门洞校核
               </Button>
-              <Button class="ml-3" :disabled="!canSave" type="success">
-                保存审核结果
+              <Button
+                class="ml-3"
+                :disabled="!canSave"
+                type="success"
+                @click="saveCheckResult">
+                保存校核结果
               </Button>
               <VisualModal
                 :multiple="checkMultiple"
@@ -315,6 +319,7 @@ import { UploadButton } from '@/components/MultipleUpload'
 import XLSX from 'xlsx'
 import { baseUrl, sheetJSFT } from '@/config'
 import columns from './columnDef'
+import { setTimeout } from 'timers'
 
 const data = [{
   variableName: '壁厚',
@@ -514,6 +519,7 @@ export default {
         const res = await this.$delete(`towerTasks/file/batch?taskId=${this.$route.params.taskId}&fileKey=markov`, { silent: true })
         if (res.code === 0) {
           this.markovFiles = []
+          this.btnChecks = [false, false, false]
           Message.success('清空成功')
         }
       } catch (error) {
@@ -626,6 +632,9 @@ export default {
 
       }
     },
+    saveCheckResult () {
+      Message.success('没啥保存的啊，文件已经存好了。。')
+    },
     // update config of tower task
     async save () {
       try {
@@ -649,6 +658,9 @@ export default {
         })
         if (res.code === 0) {
           Message.success('保存成功')
+          setTimeout(() => {
+            this.$router.push({ name: 'towers' })
+          }, 600)
           this.getTaskInfo()
         }
       } catch (error) {
@@ -658,9 +670,3 @@ export default {
   }
 }
 </script>
-<style lang="less" scoped>
-  .checked {
-    background-color: #9561e2;
-    border-color: #9561e2;
-  }
-</style>

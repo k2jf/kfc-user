@@ -15,11 +15,30 @@ export default new Router({
     },
     {
       path: '/projects',
-      name: 'projects',
+      // name: 'projects',
       meta: {
         breadName: '项目列表'
       },
-      component: () => import(/* webpackChunkName: "projects" */ '@/views/Projects')
+      component: () => import(/* webpackChunkName: "Projects" */ '@/views/Projects'),
+      children: [
+        {
+          path: '',
+          name: 'projects',
+          meta: {
+            breadName: '项目列表',
+            ignore: true
+          },
+          component: () => import(/* webpackChunkName: "Projects" */ '@/views/Projects/ProjectList')
+        },
+        {
+          path: ':projectId',
+          name: 'project-info',
+          meta: {
+            breadName: '项目详情'
+          },
+          component: () => import(/* webpackChunkName: "Projects" */ '@/views/Projects/ProjectItem')
+        }
+      ]
     },
     {
       path: '/towers',

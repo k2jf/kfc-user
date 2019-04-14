@@ -100,15 +100,15 @@ export default {
       }))
     }
   },
-  watch: {
-    visible (newValue) {
-      if (newValue) {
-        this.$nextTick(() => {
-          window.dispatchEvent(new Event('resize'))
-        })
-      }
-    }
-  },
+  // watch: {
+  //   visible (newValue) {
+  //     if (newValue) {
+  //       this.$nextTick(() => {
+  //         window.dispatchEvent(new Event('resize'))
+  //       })
+  //     }
+  //   }
+  // },
   methods: {
     onClose () {
       this.$emit('change', false)

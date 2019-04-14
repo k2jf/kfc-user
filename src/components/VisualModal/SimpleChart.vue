@@ -1,12 +1,11 @@
 <template>
-  <div class="simple-chart" ref="chart">
+  <div class="simple-chart">
+    <Chart :options="chartOptions" />
   </div>
 </template>
 
 <script >
-import echarts from 'echarts'
 import options from './conf'
-import { debounce } from '@/libs/helpers'
 
 export default {
   name: 'SimpleChart',
@@ -21,25 +20,9 @@ export default {
       echart: null
     }
   },
-  watch: {
-    data (value) {
-      this.pickOptions(value)
-    }
-  },
-  mounted () {
-    this.echart = echarts.init(this.$refs.chart)
-    window.addEventListener('resize', this.resize.bind(this))
-  },
-  beforeDestroy () {
-    window.removeEventListener('resize', this.resize.bind(this))
-  },
-  methods: {
-    resize: debounce(function () {
-      if (this.$refs.chart && this.$refs.chart.offsetWidth > 0 && this.echart) {
-        this.echart.resize()
-      }
-    }),
-    pickOptions (data) {
+  computed: {
+    chartOptions () {
+      const data = this.data
       if (!data.headers || data.headers.length === 0) return
       let traces = [
         {
@@ -78,7 +61,7 @@ export default {
         },
         series: traces
       })
-      this.echart.setOption(_options, true)
+      return _options
     }
   }
 }
@@ -88,4 +71,10 @@ export default {
   .simple-chart {
     height: 403px;
   }
+</style>
+<style>
+.echarts {
+  width: 100%;
+  height: 100%;
+}
 </style>

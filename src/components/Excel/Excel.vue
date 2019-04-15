@@ -36,6 +36,11 @@
 import { Modal, Tabs, TabPane } from 'iview'
 import DataGrid from '@/components/DataGrid'
 import XLSX from 'xlsx'
+import mixins from '@/mixins/towerExcel.js'
+
+const DataGrid2 = Object.assign({}, DataGrid, {
+  mixins: [mixins]
+})
 
 export default {
   name: 'Excel',
@@ -43,7 +48,7 @@ export default {
     Modal,
     Tabs,
     TabPane,
-    DataGrid
+    DataGrid: DataGrid2
   },
   props: {
     visible: {

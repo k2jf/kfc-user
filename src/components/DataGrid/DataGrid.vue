@@ -4,10 +4,12 @@
 </template>
 <script>
 import XLSX from 'xlsx'
-import canvasDatagrid from 'canvas-datagrid'
+// import mixins from '@/mixins/towerExcel.js'
+// import canvasDatagrid from 'canvas-datagrid'
 
 export default {
   name: 'DataGrid',
+  // mixins: [mixins],
   props: {
     name: {
       type: String,
@@ -22,8 +24,8 @@ export default {
       required: true
     },
     gridStyle: {
-      type: Object,
-      required: true
+      type: Object
+      // required: true
     }
   },
   data () {
@@ -37,86 +39,18 @@ export default {
     }
   },
   mounted () {
-    const width = this.gridStyle.width.slice(0, -2)
-    const isPayload = ['Ultimate', 'Buckling', 'Fatigue'].includes(this.name)
-    const cDg = canvasDatagrid({
-      parentNode: this.$refs[this.name],
-      data: this.transformData(this.sheetdata),
-      editable: !isPayload,
-      allowSorting: false,
-      allowFreezingColumns: true,
-      allowColumnReordering: false,
-      showColumnHeaders: false,
-      allowColumnResizeFromCell: true,
-      showRowHeaders: false,
-      selectionMode: 'none'
-    })
-
-    /* eslint-disable */
-    // custom styles
-    cDg.style.width                   = '100%'
-    cDg.style.height                  = '100%'
-    cDg.style.cellWidth               = Math.floor(width / 10 + 6) || 80
-    cDg.style.cellFont                = '12px sans-serif'
-    cDg.style.activeCellFont          = '12px sans-serif'
-    cDg.style.editCellFontSize        = '14px'
-    cDg.style.rowHeaderCellFont       = '12px sans-serif'
-    cDg.style.columnHeaderCellFont    = '12px sans-serif'
-
-    if (isPayload) {
-      cDg.style.cellColor                            = '#555'
-      cDg.style.cellHoverColor                       = '#555'
-      cDg.style.activeCellColor                      = '#555'
-      cDg.style.cellSelectedColor                    = '#555'
-      cDg.style.activeCellHoverColor                 = '#555'
-      cDg.style.activeCellSelectedColor              = '#555'
-
-      cDg.style.cellBackgroundColor                  = 'rgb(232, 232, 232)'
-      cDg.style.cellHoverBackgroundColor             = '#rgb(232, 232, 232)'
-      cDg.style.activeCellBackgroundColor            = '#rgb(232, 232, 232)'
-      cDg.style.cellSelectedBackgroundColor          = '#rgb(232, 232, 232)'
-      cDg.style.activeCellHoverBackgroundColor       = '#rgb(232, 232, 232)'
-      cDg.style.activeCellSelectedBackgroundColor    = '#rgb(232, 232, 232)'
-    }
-
-    /* eslint-enable */
-
-    // set schema
-    // const range = XLSX.utils.decode_range(this.ws['!ref'])
-    // const schema = []
-    // for (var i = range.s.c; i <= range.e.c; ++i) {
-    //   schema.push({
-    //     name: XLSX.utils.encode_col(i),
-    //     type: 'number'
-    //   })
-    // }
-    // cDg.schema = schema
-
-    this.dataGrid = cDg
     this.dataGrid.addEventListener('beforesortcolumn', this.preventDefault)
     this.dataGrid.addEventListener('contextmenu', this.preventDefault)
     this.dataGrid.addEventListener('beforeendedit', this.endedit)
-    if (this.name === 'Ultimate') {
-      // this.dataGrid.addEventListener('rendercell', this.rendertext)
-    }
   },
   beforeDestroy () {
     this.dataGrid.removeEventListener('beforesortcolumn', this.preventDefault)
     this.dataGrid.removeEventListener('contextmenu', this.preventDefault)
     this.dataGrid.removeEventListener('beforeendedit', this.endedit)
-    if (this.name === 'Ultimate') {
-      // this.dataGrid.removeEventListener('rendercell', this.rendertext)
-    }
   },
   methods: {
     preventDefault (e) {
       e.preventDefault()
-    },
-    rendertext (e) {
-      // console.log(e)
-      // if (e.value === '') {
-      //   e.cell.width = 20
-      // }
     },
     endedit (e) {
       // Abort the edit, We self take over it!!!
@@ -148,6 +82,7 @@ export default {
      * data to an `array of objects`
      * ================================================================
      */
+      if (data.length === 0) return []
       const formatSheetdata = []
       const range = XLSX.utils.decode_range(this.ws['!ref'])
       for (let i = 0; i < data.length; i++) {

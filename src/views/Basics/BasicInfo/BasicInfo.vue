@@ -36,8 +36,8 @@
             </FormItem>
           </div>
           <div class="w-1/2">
-            <FormItem label="基础极限载荷Mxy(kNm)：" prop="limitPayload" class="w-9/10">
-              <Input v-model="basicFormValidate.limitPayload" />
+            <FormItem label="基础极限载荷Mxy(kNm)：" prop="baseUltimate" class="w-9/10">
+              <Input v-model="basicFormValidate.baseUltimate" />
             </FormItem>
           </div>
           <div class="w-1/2">
@@ -61,7 +61,7 @@
       <div class="p-3">
         <Tabs :animated="false">
           <TabPane label="几何参数">
-            几何参数
+            <BasicParamsCard basicType="geometry" :geometryInfo="geometryInfo" />
           </TabPane>
           <TabPane label="海况参数">
             海况参数
@@ -87,6 +87,7 @@
 import { Button, Input, Form, FormItem, Select, Option, Icon, Tabs, TabPane } from 'iview'
 import Fiche from '@/components/Fiche'
 import ConstraintTable from '@/components/ConstraintTable'
+import BasicParamsCard from '@/components/BasicParamsCard'
 
 export default {
   name: 'BasicInfo',
@@ -101,7 +102,8 @@ export default {
     Icon,
     ConstraintTable,
     Tabs,
-    TabPane
+    TabPane,
+    BasicParamsCard
   },
   data () {
     return {
@@ -111,7 +113,8 @@ export default {
       },
       basicRuleValidate: {
 
-      }
+      },
+      geometryInfo: null
     }
   },
   computed: {
@@ -123,7 +126,12 @@ export default {
     if (this.$route.params.basicId === 'create') return
     const res = await this.$get(`baseTasks/${this.$route.params.basicId}`)
     this.basicFormValidate = {
-      taskName: res.body.taskName
+      projectName: res.body.projectName,
+      taskName: res.body.taskName,
+      baseUltimate: res.body.baseUltimate
+    }
+    if (res.body.geometry.length > 0) {
+      this.geometryInfo = res.body.geometry[0]
     }
   }
 }

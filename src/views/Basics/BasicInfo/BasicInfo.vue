@@ -58,7 +58,19 @@
       </div>
     </Fiche>
     <Fiche title="参数信息" class="my-6">
-      参数信息
+      <div class="p-3">
+        <Tabs :animated="false">
+          <TabPane label="几何参数">
+            几何参数
+          </TabPane>
+          <TabPane label="海况参数">
+            海况参数
+          </TabPane>
+          <TabPane label="地质参数">
+            地质参数
+          </TabPane>
+        </Tabs>
+      </div>
     </Fiche>
     <div class="text-center mb-6">
       <Button type="primary">
@@ -72,25 +84,24 @@
 </template>
 
 <script>
-import { Button, Row, Col, Input, Form, FormItem, Select, Option, Icon } from 'iview'
+import { Button, Input, Form, FormItem, Select, Option, Icon, Tabs, TabPane } from 'iview'
 import Fiche from '@/components/Fiche'
 import ConstraintTable from '@/components/ConstraintTable'
-// import { baseUrl } from '@/config'
 
 export default {
   name: 'BasicInfo',
   components: {
     Button,
     Fiche,
-    Row,
-    ICol: Col,
     Input,
     Form,
     FormItem,
     Select,
     Option,
     Icon,
-    ConstraintTable
+    ConstraintTable,
+    Tabs,
+    TabPane
   },
   data () {
     return {

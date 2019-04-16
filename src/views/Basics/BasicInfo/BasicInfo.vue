@@ -88,12 +88,13 @@
 </template>
 
 <script>
-import { Button, Input, Form, FormItem, Select, Option, Icon, Tabs, TabPane } from 'iview'
+import { Button, Input, Form, FormItem, Select, Option, Icon, Tabs, TabPane, Message } from 'iview'
 import Fiche from '@/components/Fiche'
 import ConstraintTable from '@/components/ConstraintTable'
 import BasicParamsCard from '@/components/BasicParamsCard'
 
 import { baseConfig } from '@/config'
+import { constants } from 'fs'
 
 export default {
   name: 'BasicInfo',
@@ -139,6 +140,9 @@ export default {
     if (res.body.geometry.length > 0) {
       this.geometryInfo = res.body.geometry[0]
     }
+    if (res.body.constraints) {
+      this.assembleBaseConfigs(res.body.constraints)
+    }
   },
   methods: {
     onTableChange (row) {
@@ -161,13 +165,32 @@ export default {
       })
       this.baseConfig = _baseConfig
     },
-    save () {
-      const constraint = this.baseConfig.map(item => {
+    async save () {
+      const constraints = this.baseConfig.map(item => {
         const _item = Object.assign({}, item, { checked: item._checked })
         Reflect.deleteProperty(_item, '_checked')
+        Reflect.deleteProperty(_item, 'multiple')
         return _item
       })
-      console.log(constraint)
+      console.log(constraints)
+      try {
+        await this.$put(`foundations/${this.$route.params.basicId}`, {
+          json: {
+            constraints
+          }
+        })
+        this.$router.push({ name: 'basics' })
+      } catch (error) {
+        Message.error('保存失败')
+      }
+    },
+    assembleBaseConfigs (constraints) {
+      const _baseConfig = [...baseConfig]
+      _baseConfig.forEach((item, ind) => {
+        item._checked = constraints[ind].checked
+        item.limitedValue = constraints[ind].limitedValue
+      })
+      this.baseConfig = _baseConfig
     }
   }
 }

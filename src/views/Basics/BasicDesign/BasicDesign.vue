@@ -90,7 +90,7 @@ export default {
   },
   methods: {
     async getTaskList ({ pageNum, pageSize }) {
-      const res = await this.$get('baseTasks', {
+      const res = await this.$get('foundations', {
         searchParams: { pageNum, pageSize }
       })
       this.data = res.body.items

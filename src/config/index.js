@@ -27,13 +27,13 @@ export const makeCols = refstr => Array(XLSX.utils.decode_range(refstr).e.c + 1)
 
 export const baseConfig = [
   {
-    _checked: true,
+    _checked: false,
     multiple: false,
     name: 'mode',
     limitedValue: [
       {
         name: 'frequency',
-        operator: 'lte',
+        operator: null,
         value: null
       }
     ]
@@ -45,7 +45,7 @@ export const baseConfig = [
     limitedValue: [
       {
         name: 'tolerance',
-        operator: 'gt',
+        operator: null,
         value: null
       }
     ]
@@ -57,17 +57,17 @@ export const baseConfig = [
     limitedValue: [
       {
         name: 'D_mudline',
-        operator: 'lt',
+        operator: null,
         value: null
       },
       {
         name: 'D_pileTip',
-        operator: 'lt',
+        operator: null,
         value: null
       },
       {
         name: 'D_tilt',
-        operator: 'lt',
+        operator: null,
         value: null
       }
     ]
@@ -79,12 +79,12 @@ export const baseConfig = [
     limitedValue: [
       {
         name: 'P1',
-        operator: 'lt',
+        operator: null,
         value: null
       },
       {
         name: 'P2',
-        operator: 'lt',
+        operator: null,
         value: null
       }
     ]
@@ -96,7 +96,7 @@ export const baseConfig = [
     limitedValue: [
       {
         name: 'P1',
-        operator: 'lt',
+        operator: null,
         value: null
       }
     ]

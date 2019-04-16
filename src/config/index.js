@@ -24,3 +24,126 @@ export const sheetJSFT = [
 
 export const makeCols = refstr => Array(XLSX.utils.decode_range(refstr).e.c + 1)
   .fill(0).map((x, i) => ({ name: XLSX.utils.encode_col(i), key: i }))
+
+export const baseConfig = [
+  {
+    _checked: true,
+    multiple: false,
+    name: 'mode',
+    limitedValue: [
+      {
+        name: 'frequency',
+        operator: 'lte',
+        value: null
+      }
+    ]
+  },
+  {
+    _checked: false,
+    multiple: false,
+    name: 'capacity',
+    limitedValue: [
+      {
+        name: 'tolerance',
+        operator: 'gt',
+        value: null
+      }
+    ]
+  },
+  {
+    _checked: false,
+    multiple: true,
+    name: 'deflection',
+    limitedValue: [
+      {
+        name: 'D_mudline',
+        operator: 'lt',
+        value: null
+      },
+      {
+        name: 'D_pileTip',
+        operator: 'lt',
+        value: null
+      },
+      {
+        name: 'D_tilt',
+        operator: 'lt',
+        value: null
+      }
+    ]
+  },
+  {
+    _checked: false,
+    multiple: true,
+    name: 'stress',
+    limitedValue: [
+      {
+        name: 'P1',
+        operator: 'lt',
+        value: null
+      },
+      {
+        name: 'P2',
+        operator: 'lt',
+        value: null
+      }
+    ]
+  },
+  {
+    _checked: false,
+    multiple: false,
+    name: 'fatigue',
+    limitedValue: [
+      {
+        name: 'P1',
+        operator: 'lt',
+        value: null
+      }
+    ]
+  }
+]
+
+/* eslint-disable */
+export const baseDictionary = {
+  mode:               '模态',
+  frequency:          '频率',
+  capacity:           '承受力',
+  tolerance:          '承受度',
+  deflection:         '变形',
+  D_mudline:          'D泥面',
+  D_pileTip:          'D桩端',
+  D_tilt:             'R转角',
+  stress:             '应力',
+  P1:                 'P1',
+  P2:                 'P2',
+  fatigue:            '疲劳',
+  gt:                 '>',
+  gte:                '>=',
+  lt:                 '<',
+  lte:                '<=',
+  eq:                 '='
+}
+/* eslint-enable */
+
+export const expressions = [
+  {
+    label: '>',
+    value: 'gt'
+  },
+  {
+    label: '>=',
+    value: 'gte'
+  },
+  {
+    label: '<',
+    value: 'lt'
+  },
+  {
+    label: '<=',
+    value: 'lte'
+  },
+  {
+    label: '=',
+    value: 'eq'
+  }
+]

@@ -53,7 +53,7 @@
         </ICol>
       </Row>
     </div>
-    <div style="height: 300px">
+    <div style="height: 300px" class="mt-6">
       <DataGrid
         :name="basicType"
         :sheetdata="sheetdata"
@@ -132,17 +132,12 @@ export default {
         const data = await this.$ky.get(`towerTasks/stream?fileId=${this.geometryInfo.fileId}`).arrayBuffer()
         this._originData = data
         var workbook = XLSX.read(data, { type: 'array' })
-        const sheets = {}
-        // ??? 几何，海况，地质 sheet页固定吗
-        for (let wsname in workbook.Sheets) {
-          const ws = workbook.Sheets[wsname]
-          const data = XLSX.utils.sheet_to_json(ws, { header: 1 })
-          sheets[wsname] = data
-        }
-
-        this.sheetdata = sheets.Model
-        this.originSheets = workbook.Sheets.Model
-        console.log(this.sheetdata, this.originSheets)
+        // ??? 几何，海况，地质 sheet页固定吗 暂时按一个 sheet 页处理
+        const wsname = Object.keys(workbook.Sheets)[0]
+        const ws = workbook.Sheets[wsname]
+        const sheetdata = XLSX.utils.sheet_to_json(ws, { header: 1 })
+        this.sheetdata = sheetdata
+        this.originSheets = ws
       } catch (error) {
 
       }

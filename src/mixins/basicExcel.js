@@ -24,6 +24,11 @@ export default {
     cDg.style.rowHeaderCellFont = '12px sans-serif'
     cDg.style.columnHeaderCellFont = '12px sans-serif'
 
+    if (this.name === 'geometry') {
+      cDg.style.cellWidth = 100
+      cDg.setColumnWidth(4, 240)
+    }
+
     /* eslint-enable */
 
     this.dataGrid = cDg

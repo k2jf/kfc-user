@@ -76,9 +76,9 @@ export default {
       /** ================================================================
      * IMPORTENT
      *
-     * If the data that canvas-datagrid received is an array of arrays,
+     * If the data canvas-datagrid received is an array of arrays,
      * and lengths of child array are not all same , there could
-     * happen that `some columns be lost`, therefore we must transform
+     * happen `some columns be lost`, therefore we must transform
      * data to an `array of objects`
      * ================================================================
      */

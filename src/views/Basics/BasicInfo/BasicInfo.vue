@@ -54,7 +54,11 @@
         约束条件配置：
       </p>
       <div class="px-6">
-        <ConstraintTable />
+        <ConstraintTable
+          :baseConfig="baseConfig"
+          @on-table-change="onTableChange"
+          @on-select-all="onTableSelectAll"
+          @on-cancel-all="onTableCancelAll" />
       </div>
     </Fiche>
     <Fiche title="参数信息" class="my-6">
@@ -73,7 +77,7 @@
       </div>
     </Fiche>
     <div class="text-center mb-6">
-      <Button type="primary">
+      <Button type="primary" @click="save">
         保存
       </Button>
       <Button class="ml-3">
@@ -88,6 +92,8 @@ import { Button, Input, Form, FormItem, Select, Option, Icon, Tabs, TabPane } fr
 import Fiche from '@/components/Fiche'
 import ConstraintTable from '@/components/ConstraintTable'
 import BasicParamsCard from '@/components/BasicParamsCard'
+
+import { baseConfig } from '@/config'
 
 export default {
   name: 'BasicInfo',
@@ -107,7 +113,7 @@ export default {
   },
   data () {
     return {
-
+      baseConfig,
       basicFormValidate: {
 
       },
@@ -124,7 +130,7 @@ export default {
   },
   async mounted () {
     if (this.$route.params.basicId === 'create') return
-    const res = await this.$get(`baseTasks/${this.$route.params.basicId}`)
+    const res = await this.$get(`foundations/${this.$route.params.basicId}`)
     this.basicFormValidate = {
       projectName: res.body.projectName,
       taskName: res.body.taskName,
@@ -132,6 +138,36 @@ export default {
     }
     if (res.body.geometry.length > 0) {
       this.geometryInfo = res.body.geometry[0]
+    }
+  },
+  methods: {
+    onTableChange (row) {
+      const _baseConfig = [...this.baseConfig]
+      const index = _baseConfig.findIndex(b => b.name === row.name)
+      _baseConfig[index] = row
+      this.baseConfig = _baseConfig
+    },
+    onTableSelectAll () {
+      const _baseConfig = [...this.baseConfig]
+      _baseConfig.forEach(b => {
+        b._checked = true
+      })
+      this.baseConfig = _baseConfig
+    },
+    onTableCancelAll () {
+      const _baseConfig = [...this.baseConfig]
+      _baseConfig.forEach(b => {
+        b._checked = false
+      })
+      this.baseConfig = _baseConfig
+    },
+    save () {
+      const constraint = this.baseConfig.map(item => {
+        const _item = Object.assign({}, item, { checked: item._checked })
+        Reflect.deleteProperty(_item, '_checked')
+        return _item
+      })
+      console.log(constraint)
     }
   }
 }

@@ -1,48 +1,90 @@
 <template>
-  <div class="constraint-table">
+  <div class="limitedValue-table">
     <Table
       class="ido-table"
       border
       disabled-hover
       :columns="columns"
-      :data="tableData"
-      ref="selection">
+      :data="baseConfig"
+      ref="selection"
+      @on-select="onSelect"
+      @on-select-cancel="onSelectCancel"
+      @on-select-all="onSelectAll"
+      @on-select-all-cancel="onSelectNone">
+      <!-- 校核类型 -->
+      <template slot="name" slot-scope="{ row }">
+        {{ baseDictionary[row.name] }}
+      </template>
+      <!-- 阈值配置 -->
+      <!-- ========================================================= -->
       <template slot="config" slot-scope="{ row }">
         <div>
           <div
             class="px-4"
             :class="{
-              'has-border': (row.multiple && ind < item.length - 1),
+              'has-border': (row.multiple && ind < row.limitedValue.length - 1),
               'multiple-row': row.multiple
             }"
-            v-for="(item,ind) in row.config"
+            v-for="(item,ind) in row.limitedValue"
             :key="ind">
             <Row>
               <ICol span="4">
                 <div class="item-name">
-                  {{ item }}
+                  {{ baseDictionary[item.name] }}
                 </div>
               </ICol>
               <ICol span="6">
-                <Select style="width: 60px" placeholder="">
-                  <Option :value="exp" v-for="(exp, index) in expressions" :key="index">
-                    {{ exp }}
+                <Select
+                  style="width: 60px"
+                  placeholder=""
+                  :value="item.operator"
+                  @on-change="onSelectChange($event, row, ind)">
+                  <Option :value="exp.value" v-for="(exp, index) in expressions" :key="index">
+                    {{ exp.label }}
                   </Option>
                 </Select>
               </ICol>
               <ICol span="14">
-                <Input style="width: 160px" />
+                <Input
+                  :value="item.value"
+                  style="width: 160px"
+                  @on-change="onInputChange($event.target.value, row, ind)"
+                  @on-blur="onInputBlur($event.target.value, row, ind)" />
               </ICol>
             </Row>
           </div>
         </div>
       </template>
+      <!-- ========================================================= -->
+      <!-- 表达式 -->
+      <!-- ========================================================= -->
+      <template slot="expression" slot-scope="{ row }">
+        <div>
+          <div
+            class="px-4 expression-item"
+            :class="{
+              'has-border': (row.multiple && ind < row.limitedValue.length - 1),
+              'multiple-row': row.multiple,
+              'single-row': !row.multiple
+            }"
+            v-for="(item,ind) in row.limitedValue"
+            :key="ind">
+            <span v-if="item.name && item.operator && item.value">
+              {{ baseDictionary[item.name] }}
+              {{ baseDictionary[item.operator] }}
+              {{ item.value }}
+            </span>
+          </div>
+        </div>
+      </template>
+      <!-- ========================================================= -->
     </Table>
   </div>
 </template>
 
 <script>
 import { Select, Option, Input, Table, Row, Col } from 'iview'
+import { baseDictionary, expressions } from '@/config'
 
 const columns = [
   {
@@ -51,56 +93,18 @@ const columns = [
   },
   {
     title: '校核类型',
-    key: 'checkType'
-    // width: 100
+    slot: 'name',
+    width: 200
   },
   {
     title: '阈值配置',
-    key: 'config',
     slot: 'config'
-    // width: 300
   },
   {
     title: '表达式',
-    key: 'expression'
-    // width: 200
+    slot: 'expression'
   }
 ]
-
-const tableData = [
-  {
-    checkType: '模态',
-    config: ['频率'],
-    expression: '',
-    multiple: false
-  },
-  {
-    checkType: '承受力',
-    config: ['承受度'],
-    expression: '',
-    multiple: false
-  },
-  {
-    checkType: '变形',
-    config: ['D泥面', 'D桩端', 'R转角'],
-    expression: '',
-    multiple: true
-  },
-  {
-    checkType: '应力',
-    config: ['P1', 'P2'],
-    expression: '',
-    multiple: true
-  },
-  {
-    checkType: '疲劳',
-    config: ['P1'],
-    expression: '',
-    multiple: false
-  }
-]
-
-const expressions = ['>', '<', '>=', '<=', '=']
 
 export default {
   name: 'ConstraintTable',
@@ -112,24 +116,71 @@ export default {
     Row,
     ICol: Col
   },
+  props: {
+    baseConfig: {
+      type: Array,
+      required: true
+    }
+  },
   data () {
     return {
       columns,
-      tableData,
+      baseDictionary,
       expressions
+    }
+  },
+  methods: {
+    onSelectChange (value, row, ind) {
+      this.equip(...[...arguments, 'operator'])
+    },
+    onInputBlur (value, row, ind) {
+      this.equip(...[...arguments, 'value'])
+    },
+    onInputChange (value, row, ind) {
+      const _limitedValue = [...row.limitedValue]
+      Object.assign(_limitedValue[ind], { value })
+    },
+    equip (value, row, ind, key) {
+      const _limitedValue = [...row.limitedValue]
+      _limitedValue[ind] = Object.assign({}, _limitedValue[ind], { [key]: value })
+      const _row = Object.assign({}, row, { limitedValue: _limitedValue })
+      this.$emit('on-table-change', _row)
+    },
+    onSelect (selection, row) {
+      this.handleSelect(row, true)
+    },
+    onSelectCancel (selection, row) {
+      this.handleSelect(row, false)
+    },
+    handleSelect (row, checked) {
+      const _row = Object.assign({}, row, { _checked: checked })
+      this.$emit('on-table-change', _row)
+    },
+    onSelectAll () {
+      this.$emit('on-select-all')
+    },
+    onSelectNone () {
+      this.$emit('on-cancel-all')
     }
   }
 }
 </script>
 
 <style lang="less">
-  .constraint-table {
+  .limitedValue-table {
     .ivu-table-tbody td:nth-of-type(3) .ivu-table-cell{
+      padding: 0
+    }
+    .ivu-table-tbody td:nth-of-type(4) .ivu-table-cell{
       padding: 0
     }
 
     .ivu-table-cell {
       overflow: visible;
+    }
+
+    .ivu-table {
+      overflow: visible !important;
     }
   }
 
@@ -140,10 +191,21 @@ export default {
   line-height: 32px;
 }
 .has-border {
-    border-bottom: 1px solid #e8eaec;
+  border-bottom: 1px solid #e8eaec;
+}
+.multiple-row {
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+.expression-item {
+  height: 53px;
+
+  &.multiple-row {
+    line-height: 32px;
   }
-  .multiple-row {
-    padding-top: 10px;
-    padding-bottom: 10px;
-  }
+
+  &.single-row {
+  line-height: 53px;
+}
+}
 </style>

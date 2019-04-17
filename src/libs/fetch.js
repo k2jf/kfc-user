@@ -16,6 +16,7 @@ export default {
     const _ky = ky.extend({
       prefixUrl: baseUrl,
       retry: 0,
+      throwHttpErrors: false,
       hooks: {
         afterResponse: [
           (res, silent) => {
@@ -37,6 +38,7 @@ export default {
               resolve(json)
             } else {
               Message.error(json.message || '未知')
+              // throw new Error(json.message)
               reject(json.message)
             }
           })

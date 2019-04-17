@@ -13,6 +13,27 @@
       <Button class="ml-3" type="primary" @click="createNewTask">
         新增任务
       </Button>
+      <Modal
+        title="新增基础设计任务"
+        :loading="loading"
+        ok-text="创建任务"
+        v-model="visible"
+        @on-cancel="onCancel"
+        @on-ok="asyncOK">
+        <Form
+          :model="formValidate"
+          :rules="ruleValidate"
+          :label-width="100"
+          ref="formValidate">
+          <FormItem label="项目名称：" prop="projectId">
+            <Select placeholder="请选择一个项目" v-model="formValidate.projectId">
+              <Option :value="item.projectId + ''" v-for="item in projects" :key="item.id">
+                {{ item.projectName }}
+              </Option>
+            </Select>
+          </FormItem>
+        </Form>
+      </Modal>
     </div>
     <div class="h-calc-12">
       <div class="ido-table h-calc-16">
@@ -48,7 +69,7 @@
   </div>
 </template>
 <script>
-import { Input, Button, Table, Page, Modal, Form, FormItem, Select, Option } from 'iview'
+import { Input, Button, Table, Page, Modal, Form, FormItem, Select, Option, Message } from 'iview'
 import columns from './columnDef'
 
 export default {
@@ -73,6 +94,7 @@ export default {
         pageNum: 1,
         pageSize: 10
       },
+      projects: [],
       loading: true,
       visible: false,
       formValidate: {
@@ -104,14 +126,45 @@ export default {
       this.pageInfo = Object.assign(this.pageInfo, { pageSize })
       this.getTaskList(this.pageInfo)
     },
-    createNewTask () {
-      this.$router.push({ name: 'new-basic-design', params: { basicId: 'create' } })
+    async createNewTask () {
+      const res = await this.$get('projects')
+      this.projects = res.body.items
+      this.visible = true
     },
-    deleteTask (row) {
-      alert(`删除-${row.title}`)
+    async deleteTask (row) {
+      Modal.confirm({
+        title: '删除',
+        content: '删除操作不可回退，确定删除？',
+        onOk: async () => {
+          await this.$delete('foundations/' + row.id)
+          Message.success('删除成功')
+          this.getTaskList(this.pageInfo)
+        }
+      })
     },
     viewTask (row) {
       this.$router.push({ name: 'new-basic-design', params: { basicId: row.id } })
+    },
+    async asyncOK () {
+      this.loading = true
+      this.$refs.formValidate.validate(async (valid) => {
+        if (valid) {
+          try {
+            const res = await this.$post('foundations', {
+              json: {
+                projectId: this.formValidate.projectId
+              }
+            })
+            this.visible = false
+            this.loading = false
+            this.$router.push({ name: 'new-basic-design', params: { basicId: res.body.id } })
+          } catch (error) {
+            this.loading = false
+          }
+        } else {
+          this.loading = false
+        }
+      })
     },
     onCancel () {
       this.$refs.formValidate.resetFields()

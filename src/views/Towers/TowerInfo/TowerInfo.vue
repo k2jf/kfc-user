@@ -167,6 +167,7 @@
               <Button
                 :disabled="checkDisabled"
                 :type="btnChecks[0] ? 'info' : 'default'"
+                :loading="checkLoading"
                 @click="handleCheck('tower')">
                 塔架校核
               </Button>
@@ -174,6 +175,7 @@
                 class="ml-3"
                 :type="btnChecks[1] ? 'info' : 'default'"
                 :disabled="checkDisabled"
+                :loading="checkLoading"
                 @click="handleCheck('flange')">
                 法兰校核
               </Button>
@@ -181,6 +183,7 @@
                 class="ml-3"
                 :type="btnChecks[2] ? 'info' : 'default'"
                 :disabled="checkDisabled"
+                :loading="checkLoading"
                 @click="handleCheck('door')">
                 门洞校核
               </Button>
@@ -373,6 +376,7 @@ export default {
       checkTitile: '',
       checkData: {},
       btnChecks: [false, false, false],
+      checkLoading: false,
       towerFormValidate: {
       },
       algorithmFormValidate: {
@@ -604,8 +608,9 @@ export default {
       }]
     },
     // triggered by btn clicks
-    handleCheck (type) {
+    async handleCheck (type) {
       let checkMultiple = false
+      this.checkLoading = true
       const mapping = {
         tower: '塔架主体',
         flange: '法兰',
@@ -615,25 +620,37 @@ export default {
       if (type === 'tower') {
         checkMultiple = true
       }
+      await this.getCheckResult(type)
       const index = list.findIndex(l => l === type)
       this.btnChecks.splice(index, 1, true)
-      this.getCheckResult(type)
       this.checkMultiple = checkMultiple
       this.checkVisible = true
       this.checkTitile = '安全域度校核 - ' + mapping[type]
     },
     async getCheckResult (type) {
-      try {
-        const res = await this.$get(`towerTasks/${this.$route.params.taskId}/checkedResult?type=${type}`)
-        if (res.code === 0) {
-          this.checkData = res.body
+      return new Promise(async (resolve, reject) => {
+        try {
+          const res = await this.$post(`towerTasks/${this.$route.params.taskId}/codeCheck?type=${type}`, { silent: true })
+          // imitate check loading for now
+          let timeout = 600 + Math.round(Math.random() * 600)
+          setTimeout(() => {
+            this.checkLoading = false
+            this.checkData = res.body
+            resolve()
+          }, timeout)
+        } catch (error) {
+          this.checkLoading = false
+          reject(error)
         }
-      } catch (error) {
-
-      }
+      })
     },
-    saveCheckResult () {
-      Message.success('没啥保存的啊，文件已经存好了。。')
+    async saveCheckResult () {
+      try {
+        await this.$post(`towerTasks/${this.$route.params.taskId}/save/checkedResult`, { silent: true })
+        Message.success('校核结果保存成功')
+      } catch (error) {
+        Message.error('校核结果保存失败')
+      }
     },
     // update config of tower task
     async save () {

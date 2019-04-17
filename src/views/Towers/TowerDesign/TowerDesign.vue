@@ -78,10 +78,10 @@
           :data="data">
           <template slot="operation" slot-scope="{ row }">
             <div class="text-grey">
-              <!-- <a href="javascript:;">提交</a> | -->
-              <a href="javascript:;" @click="viewTask(row)">编辑</a>
+              <a href="javascript:;" @click="submitTask(row.id)">提交</a> |
+              <a href="javascript:;" @click="viewTask(row)">编辑 | </a>
               <!-- <a href="javascript:;">结果</a> | -->
-              <!-- <a href="javascript:;" @click="deleteTask(row)">删除</a> -->
+              <a href="javascript:;" @click="deleteTask(row)">删除</a>
             </div>
           </template>
         </Table>
@@ -102,7 +102,7 @@
   </div>
 </template>
 <script>
-import { Input, Button, Table, Page, Modal, Form, FormItem, Select, Option } from 'iview'
+import { Input, Button, Table, Page, Modal, Form, FormItem, Select, Option, Message } from 'iview'
 import columns from './columnDef'
 import D from 'dayjs'
 
@@ -173,8 +173,26 @@ export default {
       this.projects = res.body.items
       this.visible = true
     },
-    deleteTask (row) {
-      alert(`删除-${row.title}`)
+    async submitTask (id) {
+      const res = await this.$post(`towerTasks/${id}/codeSubmit`, { silent: true })
+      console.log(res)
+
+      if (res.code !== 0) {
+        Message.error(res.body.message)
+      } else {
+        Message.success('提交成功')
+      }
+    },
+    async deleteTask (row) {
+      Modal.confirm({
+        title: '删除',
+        content: '删除操作不可回退，确定删除？',
+        onOk: async () => {
+          await this.$delete('towerTasks/' + row.id)
+          Message.success('删除成功')
+          this.getTaskList(this.pageInfo)
+        }
+      })
     },
     viewTask (row) {
       this.$router.push({ name: 'new-tower-design', params: { taskId: row.id } })

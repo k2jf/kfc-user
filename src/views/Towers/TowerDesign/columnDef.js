@@ -35,7 +35,8 @@ export default [
           }
         }, [D(params.row.createTime).format('YYYY-MM-DD')])
       ])
-    }
+    },
+    width: 100
   },
   {
     title: '备注',
@@ -44,6 +45,6 @@ export default [
   {
     title: '操作',
     slot: 'operation',
-    width: 100
+    width: 160
   }
 ]

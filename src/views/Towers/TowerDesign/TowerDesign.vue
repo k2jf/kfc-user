@@ -80,7 +80,7 @@
             <div class="text-grey">
               <a href="javascript:;" @click="submitTask(row.id)">提交</a> |
               <a href="javascript:;" @click="viewTask(row)">编辑 | </a>
-              <!-- <a href="javascript:;">结果</a> | -->
+              <a href="javascript:;" @click="viewResult(row.id)">结果</a> |
               <a href="javascript:;" @click="deleteTask(row)">删除</a>
             </div>
           </template>
@@ -182,6 +182,9 @@ export default {
       } else {
         Message.success('提交成功')
       }
+    },
+    viewResult (id) {
+      this.$router.push({ name: 'tower-result', params: { taskId: id } })
     },
     async deleteTask (row) {
       Modal.confirm({

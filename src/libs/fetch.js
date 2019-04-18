@@ -16,6 +16,7 @@ export default {
     const _ky = ky.extend({
       prefixUrl: baseUrl,
       retry: 0,
+      timeout: 30000,
       throwHttpErrors: false,
       hooks: {
         afterResponse: [

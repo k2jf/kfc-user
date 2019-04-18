@@ -45,6 +45,6 @@ export default [
   {
     title: '操作',
     slot: 'operation',
-    width: 160
+    width: 180
   }
 ]

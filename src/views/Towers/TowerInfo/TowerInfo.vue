@@ -145,10 +145,8 @@
             </FormItem>
           </div>
           <div class="w-1/2">
-            <FormItem label="单工况：" prop="towerDiameter" class="w-9/10">
-              <ISwitch v-model="towerFormValidate.switch">
-                <span slot="open">开</span>
-                <span slot="close">关</span>
+            <FormItem label="单工况：" prop="workCase" class="w-9/10">
+              <ISwitch v-model="towerFormValidate.workCase" />
               </ISwitch>
             </FormItem>
           </div>
@@ -439,9 +437,15 @@ export default {
           dataOrigin: res.body.isOnline ? '载荷门户' : 'LCC载荷',
           fatiguePalyload: res.body.bottomFatigue,
           limitPayload: res.body.bottomUltimate,
-          // switch: true,
           comment: res.body.remark
         }
+
+        if (res.body.workCase) {
+          towerFormValidate.workCase = res.body.workCase === 1
+        } else {
+          towerFormValidate.workCase = false
+        }
+
         this.isOnline = res.body.isOnline
         this.towerFormValidate = towerFormValidate
 
@@ -630,7 +634,13 @@ export default {
     async getCheckResult (type) {
       return new Promise(async (resolve, reject) => {
         try {
-          const res = await this.$post(`towerTasks/${this.$route.params.taskId}/codeCheck?type=${type}`, { silent: true })
+          const res = await this.$post(`towerTasks/${this.$route.params.taskId}/codeCheck`, {
+            silent: true,
+            json: {
+              type,
+              workCase: this.towerFormValidate.workCase ? 1 : 2
+            }
+          })
           // imitate check loading for now
           let timeout = 600 + Math.round(Math.random() * 600)
           setTimeout(() => {
@@ -654,11 +664,13 @@ export default {
     },
     // update config of tower task
     async save () {
+      console.log(this.towerFormValidate.workCase)
       try {
         const res = await this.$put(`towerTasks/${this.$route.params.taskId}`, {
           silent: true,
           json: {
             remark: this.towerFormValidate.comment,
+            workCase: this.towerFormValidate.workCase ? 1 : 2,
             algConfig: JSON.stringify([{
               lower: Number(this.data[0].config.algconfMin),
               upper: Number(this.data[0].config.algconfMax),
@@ -678,7 +690,7 @@ export default {
           setTimeout(() => {
             this.$router.push({ name: 'towers' })
           }, 600)
-          this.getTaskInfo()
+          // this.getTaskInfo()
         }
       } catch (error) {
         Message.error('网络问题，保存失败')

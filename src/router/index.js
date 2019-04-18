@@ -69,6 +69,14 @@ export default new Router({
             breadName: '编辑塔架任务'
           },
           component: () => import(/* webpackChunkName: "Towers" */ '@/views/Towers/TowerInfo')
+        },
+        {
+          path: 'tower-result/:taskId',
+          name: 'tower-result',
+          meta: {
+            breadName: '塔架任务结果'
+          },
+          component: () => import(/* webpackChunkName: "Towers" */ '@/views/Towers/TowerResult')
         }
       ]
     },

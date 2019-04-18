@@ -27,7 +27,7 @@
             label="权限"
             name="auth"
             class="tab-pane">
-            <ResourceInfo :currentRole="currentRole" v-if="currentUser" />
+            <ResourceInfo :currentUser="currentUser" v-if="currentUser" />
           </TabPane>
         </Tabs>
       </div>
@@ -59,13 +59,7 @@ export default {
     return {
       split: 0.2,
       currentTab: 'user',
-      currentUser: null,
-      currentRole: {
-        description: '',
-        id: 36,
-        name: 'atest',
-        tenantId: 'goldwind'
-      }
+      currentUser: null
     }
   },
   methods: {

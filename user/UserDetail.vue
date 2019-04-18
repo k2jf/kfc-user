@@ -3,10 +3,9 @@
     <Form
       :model="user"
       :label-width="80"
-      :rules="rules"
-      ref="formRef">
-      <FormItem prop="username" label="用户名:">
-        <label>{{ user.username }}</label>
+      :rules="rules">
+      <FormItem prop="name" label="用户名:">
+        <Input placeholder="请输入用户名" v-model="user.name" />
       </FormItem>
       <FormItem prop="email" label="邮箱:">
         <Input placeholder="请输入邮箱" v-model="user.email" />
@@ -34,7 +33,7 @@
 import { Form, FormItem, Input, Card, Button } from 'iview'
 import AuthDetail from './AuthDetail.vue'
 
-import { api } from '../api'
+import api from '../api'
 
 export default {
   name: 'UserDetail',
@@ -65,6 +64,9 @@ export default {
         resource: []
       }],
       rules: {
+        name: [
+          { required: true, type: 'string', message: '用户名不能为空', trigger: 'change' }
+        ],
         email: [
           { required: true, type: 'string', message: '邮箱不能为空', trigger: 'change' }
         ]
@@ -77,10 +79,18 @@ export default {
     }
   },
   mounted () {
+    // 获取用户详细信息
+    this.getUserDetail()
     // 获取资源详细信息
-    this.getAuthDetail()
+    // this.getAuthDetail()
   },
   methods: {
+    getUserDetail () {
+      this.$axios.get(`${api.users}/${this.currentUser.id}`)
+        .then(res => {
+          this.user = res.data.body.userDetail
+        })
+    },
     getAuthDetail () {
       let queryAuthRequest = []
       this.authList.forEach(item => {
@@ -94,7 +104,9 @@ export default {
       })
     },
     onSaveClick () {
-      this.$axios.put(`${api.users}/${this.currentUser.username}`, this.user)
+      let { email, name } = this.user
+
+      this.$axios.put(`${api.users}/${this.currentUser.id}`, { email, name })
         .then(() => {
           this.$emit('on-modify-user', this.user)
           this.$Message.success('修改成功！')

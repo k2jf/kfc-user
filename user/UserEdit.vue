@@ -1,60 +1,39 @@
 <template>
   <Modal
     title="创建用户"
-    :loading="isModalLoading"
     v-model="isShowModal"
-    @on-ok="onOkClick"
-    @on-cancel="onCancelClick">
+    @on-ok="onClickOk"
+    @on-cancel="onClickCancel">
     <Form
-      :model="formModel"
-      :rules="formRules"
+      :model="user"
+      :rules="rules"
       :label-width="80"
-      ref="formRef">
-      <FormItem prop="username" label="用户名">
-        <Input
-          placeholder="请输入用户名"
-          v-model="formModel.username" />
+      ref="formValidate">
+      <FormItem prop="name" label="用户名">
+        <Input placeholder="请输入用户名" v-model="user.name" />
       </FormItem>
       <FormItem prop="email" label="邮箱">
-        <Input placeholder="请输入邮箱" v-model="formModel.email" />
+        <Input placeholder="请输入邮箱" v-model="user.email" />
       </FormItem>
-      <FormItem
-        prop="password"
-        label="密码">
+      <FormItem prop="password" label="密码">
         <Input
           type="password"
           placeholder="请输入密码"
-          v-model="formModel.password" />
+          v-model="user.password" />
       </FormItem>
-      <FormItem
-        prop="confirmPassword"
-        label="确认密码">
+      <FormItem prop="confirmPassword" label="确认密码">
         <Input
           type="password"
           placeholder="请输入确认密码"
-          v-model="formModel.confirmPassword" />
+          v-model="user.confirmPassword" />
       </FormItem>
-      <FormItem prop="roles" label="角色">
-        <Select
-          multiple
-          v-model="formModel.roles">
+      <FormItem label="用户组">
+        <Select multiple v-model="user.usrgrpIds">
           <Option
-            :value="opt.id"
-            v-for="opt in roleOpts"
-            :key="opt.id">
-            {{ opt.name }}
-          </Option>
-        </Select>
-      </FormItem>
-      <FormItem prop="roles" label="用户组">
-        <Select
-          multiple
-          v-model="formModel.groups">
-          <Option
-            :value="opt.id"
-            v-for="opt in groupOpts"
-            :key="opt.id">
-            {{ opt.name }}
+            :value="groupItem.id"
+            v-for="groupItem in userGroups"
+            :key="groupItem.id">
+            {{ groupItem.name }}
           </Option>
         </Select>
       </FormItem>
@@ -64,6 +43,9 @@
 
 <script>
 import { Modal, Form, FormItem, Input, Select, Option } from 'iview'
+
+import MD5 from 'md5.js'
+import api from '../api'
 
 export default {
   name: 'UserEdit',
@@ -83,18 +65,16 @@ export default {
   },
   data () {
     return {
-      isModalLoading: true,
       isShowModal: this.isShowUserModal,
-      formModel: {
-        username: '',
+      user: {
+        name: '',
         email: '',
         password: '',
         confirmPassword: '',
-        roles: '',
-        groups: ''
+        usrgrpIds: ''
       },
-      formRules: {
-        username: [
+      rules: {
+        name: [
           { required: true, type: 'string', message: '用户名不能为空', trigger: 'change' }
         ],
         email: [
@@ -107,56 +87,43 @@ export default {
           { required: true, type: 'string', message: '确认密码不能为空', trigger: 'change' }
         ]
       },
-      roleOpts: [],
-      groupOpts: []
+      userGroups: []
     }
   },
   watch: {
     isShowUserModal (val) {
-      this.$refs.formRef.resetFields()
+      this.$refs.formValidate.resetFields()
       this.isShowModal = val
     }
   },
   mounted () {
-    this.$axios.get('/kmx/auth-service/v1/roles?type=all')
+    this.$axios.get(`${api.groups}`)
       .then(res => {
-        this.roleOpts = res.data.result
-      })
-
-    this.$axios.get('/kmx/auth-service/v1/groups?type=all')
-      .then(res => {
-        this.groupOpts = res.data.result
+        this.userGroups = res.data.body.userGroups
       })
   },
   methods: {
-    onOkClick () {
-      this.$refs.formRef.validate()
-        .then(isSuccess => {
-          if (!isSuccess) {
-            this.isModalLoading = false
-            this.$nextTick(() => {
-              this.isModalLoading = true
-            })
-          }
+    // 新建用户
+    onClickOk () {
+      this.$refs.formValidate.validate((valid) => {
+        if (!valid) return
 
-          let formParams = JSON.parse(JSON.stringify(this.formModel))
-          formParams.groups = formParams.groups ? formParams.groups.map(item => ({ name: item })) : []
-          formParams.roles = formParams.roles ? formParams.roles.map(item => ({ name: item })) : []
-          delete formParams.confirmPassword
+        let { name, email, password, usrgrpIds } = this.user
+        let createUserRequest = {
+          name,
+          email,
+          usrgrpIds: usrgrpIds.join(','),
+          password: new MD5().update(password).digest('hex')
+        }
 
-          this.$axios.post('/kmx/auth-service/v1/users', formParams)
-            .then(() => {
-              this.$emit('on-submit')
-            })
-            .finally(() => {
-              this.isModalLoading = false
-              this.$nextTick(() => {
-                this.isModalLoading = true
-              })
-            })
-        })
+        this.$axios.post(`${api.users}`, createUserRequest)
+          .then(() => {
+            this.$Message.success('新建成功！')
+            this.$emit('on-submit')
+          })
+      })
     },
-    onCancelClick () {
+    onClickCancel () {
       this.$emit('on-close')
     }
   }

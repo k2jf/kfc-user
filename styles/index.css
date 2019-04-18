@@ -5,14 +5,14 @@
   height: 100%;
   padding: 0;
 }
-.left-pane .add-btn {
+.left-pane .btn-add {
   border-color: #2b85e4;
   color: #2b85e4;
 }
 .left-pane {
   padding: 10px;
 }
-.left-list-pane {
+.aside-list-panel {
   height: calc(100vh - 186px);
   border: 1px solid #dcdee2;
   border-radius: 4px;
@@ -29,17 +29,17 @@
   max-height: calc(100vh - 320px);
   overflow: auto;
 }
-.left-list-pane .ivu-cell-label {
+.aside-list-panel .ivu-cell-label {
   font-size: 14px !important;
   line-height: 36px;
 }
-.left-list-pane .ivu-cell {
+.aside-list-panel .ivu-cell {
   padding: 0 16px;
 }
-.left-list-pane .ivu-cell-footer {
+.aside-list-panel .ivu-cell-footer {
   visibility: hidden;
 }
-.left-list-pane .ivu-cell:hover .ivu-cell-footer {
+.aside-list-panel .ivu-cell:hover .ivu-cell-footer {
   visibility: visible;
 }
 .right-pane .ivu-tabs-nav-container {

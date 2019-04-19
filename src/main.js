@@ -3,7 +3,7 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import fetch from './libs/fetch'
-import { Select, Option } from 'iview'
+import { Select, Option, Message } from 'iview'
 import '@/plugins/echarts'
 
 import './index.css'
@@ -17,6 +17,7 @@ Vue.use(fetch)
 // TODO move to plugins/xx
 Vue.component('iSelect', Select)
 Vue.component('iOption', Option)
+Vue.prototype.$Message = Message
 new Vue({
   router,
   store,

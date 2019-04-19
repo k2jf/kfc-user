@@ -1,134 +1,31 @@
 import Vue from 'vue'
+import routes from './routes'
+import store from '@/store'
 import Router from 'vue-router'
-// import Home from '@/views/Home'
+// import { Message } from 'iview'
 
 Vue.use(Router)
 
-export default new Router({
+const router = new Router({
+  routes,
   mode: 'hash',
-  base: process.env.BASE_URL,
-  routes: [
-    {
-      path: '/',
-      name: 'index',
-      redirect: '/towers'
-    },
-    {
-      path: '/projects',
-      // name: 'projects',
-      meta: {
-        breadName: '项目列表'
-      },
-      component: () => import(/* webpackChunkName: "Projects" */ '@/views/Projects'),
-      children: [
-        {
-          path: '',
-          name: 'projects',
-          meta: {
-            breadName: '项目列表',
-            ignore: true
-          },
-          component: () => import(/* webpackChunkName: "Projects" */ '@/views/Projects/ProjectList')
-        },
-        {
-          path: ':projectId',
-          name: 'project-info',
-          meta: {
-            breadName: '项目详情'
-          },
-          component: () => import(/* webpackChunkName: "Projects" */ '@/views/Projects/ProjectItem')
-        }
-      ]
-    },
-    {
-      path: '/towers',
-      // name: 'towers',
-      meta: {
-        breadName: '塔架设计任务列表'
-      },
-      component: () => import(/* webpackChunkName: "Towers" */ '@/views/Towers'),
-      children: [
-        {
-          path: '',
-          name: 'towers',
-          meta: {
-            breadName: '塔架设计任务列表',
-            // while navigate to "/towers", routes matches both "/towers" and "/towers/",
-            // but breadcrumb should only show meta info of first matched route,
-            // in this case is { breadName: '项目列表' } of "/towers",
-            // therefore use a flag called ignore to filte "/towers/" route.
-            // NEED TO DO: MAY BE THERE IS A BETTER WAY
-            ignore: true
-          },
-          component: () => import(/* webpackChunkName: "Towers" */ '@/views/Towers/TowerDesign')
-        },
-        {
-          path: 'new-tower-design/:taskId',
-          name: 'new-tower-design',
-          meta: {
-            breadName: '编辑塔架任务'
-          },
-          component: () => import(/* webpackChunkName: "Towers" */ '@/views/Towers/TowerInfo')
-        },
-        {
-          path: 'tower-result/:taskId',
-          name: 'tower-result',
-          meta: {
-            breadName: '塔架任务结果'
-          },
-          component: () => import(/* webpackChunkName: "Towers" */ '@/views/Towers/TowerResult')
-        }
-      ]
-    },
-    {
-      path: '/basics',
-      meta: {
-        breadName: '基础设计任务列表'
-      },
-      component: () => import(/* webpackChunkName: "Basics" */ '@/views/Basics'),
-      children: [
-        {
-          path: '',
-          name: 'basics',
-          meta: {
-            breadName: '基础设计任务列表',
-            ignore: true
-          },
-          component: () => import(/* webpackChunkName: "Basics" */ '@/views/Basics/BasicDesign')
-        },
-        {
-          path: 'new-basic-design/:basicId',
-          name: 'new-basic-design',
-          meta: {
-            breadName: '编辑基础任务'
-          },
-          component: () => import(/* webpackChunkName: "Basics" */ '@/views/Basics/BasicInfo')
-        }
-      ]
-    },
-    {
-      path: '/data-analytics',
-      name: 'data-analytics',
-      meta: {
-        breadName: '数据分析'
-      },
-      component: () => import(/* webpackChunkName: "projects" */ '@/views/DataAnalytics')
-    },
-    {
-      path: '/data-management',
-      name: 'data-management',
-      meta: {
-        breadName: '数据管理'
-      },
-      component: () => import(/* webpackChunkName: "projects" */ '@/views/Management')
-    },
-    {
-      path: '/users',
-      name: 'users',
-      meta: {
-        breadName: '用户管理'
-      },
-      component: () => import(/* webpackChunkName: "projects" */ '@/views/Users')
-    }
-  ]
+  base: process.env.BASE_URL
 })
+
+const LOGIN_PAGE_NAME = 'login'
+const HOME_PAFE_NAME = 'index'
+
+router.beforeEach((to, from, next) => {
+  const userName = store.state.userName
+  if (!userName && to.name !== LOGIN_PAGE_NAME) {
+    // Message.info('请先登录')
+    next({ name: LOGIN_PAGE_NAME })
+  } else if (!userName && to.name === LOGIN_PAGE_NAME) {
+    next()
+  } else if (userName && to.name === LOGIN_PAGE_NAME) {
+    next({ name: HOME_PAFE_NAME })
+  }
+  next()
+})
+
+export default router

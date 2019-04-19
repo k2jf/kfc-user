@@ -41,6 +41,10 @@ export default {
     isShowGroupModal: {
       type: Boolean,
       required: true
+    },
+    currentGroupList: {
+      type: Array,
+      required: false
     }
   },
   data () {
@@ -49,7 +53,7 @@ export default {
       group: {
         titles: ['未选用户组', '已选用户组'],
         data: [],
-        selectKeys: []
+        selectKeys: [...this.currentGroupList]
       }
     }
   },
@@ -57,11 +61,13 @@ export default {
     isShowGroupModal: {
       handler (curVal, oldVal) {
         this.isShowModal = curVal
-        // 清空选中用户组
-        this.group.selectKeys.splice(0, this.group.selectKeys.length)
-        if (curVal) {
-          this.getGroupList()
-        }
+        if (this.group.data.length) return
+        this.getGroupList()
+      }
+    },
+    currentGroupList: {
+      handler (curVal, oldVal) {
+        this.group.selectKeys = [...curVal]
       }
     }
   },
@@ -73,6 +79,8 @@ export default {
       this.$axios.put(`${api.users}/${this.currentUser.id}/usrgrps/${usrgrpIds}`).then(res => {
         this.$Message.success('添加成功！')
         this.$emit('on-submit')
+      }).catch(() => {
+        this.$emit('on-close')
       })
     },
     onClickCancel () {
@@ -87,10 +95,6 @@ export default {
             label: item.name
           }
         })
-      })
-      // 获取当前用户已有用户组列表
-      this.$axios.get(`${api.groups}?userId=${this.currentUser.id}`).then(res => {
-        this.group.selectKeys = res.data.body.userGroups.map(item => item.id)
       })
     },
     handleChange (selectedFields) {

@@ -1,12 +1,9 @@
 <template>
   <Modal
-    width="200"
+    width="500"
     :mask-closable="false"
     class-name="vertical-center-modal"
     v-model="isModalShow">
-    <div class="ivu-modal-confirm-body-icon ivu-modal-confirm-body-icon-confirm">
-      <i class="ivu-icon ivu-icon-help-circled"></i>
-    </div>
     <div class="content">
       {{ content }}
     </div>
@@ -58,26 +55,5 @@ export default {
   padding-bottom: 30px;
   font-size: 16px;
   color: #495060;
-}
-.ivu-modal-confirm-body-icon-confirm {
-  color: #f90;
-  margin-top: 44px;
-  margin-left: 20px;
-}
-.ivu-modal-confirm-body-icon {
-  font-size: 36px;
-}
-.iview-modal-body{
-  margin-top: 6px;
-  padding-left: 48px;
-  padding-top: 18px;
-  font-size: 12px;
-  color: #495060;
-  position: relative;
-}
-.v-transfer-dom .vertical-center-modal{
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 </style>

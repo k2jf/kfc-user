@@ -106,7 +106,10 @@ export default {
     // 新建用户
     onClickOk () {
       this.$refs.formValidate.validate((valid) => {
-        if (!valid) return
+        if (!valid) {
+          this.$emit('on-close')
+          return
+        }
 
         let { name, email, password, usrgrpIds } = this.user
         let createUserRequest = {
@@ -120,6 +123,8 @@ export default {
           .then(() => {
             this.$Message.success('新建成功！')
             this.$emit('on-submit')
+          }).catch(() => {
+            this.$emit('on-close')
           })
       })
     },

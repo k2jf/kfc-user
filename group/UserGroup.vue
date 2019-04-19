@@ -17,6 +17,7 @@
     <UserGroupEdit
       :currentUser="currentUser"
       :isShowGroupModal="isShowGroupModal"
+      :currentGroupList="getCurrentGroupList"
       v-if="currentUser"
       @on-submit="onReloadList"
       @on-close="isShowGroupModal = false" />
@@ -107,6 +108,11 @@ export default {
           }
         ]
       }
+    }
+  },
+  computed: {
+    getCurrentGroupList () {
+      return this.group.data.map(item => item.id)
     }
   },
   watch: {

@@ -89,7 +89,7 @@ export default {
       resourceData: {
         loading: false,
         fuzzyName: '',
-        typeId: '',
+        typeId: 0,
         data: [],
         columns: [
           { title: '资源个例名称', key: 'resource', minWidth: 130 },

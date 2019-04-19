@@ -44,6 +44,7 @@ const mapping = {
   'zhanghao':       '123',
   'zhangrongtao':   '123',
   'wangyanan':      '123',
+  'xiangguangjie':  '123',
   'changxue':       '123',
   'zhouyiming':     '123'
 }

@@ -73,8 +73,8 @@ export default {
     show: true,
     feature: {
       dataZoom: {
-        xAxisIndex: [0],
-        yAxisIndex: false
+        // xAxisIndex: [0],
+        // yAxisIndex: false
       },
       dataView: {
         show: false,

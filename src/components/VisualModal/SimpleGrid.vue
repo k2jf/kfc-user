@@ -4,6 +4,7 @@
       <a class="ido-link" href="javascript:void 0;" @click="handleCopy">复制表格</a>
     </div>
     <Table
+      :height="360"
       class="ido-table"
       border
       stripe

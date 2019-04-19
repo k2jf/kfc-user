@@ -7,7 +7,7 @@ export default [
     meta: {
       title: 'Login - 登录'
     },
-    component: () => import('@/views/Login')
+    component: () => import(/* webpackChunkName: "Login" */ '@/views/Login')
   },
   {
     path: '/',
@@ -114,7 +114,7 @@ export default [
         meta: {
           breadName: '数据分析'
         },
-        component: () => import(/* webpackChunkName: "projects" */ '@/views/DataAnalytics')
+        component: () => import(/* webpackChunkName: "Analytics" */ '@/views/DataAnalytics')
       },
       {
         path: '/data-management',
@@ -122,7 +122,7 @@ export default [
         meta: {
           breadName: '数据管理'
         },
-        component: () => import(/* webpackChunkName: "projects" */ '@/views/Management')
+        component: () => import(/* webpackChunkName: "Managements" */ '@/views/Management')
       },
       {
         path: '/users',
@@ -130,7 +130,7 @@ export default [
         meta: {
           breadName: '用户管理'
         },
-        component: () => import(/* webpackChunkName: "projects" */ '@/views/Users')
+        component: () => import(/* webpackChunkName: "Users" */ '@/views/Users')
       }
     ]
   }

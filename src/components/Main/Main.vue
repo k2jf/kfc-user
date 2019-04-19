@@ -139,27 +139,33 @@ export default {
   },
   watch: {
     $route (next) {
-      const matched = next.matched.filter(m => !m.meta.ignore)
-      const breadList = [{ name: 'IDO', to: '/' }]
-      matched.forEach((m, i) => {
-        breadList.push({
-          name: m.meta.breadName,
-          to: i === matched.length - 1 ? undefined : m.path
-        })
-      })
-      this.breadList = breadList
-
-      this.activeName = navList.findIndex(n => next.fullPath.includes(n.to))
+      this.handleBreadList(next)
     }
   },
   mounted () {
     this.updateActiveName()
+    this.handleBreadList(this.$route)
     // this.$refs.side1.toggleCollapse()
   },
   methods: {
     ...mapMutations(['setUserName']),
     collapsedSider () {
       this.$refs.side1.toggleCollapse()
+    },
+    handleBreadList (next) {
+      const matched = next.matched.filter(m => !m.meta.ignore)
+      const breadList = [{ name: 'IDO', to: '/' }]
+      matched.forEach((m, i) => {
+        if (m.name !== 'index') {
+          breadList.push({
+            name: m.meta.breadName,
+            to: i === matched.length - 1 ? undefined : m.path
+          })
+        }
+      })
+      this.breadList = breadList
+
+      this.activeName = navList.findIndex(n => next.fullPath.includes(n.to))
     },
     onDropdownClick (index) {
       if (index === 'logout') {

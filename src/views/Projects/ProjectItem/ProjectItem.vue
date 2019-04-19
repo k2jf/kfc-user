@@ -178,10 +178,10 @@ export default {
     GoldWind
   },
   async mounted () {
-    const res = await this.$ky.get(`issue/${this.$route.params.projectId}`, {
-      prefixUrl: jiraUrl
-    }).json()
-    console.log(res)
+    // const res = await this.$ky.get(`issue/${this.$route.params.projectId}`, {
+    //   prefixUrl: jiraUrl
+    // }).json()
+    // console.log(res)
   }
 }
 </script>

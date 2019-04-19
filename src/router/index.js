@@ -16,16 +16,21 @@ const LOGIN_PAGE_NAME = 'login'
 const HOME_PAFE_NAME = 'index'
 
 router.beforeEach((to, from, next) => {
-  const userName = store.state.userName
+  const userName = store.getters.localStorageUserName
   if (!userName && to.name !== LOGIN_PAGE_NAME) {
+    // console.log('没有用户名，不是去登录页')
     // Message.info('请先登录')
     next({ name: LOGIN_PAGE_NAME })
   } else if (!userName && to.name === LOGIN_PAGE_NAME) {
+    // console.log('去登录页')
     next()
   } else if (userName && to.name === LOGIN_PAGE_NAME) {
+    // console.log('有用户名，去登录页')
     next({ name: HOME_PAFE_NAME })
+  } else {
+    // console.log('有用户名')
+    next()
   }
-  next()
 })
 
 export default router

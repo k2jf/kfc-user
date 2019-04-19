@@ -26,7 +26,7 @@
     </div>
     <div class="login">
       <!-- eslint-disable -->
-      <input type="text" placeholder="用户名" v-model="user"><br>
+      <input type="text" autofocus="autofocus" placeholder="用户名" v-model="user"><br>
 			<input type="password" placeholder="密码" v-model="password" @keydown.enter="handleLogin"><br>
 			<input type="button" value="登录" @click="handleLogin">
       <!-- eslint-enable -->
@@ -37,7 +37,17 @@
 <script>
 import { mapMutations } from 'vuex'
 
-const users = ['kangkai', 'zhanghao', 'zhangrongtao', 'wangyanan', 'changxue', 'zhouyiming']
+/* eslint-disable */
+const mapping = {
+  'kk':             'fe',
+  'kangkai':        'fe',
+  'zhanghao':       '123',
+  'zhangrongtao':   '123',
+  'wangyanan':      '123',
+  'changxue':       '123',
+  'zhouyiming':     '123'
+}
+/* eslint-enable */
 
 export default {
   name: 'Login',
@@ -70,9 +80,9 @@ export default {
       }
     },
     handleCheck () {
-      if (users.includes(this.user) && this.password === '123') {
+      if (Reflect.has(mapping, this.user) && Reflect.get(mapping, this.user) === this.password) {
         this.setUserName(this.user)
-        this.$Message.success('登录成功')
+        // this.$Message.success('登录成功')
         setTimeout(() => {
           this.$router.push({ name: 'index' })
         }, 600)

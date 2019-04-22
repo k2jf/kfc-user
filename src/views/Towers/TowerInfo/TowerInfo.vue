@@ -465,8 +465,8 @@ export default {
           }))
         }
 
-        if (res.body.algConfig) {
-          const algConfig = JSON.parse(res.body.algConfig)[0]
+        if (res.body.towerAlgParams) {
+          const algConfig = res.body.towerAlgParams[0]
           this.data = [{
             ...this.data[0],
             config: {
@@ -477,10 +477,10 @@ export default {
           }]
         }
 
-        if (res.body.algConstraint) {
-          const algConstraint = JSON.parse(res.body.algConstraint)
+        if (res.body.constraints) {
+          const algConstraint = res.body.constraints
           algConstraint.forEach(alg => {
-            this.conditionFormValidate[alg.key] = alg.value
+            this.conditionFormValidate[alg.name] = alg.value
           })
         }
       } catch (error) {
@@ -671,18 +671,24 @@ export default {
           json: {
             remark: this.towerFormValidate.comment,
             workCase: this.towerFormValidate.workCase ? 1 : 2,
-            algConfig: JSON.stringify([{
+            towerAlgParams: [{
               lower: Number(this.data[0].config.algconfMin),
               upper: Number(this.data[0].config.algconfMax),
               step: Number(this.data[0].config.algconfStep)
-            }]),
-            algConstraint: JSON.stringify([{
-              key: 'SRF_BCKlimt', value: Number(this.conditionFormValidate.SRF_BCKlimt)
+            }],
+            constraints: [{
+              name: 'SRF_BCKlimt',
+              value: Number(this.conditionFormValidate.SRF_BCKlimt),
+              operator: 'gte'
             }, {
-              key: 'SRF_ULSlimt', value: Number(this.conditionFormValidate.SRF_ULSlimt)
+              name: 'SRF_ULSlimt',
+              value: Number(this.conditionFormValidate.SRF_ULSlimt),
+              operator: 'gte'
             }, {
-              key: 'SRF_FLSlimt', value: Number(this.conditionFormValidate.SRF_FLSlimt)
-            }])
+              name: 'SRF_FLSlimt',
+              value: Number(this.conditionFormValidate.SRF_FLSlimt),
+              operator: 'gte'
+            }]
           }
         })
         if (res.code === 0) {

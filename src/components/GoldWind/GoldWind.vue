@@ -25,17 +25,21 @@ export default {
       series: [
         {
           type: 'liquidFill',
-          data: [0.6, 0.5, 0.4, 0.3],
-          amplitude: 6,
+          data: [0.54, 0.4, 0.3],
+          // data: [0.9, 0.7, 0.6, 0.5],
+          amplitude: 2,
           outline: {
             show: false
           },
-          radius: '60%',
+          radius: '90%',
           // color: ['#4fc08d', '#44d64a', '#33c762', '#4acc80'],
           backgroundStyle: {
             color: '#fff',
-            borderColor: '#3d7aab',
-            borderWidth: 1
+            borderColor: '#fff',
+            borderWidth: 0
+          },
+          itemStyle: {
+            opacity: 1
           },
           shape: `path://${d}`,
           label: {

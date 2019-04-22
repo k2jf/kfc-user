@@ -559,7 +559,8 @@ module.exports = {
     'calc-24': 'calc(100% - 6rem)',
     'calc-32': 'calc(100% - 8rem)',
     'calc-48': 'calc(100% - 12rem)',
-    'calc-64': 'calc(100% - 016rem)'
+    'calc-64': 'calc(100% - 16rem)',
+    'half': '50%'
   },
 
   /*

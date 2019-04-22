@@ -6,7 +6,7 @@
       </aside>
       <video
         :src="videoSrc"
-        autoplay=""
+        autoplay="autoplay"
         muted=""
         playsinline=""
         loop=""

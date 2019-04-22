@@ -150,10 +150,7 @@
         </Tabs>
       </div>
     </div>
-    <div style="height:200px">
-      <GoldWind />
-    </div>
-  </div>
+</div>
 </template>
 
 <script>

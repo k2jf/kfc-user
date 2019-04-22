@@ -1,5 +1,5 @@
 <template>
-  <div class="ido-bar-chart">
+  <div class="ido-bar-chart ido-chart">
     <Chart :options="chartOptions" autoresize />
   </div>
 </template>
@@ -18,9 +18,6 @@ export default {
   computed: {
     chartOptions () {
       return Object.assign({}, options, {
-        tooltip: {
-          show: true
-        },
         legend: {
           shwo: true,
           data: ['塔架', '法兰1', '法兰2', '法兰3', '法兰4']

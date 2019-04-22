@@ -2,6 +2,7 @@
   <div class="layout" id="ido">
     <Layout>
       <Sider
+        theme="light"
         hide-trigger
         collapsible
         :width="160"
@@ -9,13 +10,16 @@
         ref="side1"
         v-model="isCollapsed">
         <h2 class="gw-logo">
-          <img :src="logo1" alt="logo1" />
+          <!-- <img :src="logo1" alt="logo1" /> -->
+          <div class="goldwind">
+            <GoldWind />
+          </div>
           <img :src="logo2" alt="logo2" class="text-logo" />
         </h2>
-        <h1 class="logo-wrap">
+        <!-- <h1 class="logo-wrap">
           <img :src="logo" alt="logo" />
           <img :src="IDO" alt="IDO" class="text-logo" />
-        </h1>
+        </h1> -->
         <Menu
           :active-name="activeName"
           theme="dark"
@@ -76,6 +80,7 @@ import IDO from '@/assets/IDO.png'
 import logo1 from '@/assets/gw_logo_1.png'
 import logo2 from '@/assets/gw_logo_2.png'
 import BreadCrumb from '@/components/BreadCrumb'
+import GoldWind from '@/components/GoldWind'
 
 import { mapState, mapMutations } from 'vuex'
 
@@ -101,10 +106,10 @@ export default {
     Content,
     Avatar,
     Dropdown,
-
     DropdownMenu,
     DropdownItem,
-    BreadCrumb
+    BreadCrumb,
+    GoldWind
   },
   data () {
     return {
@@ -240,11 +245,20 @@ export default {
   display: block;
   height: 60px;
   text-align: center;
-  padding-top: 16px;
-  background-color: #40485a;
+  padding-top: 10px;
+  // background-color: #40485a;
+
+  .goldwind {
+    display: inline-block;
+    width: 48px;
+    height: 48px;
+    // transform: scale(1.5);
+    vertical-align: middle;
+  }
 
   img {
     width: 36px;
+    vertical-align: middle;
   }
 
   .text-logo {

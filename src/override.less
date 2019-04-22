@@ -1,6 +1,6 @@
 // #ido ===> changes of layout styles
 #ido .ivu-layout-sider {
-  background: url('./assets/ocean.jpg') no-repeat;
+  background: url('./assets/ocean2.jpg') no-repeat;
   background-size: cover;
 }
 #ido .ivu-menu-dark {
@@ -17,29 +17,54 @@
 #ido .ivu-menu-item a {
   color: inherit;
 }
-#ido .logo-wrap {
+// #ido .logo-wrap {
+//   display: block;
+//   height: 60px;
+//   color: #eee;
+//   text-align: center;
+//   padding-top: 16px;
+
+//   img {
+//     width: 24px;
+//   }
+
+//   .text-logo {
+//     width: 64px;
+//     transition: width .2s ease;
+//   }
+// }
+#ido .gw-logo {
   display: block;
   height: 60px;
-  color: #eee;
   text-align: center;
-  padding-top: 16px;
+  padding-top: 10px;
+  // background-color: #40485a;
+
+  .goldwind {
+    display: inline-block;
+    width: 48px;
+    height: 48px;
+    // transform: scale(1.5);
+    vertical-align: middle;
+  }
 
   img {
-    width: 24px;
+    width: 36px;
+    vertical-align: middle;
   }
 
   .text-logo {
-    width: 64px;
+    width: 80px;
     transition: width .2s ease;
   }
 }
-#ido .ivu-layout-sider-collapsed .logo-wrap .text-logo{
+#ido .ivu-layout-sider-collapsed .text-logo{
   transition: width .2s ease;
   width: 0px;
 }
-#ido .gw-logo {
-  display: none;
-}
+// #ido .gw-logo {
+//   display: none;
+// }
 
 // #ido-body ===> changes of pages styles
 // if table is blank, don't show scroll bar

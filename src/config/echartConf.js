@@ -15,10 +15,14 @@ export default {
       lineStyle: { color: '#b1acac' }
     },
     axisTick: {
-      show: false
+      show: true
     },
     axisLabel: {
       color: '#333'
+    },
+    nameTextStyle: {
+      color: '#333',
+      fontWeight: 'bold'
     },
     splitLine: { show: false }
   },
@@ -35,6 +39,10 @@ export default {
     axisLabel: {
       color: '#333'
     },
+    nameTextStyle: {
+      color: '#333',
+      fontWeight: 'bold'
+    },
     splitLine: { show: false }
   },
   grid: {
@@ -43,31 +51,22 @@ export default {
     left: '1%',
     right: '2%',
     containLabel: true,
-    backgroundColor: '#f4f5f4',
+    backgroundColor: 'transparent',
     borderwidth: 0,
     borderColor: 'transparent'
   },
-  // tooltip: {
-  // axisPointer: {
-  //   type: 'cross'
-  // }
-  // },
+  tooltip: {
+    axisPointer: {
+      type: 'cross'
+    }
+  },
   // dataZoom: {
   //   type: 'inside'
   // },
   // renderer: 'canvas',
   animation: false,
   legend: {
-    show: true,
-    type: 'plain',
-    orient: 'horizontal',
-    left: 10,
-    bottom: '10',
-    textStyle: {
-      fontSize: 10
-    },
-    itemWidth: 14,
-    itemGap: 5
+    show: true
   },
   toolbox: {
     show: true,

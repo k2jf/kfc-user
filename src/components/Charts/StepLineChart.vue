@@ -13,6 +13,14 @@ export default {
     series: {
       type: Array,
       required: true
+    },
+    xAxis: {
+      type: Object,
+      default: () => ({})
+    },
+    yAxis: {
+      type: Object,
+      default: () => ({})
     }
   },
   computed: {
@@ -22,7 +30,9 @@ export default {
           shwo: true
         },
         xAxis: {
-          type: 'value'
+          type: 'value',
+          nameTextStyle: options.xAxis.nameTextStyle,
+          ...this.xAxis
         },
         tooltip: {
           show: true,
@@ -31,7 +41,13 @@ export default {
           }
         },
         yAxis: {
-          type: 'value'
+          type: 'value',
+          nameTextStyle: options.yAxis.nameTextStyle,
+          ...this.yAxis
+        },
+        grid: {
+          ...options.grid,
+          right: 70
         },
         series: this.series
       })

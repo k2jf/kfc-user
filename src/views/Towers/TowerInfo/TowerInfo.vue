@@ -630,7 +630,7 @@ export default {
       this.btnChecks.splice(index, 1, true)
       this.checkMultiple = checkMultiple
       this.checkVisible = true
-      this.checkTitile = '安全域度校核 - ' + mapping[type]
+      this.checkTitile = '安全裕度校核 - ' + mapping[type]
     },
     async getCheckResult (type) {
       const index = checkTypeList.findIndex(l => l === type)

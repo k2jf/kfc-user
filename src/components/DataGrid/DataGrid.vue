@@ -27,11 +27,7 @@ export default {
       type: Object
       // required: true
     }
-  },
-  data () {
-    return {
-      dataGrid: null
-    }
+
   },
   watch: {
     sheetdata (value) {

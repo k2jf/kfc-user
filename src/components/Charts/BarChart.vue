@@ -13,6 +13,14 @@ export default {
     series: {
       type: Array,
       required: true
+    },
+    xAxis: {
+      type: Object,
+      default: () => ({})
+    },
+    yAxis: {
+      type: Object,
+      default: () => ({})
     }
   },
   computed: {
@@ -22,7 +30,13 @@ export default {
           shwo: true,
           data: ['塔架', '法兰1', '法兰2', '法兰3', '法兰4']
         },
+        grid: {
+          ...options.grid,
+          right: 40
+        },
         xAxis: {
+          ...this.xAxis,
+          nameTextStyle: options.xAxis.nameTextStyle,
           type: 'category',
           axisTick: {
             show: false
@@ -30,7 +44,9 @@ export default {
           data: ['', '', '优化前', '优化后', '', '']
         },
         yAxis: {
-          type: 'value'
+          type: 'value',
+          nameTextStyle: options.yAxis.nameTextStyle,
+          ...this.yAxis
         },
         series: this.series
       })

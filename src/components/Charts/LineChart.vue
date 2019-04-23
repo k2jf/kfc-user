@@ -13,6 +13,14 @@ export default {
     series: {
       type: Array,
       required: true
+    },
+    xAxis: {
+      type: Object,
+      default: () => ({})
+    },
+    yAxis: {
+      type: Object,
+      default: () => ({})
     }
   },
   computed: {
@@ -20,6 +28,18 @@ export default {
       return Object.assign({}, options, {
         legend: {
           show: true
+        },
+        xAxis: {
+          ...options.xAxis,
+          ...this.xAxis
+        },
+        grid: {
+          ...options.grid,
+          right: 40
+        },
+        yAxis: {
+          ...options.yAxis,
+          ...this.yAxis
         },
         series: this.series
       })

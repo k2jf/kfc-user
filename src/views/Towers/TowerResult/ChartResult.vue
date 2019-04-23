@@ -5,25 +5,25 @@
         <h3 class="text-center">
           优化前后塔架重量
         </h3>
-        <BarChart :series="barSeries" />
+        <BarChart :series="barSeries" :yAxis="{ name: 'Weight(t)' }" />
       </ICol>
       <ICol span="12" class="h-half">
         <h3 class="text-center">
           优化前后塔架壁厚
         </h3>
-        <StepLineChart :series="stepLineSeries" />
+        <StepLineChart :series="stepLineSeries" :yAxis="{ name: 'Height(m)' }" :xAxis="{ name: 'Width(m)' }" />
       </ICol>
       <ICol span="12" class="h-half">
         <h3 class="text-center">
           优化前SRF分布
         </h3>
-        <LineChart :series="checkSRFSeries" />
+        <LineChart :series="checkSRFSeries" :xAxis="checkXAxis" :yAxis="checkYAxis" />
       </ICol>
       <ICol span="12" class="h-half">
         <h3 class="text-center">
           优化后SRF分布
         </h3>
-        <LineChart :series="optSRFSeries" />
+        <LineChart :series="optSRFSeries" :xAxis="checkXAxis" :yAxis="checkYAxis" />
       </ICol>
     </Row>
   </div>
@@ -43,7 +43,13 @@ export default {
     ICol: Col
   },
   data: () => ({
-    results: {}
+    results: {},
+    checkXAxis: {
+      name: 'SRF',
+      min: 0,
+      max: 3
+    },
+    checkYAxis: { name: 'Height' }
   }),
   computed: {
     barSeries () {
@@ -96,7 +102,21 @@ export default {
         name: headers[ind],
         type: 'line',
         data: items.map(ele => [ele[ind], ele[0]]),
-        lineStyle: { width: 1 }
+        lineStyle: { width: 1 },
+        symbolSize: 1,
+        markLine: {
+          symbol: 'none',
+          label: {
+            position: 'end'
+          },
+          lineStyle: {
+            color: '#666'
+          },
+          data: [
+            { xAxis: 1.0 },
+            { xAxis: 1.1 }
+          ]
+        }
       }))
     },
     optSRFSeries () {
@@ -107,7 +127,21 @@ export default {
         name: headers[ind],
         type: 'line',
         data: items.map(ele => [ele[ind], ele[0]]),
-        lineStyle: { width: 1 }
+        lineStyle: { width: 1 },
+        symbolSize: 1,
+        markLine: {
+          symbol: 'none',
+          label: {
+            position: 'end'
+          },
+          lineStyle: {
+            color: '#666'
+          },
+          data: [
+            { xAxis: 1.0 },
+            { xAxis: 1.1 }
+          ]
+        }
       }))
     }
   },

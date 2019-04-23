@@ -5,7 +5,7 @@
 </template>
 
 <script >
-import options from './conf'
+import options from '@/config/echartConf'
 
 export default {
   name: 'SimpleChart',
@@ -31,6 +31,20 @@ export default {
           data: data.items.map(e => [e[2], e[0]]),
           lineStyle: {
             width: 1
+          },
+          symbolSize: 1,
+          markLine: {
+            symbol: 'none',
+            label: {
+              position: 'end'
+            },
+            lineStyle: {
+              color: '#666'
+            },
+            data: [
+              { xAxis: 1.0 },
+              { xAxis: 1.1 }
+            ]
           }
         },
         {
@@ -39,7 +53,8 @@ export default {
           data: data.items.map(e => [e[3], e[0]]),
           lineStyle: {
             width: 1
-          }
+          },
+          symbolSize: 1
         },
         {
           name: data.headers[4],
@@ -47,17 +62,31 @@ export default {
           data: data.items.map(e => [e[4], e[0]]),
           lineStyle: {
             width: 1
-          }
+          },
+          symbolSize: 1
         }
       ]
       const _options = Object.assign({}, options, {
-        legend: {
-          ...options.grid,
-          show: false
-        },
         grid: {
           ...options.grid,
-          bottom: 0
+          bottom: 0,
+          right: '6%'
+        },
+        xAxis: {
+          ...options.xAxis,
+          name: 'SRF',
+          min: 0,
+          max: 3
+        },
+        yAxis: {
+          ...options.yAxis,
+          name: 'Height'
+        },
+        tooltip: {
+          show: true,
+          axisPointer: {
+            type: 'cross'
+          }
         },
         series: traces
       })

@@ -1,4 +1,4 @@
-# kfc-user
+# kfc-auth-user
 用户管理
 
 # UserList
@@ -16,7 +16,7 @@ youli
 </template>
 
 <script>
-  import UserList from '@/components/kfc-user'
+  import UserList from '@/components/kfc-auth-user'
 
   export default {
     components: {

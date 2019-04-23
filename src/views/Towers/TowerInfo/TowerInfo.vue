@@ -165,7 +165,7 @@
               <Button
                 :disabled="checkDisabled"
                 :type="btnChecks[0] ? 'info' : 'default'"
-                :loading="checkLoading"
+                :loading="checkLoading[0]"
                 @click="handleCheck('tower')">
                 塔架校核
               </Button>
@@ -173,7 +173,7 @@
                 class="ml-3"
                 :type="btnChecks[1] ? 'info' : 'default'"
                 :disabled="checkDisabled"
-                :loading="checkLoading"
+                :loading="checkLoading[1]"
                 @click="handleCheck('flange')">
                 法兰校核
               </Button>
@@ -181,7 +181,7 @@
                 class="ml-3"
                 :type="btnChecks[2] ? 'info' : 'default'"
                 :disabled="checkDisabled"
-                :loading="checkLoading"
+                :loading="checkLoading[2]"
                 @click="handleCheck('door')">
                 门洞校核
               </Button>
@@ -333,6 +333,8 @@ const data = [{
   }
 }]
 
+const checkTypeList = ['tower', 'flange', 'door']
+
 export default {
   name: 'TowerInfo',
   components: {
@@ -374,7 +376,7 @@ export default {
       checkTitile: '',
       checkData: {},
       btnChecks: [false, false, false],
-      checkLoading: false,
+      checkLoading: [false, false, false],
       towerFormValidate: {
       },
       algorithmFormValidate: {
@@ -613,25 +615,25 @@ export default {
     },
     // triggered by btn clicks
     async handleCheck (type) {
+      const index = checkTypeList.findIndex(l => l === type)
       let checkMultiple = false
-      this.checkLoading = true
+      this.$set(this.checkLoading, index, true)
       const mapping = {
         tower: '塔架主体',
         flange: '法兰',
         door: '门洞'
       }
-      let list = ['tower', 'flange', 'door']
       if (type === 'tower') {
         checkMultiple = true
       }
       await this.getCheckResult(type)
-      const index = list.findIndex(l => l === type)
       this.btnChecks.splice(index, 1, true)
       this.checkMultiple = checkMultiple
       this.checkVisible = true
       this.checkTitile = '安全域度校核 - ' + mapping[type]
     },
     async getCheckResult (type) {
+      const index = checkTypeList.findIndex(l => l === type)
       return new Promise(async (resolve, reject) => {
         try {
           const res = await this.$post(`towerTasks/${this.$route.params.taskId}/codeCheck`, {
@@ -644,12 +646,12 @@ export default {
           // imitate check loading for now
           let timeout = 600 + Math.round(Math.random() * 600)
           setTimeout(() => {
-            this.checkLoading = false
+            this.$set(this.checkLoading, index, false)
             this.checkData = res.body
             resolve()
           }, timeout)
         } catch (error) {
-          this.checkLoading = false
+          this.$set(this.checkLoading, index, false)
           reject(error)
         }
       })

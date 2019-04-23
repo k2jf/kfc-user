@@ -13,8 +13,6 @@ import logo from '@/assets/gw_logo.ksvg'
 
 let d = logo.match(/\bd="([^"]+)"/)[1]
 
-console.log(d)
-
 export default {
   name: 'GoldWind',
   data: () => ({

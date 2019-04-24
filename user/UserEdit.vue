@@ -71,7 +71,7 @@ export default {
         email: '',
         password: '',
         confirmPassword: '',
-        usrgrpIds: ''
+        usrgrpIds: []
       },
       rules: {
         name: [
@@ -93,6 +93,7 @@ export default {
   watch: {
     isShowUserModal (val) {
       this.$refs.formValidate.resetFields()
+      this.user.usrgrpIds = []
       this.isShowModal = val
     }
   },

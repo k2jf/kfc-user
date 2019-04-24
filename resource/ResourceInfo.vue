@@ -92,33 +92,26 @@ export default {
         typeId: 0,
         data: [],
         columns: [
-          { title: '资源个例名称', key: 'resource', minWidth: 130 },
+          { title: '资源个例名称', key: 'resourceName', minWidth: 130 },
           { title: '权限', key: 'operations', minWidth: 80 },
-          { title: '开始时间',
-            minWidth: 150,
+          { title: '起止时间',
+            minWidth: 240,
             render: (h, params) => {
               return h('div', [
                 h(DatePicker, {
                   props: {
-                    type: 'date',
-                    value: params.row.startTime
-                  }
-                })
-              ])
-            }
-          },
-          { title: '结束时间',
-            minWidth: 150,
-            render: (h, params) => {
-              return h('div', [
-                h(DatePicker, {
-                  props: {
-                    type: 'date'
+                    type: 'daterange',
+                    transfer: true,
+                    value: params.row.valiableTime,
+                    disabled: !params.row.disabled
                   },
                   on: {
-                    // click: () => {
-                    //   this.show(params.index)
-                    // }
+                    'on-change': (valiableTime) => {
+                      this.resourceData.data[params.index].effectTime = valiableTime[0]
+                      this.resourceData.data[params.index].expireTime = valiableTime[1]
+                      this.resourceData.data[params.index].valiableTime = valiableTime
+                      this.onStatusChange(params.index)
+                    }
                   }
                 })
               ])
@@ -130,13 +123,14 @@ export default {
               return h('div', [
                 h(Switch, {
                   props: {
-                    value: false,
+                    value: params.row.disabled,
                     size: 'small'
                   },
                   on: {
-                    // click: () => {
-                    //   this.show(params.index)
-                    // }
+                    'on-change': (isDisabled) => {
+                      this.resourceData.data[params.index].disabled = isDisabled
+                      this.onStatusChange(params.index)
+                    }
                   }
                 })
               ])
@@ -154,7 +148,7 @@ export default {
                   },
                   on: {
                     click: () => {
-                      this.showConfirmModal(params.row.id)
+                      this.showConfirmModal(params.row.resourceId)
                     }
                   }
                 },
@@ -206,7 +200,7 @@ export default {
     },
     // 确认删除
     onDeleteClick () {
-      this.$axios.delete(`${api.authorizes}?subjectId=${this.currentUser.id}&subjectType=role&appResTypeId=${this.resourceData.typeId}&appResInfoId=${this.id}`).then(res => {
+      this.$axios.delete(`${api.authorizes}/${this.currentUser.id}/permissions/${this.id}`).then(res => {
         this.$Message.success('删除成功！')
         this.getResourceData()
       })
@@ -214,14 +208,30 @@ export default {
     // 获取资源列表
     getResourceData () {
       this.resourceData.loading = true
-      let { typeId } = this.resourceData
+      let { typeId, fuzzyName } = this.resourceData
       let { id } = this.currentUser
+      let url = `${api.authorizes}/${id}/permissions?resourceTypeId=${typeId}`
 
-      this.$axios.get(`${api.authorizes}?typeId=${typeId}&userId=${id}`).then(res => {
-        this.resourceData.data = res.data.body.authorizes
+      url = fuzzyName ? `${url}&fuzzyResName=${fuzzyName}` : url
+
+      this.$axios.get(url).then(res => {
+        res.data.body.permissions.forEach(item => {
+          item.disabled = item.disabled === undefined ? false : item.disabled
+          item.effectTime = new Date(item.effectTime) || new Date()
+          item.expireTime = new Date(item.expireTime) || new Date()
+          item.valiableTime = [item.effectTime, item.expireTime]
+        })
+        this.resourceData.data = res.data.body.permissions
       }).finally(() => {
         this.resourceData.loading = false
       })
+    },
+    onStatusChange (index) {
+      let { resourceId, effectTime, expireTime, disabled } = this.resourceData.data[index]
+      effectTime = Number(new Date(effectTime))
+      expireTime = Number(new Date(expireTime))
+      let url = `${api.authorizes}/${this.currentUser.id}/permissions/${resourceId}?effectTime=${effectTime}&expireTime=${expireTime}&disabled=${disabled}`
+      this.$axios.put(url)
     },
     // 资源类型改变
     onTypeChange () {

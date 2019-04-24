@@ -11,14 +11,13 @@
         <Input placeholder="请输入邮箱" v-model="user.email" />
       </FormItem>
       <FormItem label="权限:">
-        <Card class="auth-detail">
-          <template v-for="authItem in authList">
-            <AuthDetail
-              :authDetail="authItem"
-              v-if="authItem.resource.length>0"
-              :key="authItem.appResTypeId"></AuthDetail>
-          </template>
-        </Card>
+        <div class="auth-detail" v-if="user.permissions && user.permissions.length">
+          <Table
+            :columns="permissionColumns"
+            :data="user.permissions"
+            size="small"
+            class="margin-bottom"></Table>
+        </div>
       </FormItem>
       <FormItem>
         <Button type="primary" @click="onSaveClick">
@@ -30,8 +29,7 @@
 </template>
 
 <script>
-import { Form, FormItem, Input, Card, Button } from 'iview'
-import AuthDetail from './AuthDetail.vue'
+import { Form, FormItem, Input, Card, Button, Table } from 'iview'
 
 import api from '../api'
 
@@ -42,8 +40,8 @@ export default {
     FormItem,
     Input,
     Card,
-    Button,
-    AuthDetail
+    Table,
+    Button
   },
   props: {
     currentUser: {
@@ -54,15 +52,18 @@ export default {
   data () {
     return {
       user: { ...this.currentUser },
-      authList: [{
-        appResTypeName: '资源队列',
-        appResTypeId: 'md4x_ui',
-        resource: []
-      }, {
-        appResTypeName: '资源队列',
-        appResTypeId: 'resource',
-        resource: []
-      }],
+      permissionColumns: [
+        { title: '资源个例名称', key: 'resourceName', minWidth: 130 },
+        { title: '权限', key: 'operations', minWidth: 130 },
+        { title: '是否生效',
+          minWidth: 100,
+          render: (h, params) => {
+            return h(
+              'span', params.row.disabled ? '是' : '否'
+            )
+          }
+        }
+      ],
       rules: {
         name: [
           { required: true, type: 'string', message: '用户名不能为空', trigger: 'change' }
@@ -75,14 +76,12 @@ export default {
   },
   watch: {
     currentUser (val) {
-      this.user = { ...val }
+      this.getUserDetail()
     }
   },
   mounted () {
     // 获取用户详细信息
     this.getUserDetail()
-    // 获取资源详细信息
-    // this.getAuthDetail()
   },
   methods: {
     getUserDetail () {
@@ -90,18 +89,6 @@ export default {
         .then(res => {
           this.user = res.data.body.userDetail
         })
-    },
-    getAuthDetail () {
-      let queryAuthRequest = []
-      this.authList.forEach(item => {
-        queryAuthRequest.push(this.$axios.get(`${api.resourceinfos}?page=1&size=6&subjectId=36&subjectType=role&appResTypeId=${encodeURIComponent(item.appResTypeId)}`))
-      })
-
-      Promise.all(queryAuthRequest).then(resDataList => {
-        resDataList.forEach((item, index) => {
-          this.authList[index].resource = item.data.result
-        })
-      })
     },
     onSaveClick () {
       let { email, name } = this.user

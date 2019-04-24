@@ -132,6 +132,7 @@ export default {
     typeId: {
       handler (curVal, oldVal) {
         this.resourceData.typeId = curVal
+        if (!this.isShowModal) return
         this.getResourceData()
       }
     }
@@ -142,15 +143,13 @@ export default {
   methods: {
     // 新建权限
     onClickOk () {
-      let resourceId = this.resourceData.selectKeys.join(',')
+      let resourceIds = this.resourceData.selectKeys.join(',')
       let permission = {
-        resourceId,
-        typeId: this.resourceData.typeId,
-        operations: this.operations.join(','),
-        userId: this.currentUser.id
+        resourceIds,
+        operations: this.operations.join(',')
       }
 
-      this.$axios.post(`${api.authorizes}`, permission).then(res => {
+      this.$axios.put(`${api.authorizes}/${this.currentUser.id}/permissions`, permission).then(res => {
         this.$Message.success('新建成功！')
         this.$emit('on-submit', permission)
         this.$refs.formValidate.resetFields()

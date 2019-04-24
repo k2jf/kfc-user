@@ -1,8 +1,8 @@
 export default {
   // 用户管理
-  users: '/users',
-  groups: '/usrgrps',
-  restyps: '/restyps',
-  resources: '/resources',
-  authorizes: '/authorizes'
+  users: '/usrmgr/users',
+  groups: '/usrmgr/usrgrps',
+  restyps: '/resmgr/types',
+  resources: '/resmgr/resources',
+  authorizes: '/permmgr/owners'
 }

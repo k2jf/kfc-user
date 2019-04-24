@@ -76,7 +76,7 @@ export default {
     onClickOk () {
       let usrgrpIds = this.group.selectKeys.join(',')
 
-      this.$axios.put(`${api.users}/${this.currentUser.id}/usrgrps/${usrgrpIds}`).then(res => {
+      this.$axios.put(`${api.users}/${this.currentUser.id}/usrgrps/`, { usrgrpIds }).then(res => {
         this.$Message.success('添加成功！')
         this.$emit('on-submit')
       }).catch(() => {

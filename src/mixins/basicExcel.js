@@ -16,7 +16,7 @@ export default {
 
     /* eslint-disable */
     // custom styles
-    cDg.style.width = '100%'
+    cDg.style.width = '800px'
     cDg.style.height = '100%'
     cDg.style.cellFont = '12px sans-serif'
     cDg.style.activeCellFont = '12px sans-serif'
@@ -24,13 +24,20 @@ export default {
     cDg.style.rowHeaderCellFont = '12px sans-serif'
     cDg.style.columnHeaderCellFont = '12px sans-serif'
 
-    if (this.name === 'geometry') {
-      cDg.style.cellWidth = 100
-      cDg.setColumnWidth(4, 240)
-    }
+
 
     /* eslint-enable */
 
     this.dataGrid = cDg
+
+    const el = this.$refs.geometry
+    setTimeout(() => {
+      const width = el.offsetWidth
+      const elWidth = Math.floor((width - 260) / 5)
+      if (this.name === 'geometry') {
+        this.dataGrid.style.cellWidth = elWidth
+        this.dataGrid.setColumnWidth(4, 260)
+      }
+    })
   }
 }

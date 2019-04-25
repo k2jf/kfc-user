@@ -4,11 +4,10 @@
 </template>
 <script>
 import XLSX from 'xlsx'
-// import mixins from '@/mixins/towerExcel.js'
-// import canvasDatagrid from 'canvas-datagrid'
+import canvasDatagrid from 'canvas-datagrid'
 
 export default {
-  name: 'DataGrid',
+  name: 'ExcelTable',
   // mixins: [mixins],
   props: {
     name: {
@@ -22,12 +21,7 @@ export default {
     sheetdata: {
       type: Array,
       required: true
-    },
-    gridStyle: {
-      type: Object
-      // required: true
     }
-
   },
   watch: {
     sheetdata (value) {
@@ -35,6 +29,45 @@ export default {
     }
   },
   mounted () {
+    const cDg = canvasDatagrid({
+      parentNode: this.$refs[this.name],
+      data: this.transformData(this.sheetdata),
+      allowSorting: false,
+      allowFreezingColumns: true,
+      allowColumnReordering: false,
+      showColumnHeaders: false,
+      allowColumnResizeFromCell: true,
+      showRowHeaders: false,
+      selectionMode: 'none'
+    })
+
+    /* eslint-disable */
+    // custom styles
+    cDg.style.width = '100%'
+    cDg.style.height = '100%'
+    cDg.style.cellFont = '12px sans-serif'
+    cDg.style.activeCellFont = '12px sans-serif'
+    cDg.style.editCellFontSize = '14px'
+    cDg.style.rowHeaderCellFont = '12px sans-serif'
+    cDg.style.columnHeaderCellFont = '12px sans-serif'
+    /* eslint-enable */
+
+    this.dataGrid = cDg
+
+    if (this.name === 'geometry') {
+      const clientW = document.getElementById('ido-body').offsetWidth - 110
+      let cellWidth = Math.floor(clientW / 6)
+      if (cellWidth < 260) {
+        console.log(1)
+        cellWidth = Math.floor((clientW - 260) / 5)
+        this.dataGrid.style.cellWidth = cellWidth
+        this.dataGrid.setColumnWidth(4, 260)
+      } else {
+        console.log(2)
+        this.dataGrid.style.cellWidth = cellWidth
+      }
+      // const elWidth = Math.floor((this.gridWidth - 260) / 5)
+    }
     this.dataGrid.addEventListener('beforesortcolumn', this.preventDefault)
     this.dataGrid.addEventListener('contextmenu', this.preventDefault)
     this.dataGrid.addEventListener('beforeendedit', this.endedit)

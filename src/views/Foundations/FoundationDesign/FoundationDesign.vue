@@ -73,7 +73,7 @@ import { Input, Button, Table, Page, Modal, Form, FormItem, Select, Option, Mess
 import columns from './columnDef'
 
 export default {
-  name: 'BasicDesign',
+  name: 'FoundationDesign',
   components: {
     Input,
     Button,
@@ -143,7 +143,7 @@ export default {
       })
     },
     viewTask (row) {
-      this.$router.push({ name: 'new-basic-design', params: { basicId: row.id } })
+      this.$router.push({ name: 'foundation-design', params: { foundationId: row.id } })
     },
     async asyncOK () {
       this.loading = true
@@ -157,7 +157,7 @@ export default {
             })
             this.visible = false
             this.loading = false
-            this.$router.push({ name: 'new-basic-design', params: { basicId: res.body.id } })
+            this.$router.push({ name: 'foundation-design', params: { foundationId: res.body.id } })
           } catch (error) {
             this.loading = false
           }

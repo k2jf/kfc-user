@@ -84,7 +84,7 @@ export default {
         return items.map(item => {
           const obj = {}
           item.forEach((e, i) => {
-            obj[headers[i]] = e
+            obj[headers[i]] = typeof e === 'number' ? e.toFixed(3) : e
           })
           return obj
         })

@@ -65,8 +65,8 @@ export default [
             component: () => import(/* webpackChunkName: "Towers" */ '@/views/Towers/TowerDesign')
           },
           {
-            path: 'new-tower-design/:taskId',
-            name: 'new-tower-design',
+            path: 'tower-design/:taskId',
+            name: 'tower-design',
             meta: {
               breadName: '编辑塔架任务'
             },
@@ -83,28 +83,28 @@ export default [
         ]
       },
       {
-        path: '/basics',
+        path: '/foundations',
         meta: {
           breadName: '基础设计任务列表'
         },
-        component: () => import(/* webpackChunkName: "Basics" */ '@/views/Basics'),
+        component: () => import(/* webpackChunkName: "Foundations" */ '@/views/Foundations'),
         children: [
           {
             path: '',
-            name: 'basics',
+            name: 'foundations',
             meta: {
               breadName: '基础设计任务列表',
               ignore: true
             },
-            component: () => import(/* webpackChunkName: "Basics" */ '@/views/Basics/BasicDesign')
+            component: () => import(/* webpackChunkName: "Foundations" */ '@/views/Foundations/FoundationDesign')
           },
           {
-            path: 'new-basic-design/:basicId',
-            name: 'new-basic-design',
+            path: 'foundation-design/:foundationId',
+            name: 'foundation-design',
             meta: {
               breadName: '编辑基础任务'
             },
-            component: () => import(/* webpackChunkName: "Basics" */ '@/views/Basics/BasicInfo')
+            component: () => import(/* webpackChunkName: "Foundations" */ '@/views/Foundations/FoundationInfo')
           }
         ]
       },

@@ -28,7 +28,7 @@ export default {
         {
           name: data.headers[2],
           type: 'line',
-          data: data.items.map(e => [e[2], e[0]]),
+          data: data.items.filter(d => d[2] <= 2).map(e => [e[2], e[0]]),
           lineStyle: {
             width: 1
           },
@@ -50,7 +50,7 @@ export default {
         {
           name: data.headers[3],
           type: 'line',
-          data: data.items.map(e => [e[3], e[0]]),
+          data: data.items.filter(d => d[3] <= 2).map(e => [e[3], e[0]]),
           lineStyle: {
             width: 1
           },
@@ -59,7 +59,7 @@ export default {
         {
           name: data.headers[4],
           type: 'line',
-          data: data.items.map(e => [e[4], e[0]]),
+          data: data.items.filter(d => d[4] <= 2).map(e => [e[4], e[0]]),
           lineStyle: {
             width: 1
           },

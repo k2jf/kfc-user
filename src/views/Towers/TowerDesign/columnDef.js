@@ -24,6 +24,10 @@ export default [
     key: 'bottomDiameter'
   },
   {
+    title: '设计者',
+    key: 'designer'
+  },
+  {
     title: '创建时间',
     key: 'createTime',
     render: (h, params) => {

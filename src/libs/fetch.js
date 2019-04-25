@@ -11,44 +11,44 @@ const requestMethods = [
   'delete'
 ]
 
+export const _ky = ky.extend({
+  prefixUrl: baseUrl,
+  retry: 0,
+  timeout: 300000,
+  throwHttpErrors: false,
+  hooks: {
+    afterResponse: [
+      (res, silent) => {
+        if (!res.ok && !silent) {
+          Message.error(res.status + '')
+        }
+        return res
+      }
+    ]
+  }
+})
+
+export const _fetch = (input, options) => {
+  return new Promise((resolve, reject) => {
+    _ky(input, options)
+      .then(res => res.json())
+      .then(json => {
+        if (json.code === 0) {
+          resolve(json)
+        } else {
+          Message.error(json.message || '未知')
+          // throw new Error(json.message)
+          reject(json.message)
+        }
+      })
+      .catch(err => {
+        reject(err)
+      })
+  })
+}
+
 export default {
   install: function (Vue, options) {
-    const _ky = ky.extend({
-      prefixUrl: baseUrl,
-      retry: 0,
-      timeout: 300000,
-      throwHttpErrors: false,
-      hooks: {
-        afterResponse: [
-          (res, silent) => {
-            if (!res.ok && !silent) {
-              Message.error(res.status + '')
-            }
-            return res
-          }
-        ]
-      }
-    })
-
-    const _fetch = (input, options) => {
-      return new Promise((resolve, reject) => {
-        _ky(input, options)
-          .then(res => res.json())
-          .then(json => {
-            if (json.code === 0) {
-              resolve(json)
-            } else {
-              Message.error(json.message || '未知')
-              // throw new Error(json.message)
-              reject(json.message)
-            }
-          })
-          .catch(err => {
-            reject(err)
-          })
-      })
-    }
-
     Vue.prototype.$ky = _ky
     Vue.prototype.$fetch = _fetch
     for (const method of requestMethods) {

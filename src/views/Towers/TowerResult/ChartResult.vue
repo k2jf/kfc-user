@@ -84,13 +84,17 @@ export default {
           name: '校核',
           type: 'line',
           step: 'start',
-          data: _check
+          data: _check,
+          lineStyle: { width: 1 },
+          symbolSize: 2
         },
         {
           name: '优化后',
           type: 'line',
           step: 'start',
-          data: _opt
+          data: _opt,
+          lineStyle: { width: 1 },
+          symbolSize: 2
         }
       ]
     },
@@ -101,7 +105,7 @@ export default {
       return [2, 3, 4].map(ind => ({
         name: headers[ind],
         type: 'line',
-        data: items.map(ele => [ele[ind], ele[0]]),
+        data: items.filter(ele => ele[ind] <= 2).map(ele => [ele[ind], ele[0]]),
         lineStyle: { width: 1 },
         symbolSize: 1,
         markLine: {
@@ -126,7 +130,7 @@ export default {
       return [1, 2, 3].map(ind => ({
         name: headers[ind],
         type: 'line',
-        data: items.map(ele => [ele[ind], ele[0]]),
+        data: items.filter(ele => ele[ind] <= 2).map(ele => [ele[ind], ele[0]]),
         lineStyle: { width: 1 },
         symbolSize: 1,
         markLine: {

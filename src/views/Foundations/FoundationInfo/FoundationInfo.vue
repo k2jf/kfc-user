@@ -9,7 +9,7 @@
         <div class="flex flex-wrap">
           <div class="w-1/2">
             <FormItem label="项目名称：" prop="projectName" class="w-9/10">
-              {{ basicFormValidate.taskName }}
+              {{ basicFormValidate.projectName }}
               <!-- <Input v-model="basicFormValidate.projectName" /> -->
             </FormItem>
           </div>
@@ -69,7 +69,11 @@
       <div class="p-3">
         <Tabs :animated="false">
           <TabPane label="几何参数">
-            <BasicParamsCard basicType="geometry" :geometryInfo="geometryInfo" />
+            <BasicParamsCard
+              basicType="geometry"
+              :fileId="geometryFileId"
+              :fileName="geometryFileName"
+              @on-change="onGeometryChange" />
           </TabPane>
           <TabPane label="海况参数">
             海况参数
@@ -84,7 +88,7 @@
       <Button type="primary" @click="save">
         保存
       </Button>
-      <Button class="ml-3">
+      <Button class="ml-3" @click="cancel">
         取消
       </Button>
     </div>
@@ -99,8 +103,13 @@ import BasicParamsCard from '@/components/BasicParamsCard'
 
 import { baseConfig } from '@/config'
 
+/**
+ * 海况基础信息上传文件 fileKey: seaStateBase
+ * 海况载荷信息上传文件 fileKey: seaStateLoad
+ * 海况和载荷合并文件 fileKey: seaState
+ */
 export default {
-  name: 'BasicInfo',
+  name: 'FoundationInfo',
   components: {
     Button,
     Fiche,
@@ -125,7 +134,8 @@ export default {
       basicRuleValidate: {
 
       },
-      geometryInfo: null
+      geometryFileId: -1,
+      geometryFileName: ''
     }
   },
   computed: {
@@ -139,17 +149,19 @@ export default {
   },
   methods: {
     async init () {
-      if (this.$route.params.basicId === 'create') return
-      const res = await this.$get(`foundations/${this.$route.params.basicId}`)
+      if (this.$route.params.foundationId === 'create') return
+      const res = await this.$get(`foundations/${this.$route.params.foundationId}`)
       this.basicFormValidate = {
         baseType: res.body.baseType,
         projectName: res.body.projectName,
+        taskName: res.body.taskName,
         towerTaskId: res.body.towerTaskId,
         waterDepth: res.body.waterDepth,
         baseUltimate: res.body.baseUltimate
       }
       if (res.body.geometry.length > 0) {
-        this.geometryInfo = res.body.geometry[0]
+        this.geometryFileId = res.body.geometry[0].fileId
+        this.geometryFileName = res.body.geometry[0].fileName
       }
       if (res.body.constraints) {
         this.assembleBaseConfigs(res.body.constraints)
@@ -189,7 +201,7 @@ export default {
         return _item
       })
       try {
-        await this.$put(`foundations/${this.$route.params.basicId}`, {
+        await this.$put(`foundations/${this.$route.params.foundationId}`, {
           json: {
             constraints,
             baseType: this.basicFormValidate.baseType,
@@ -199,7 +211,7 @@ export default {
           }
         })
         Message.success('保存成功')
-        this.$router.push({ name: 'basics' })
+        this.$router.push({ name: 'foundations' })
       } catch (error) {
         Message.error('保存失败')
       }
@@ -211,6 +223,13 @@ export default {
         item.limitedValue = constraints[ind].limitedValue
       })
       this.baseConfig = _baseConfig
+    },
+    cancel () {
+      this.$router.push({ name: 'foundations' })
+    },
+    onGeometryChange ({ fileId, fileName }) {
+      this.geometryFileId = fileId
+      this.geometryFileName = fileName
     }
   }
 }

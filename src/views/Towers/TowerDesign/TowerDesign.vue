@@ -198,7 +198,7 @@ export default {
       })
     },
     viewTask (row) {
-      this.$router.push({ name: 'new-tower-design', params: { taskId: row.id } })
+      this.$router.push({ name: 'tower-design', params: { taskId: row.id } })
     },
     async asyncOK () {
       this.loading = true
@@ -214,7 +214,7 @@ export default {
             if (res.code === 0) {
               this.visible = false
               this.loading = false
-              this.$router.push({ name: 'new-tower-design', params: { taskId: res.body.id } })
+              this.$router.push({ name: 'tower-design', params: { taskId: res.body.id } })
             }
           } catch (error) {
             this.loading = false

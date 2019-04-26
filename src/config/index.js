@@ -28,23 +28,21 @@ export const makeCols = refstr => Array(XLSX.utils.decode_range(refstr).e.c + 1)
 export const baseConfig = [
   {
     _checked: false,
-    multiple: false,
-    name: 'mode',
+    multiple: true,
+    name: 'stress',
+    combination: '',
+    dead: '',
+    members: '',
+    waveLoad: '',
+    windLoad: '',
     limitedValue: [
       {
-        name: 'frequency',
+        name: 'P1',
         operator: null,
         value: null
-      }
-    ]
-  },
-  {
-    _checked: false,
-    multiple: false,
-    name: 'capacity',
-    limitedValue: [
+      },
       {
-        name: 'tolerance',
+        name: 'P2',
         operator: null,
         value: null
       }
@@ -54,6 +52,11 @@ export const baseConfig = [
     _checked: false,
     multiple: true,
     name: 'deflection',
+    combination: '',
+    dead: '',
+    members: '',
+    waveLoad: '',
+    windLoad: '',
     limitedValue: [
       {
         name: 'D_mudline',
@@ -74,16 +77,50 @@ export const baseConfig = [
   },
   {
     _checked: false,
-    multiple: true,
-    name: 'stress',
+    multiple: false,
+    name: 'compression',
+    combination: '',
+    dead: '',
+    members: '',
+    waveLoad: '',
+    windLoad: '',
     limitedValue: [
       {
-        name: 'P1',
+        name: 'allowable',
         operator: null,
         value: null
-      },
+      }
+    ]
+  },
+  {
+    _checked: false,
+    multiple: false,
+    name: 'tension',
+    combination: '',
+    dead: '',
+    members: '',
+    waveLoad: '',
+    windLoad: '',
+    limitedValue: [
       {
-        name: 'P2',
+        name: 'allowable',
+        operator: null,
+        value: null
+      }
+    ]
+  },
+  {
+    _checked: false,
+    multiple: false,
+    name: 'mode',
+    combination: '',
+    dead: '',
+    members: '',
+    waveLoad: '',
+    windLoad: '',
+    limitedValue: [
+      {
+        name: 'frequency',
         operator: null,
         value: null
       }
@@ -93,6 +130,11 @@ export const baseConfig = [
     _checked: false,
     multiple: false,
     name: 'fatigue',
+    combination: '',
+    dead: '',
+    members: '',
+    waveLoad: '',
+    windLoad: '',
     limitedValue: [
       {
         name: 'P1',
@@ -107,8 +149,9 @@ export const baseConfig = [
 export const baseDictionary = {
   mode:               '模态',
   frequency:          '频率',
-  capacity:           '承受力',
-  tolerance:          '承受度',
+  compression:        '抗压承载力',
+  tension:            '抗拔承载力',
+  allowable:          '许用值',
   deflection:         '变形',
   D_mudline:          'D泥面',
   D_pileTip:          'D桩端',

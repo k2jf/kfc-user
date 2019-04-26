@@ -35,7 +35,7 @@
               </ICol>
               <ICol span="6">
                 <Select
-                  style="width: 60px"
+                  style="width: 50px"
                   placeholder=""
                   :value="item.operator"
                   @on-change="onSelectChange($event, row, ind)">
@@ -44,10 +44,10 @@
                   </Option>
                 </Select>
               </ICol>
-              <ICol span="14">
+              <ICol span="12">
                 <Input
                   :value="item.value"
-                  style="width: 160px"
+                  style="width: 100%"
                   @on-change="onInputChange($event.target.value, row, ind)"
                   @on-blur="onInputBlur($event.target.value, row, ind)" />
               </ICol>
@@ -78,6 +78,36 @@
         </div>
       </template>
       <!-- ========================================================= -->
+      <!-- windLoad 风机载荷 -->
+      <!-- ========================================================= -->
+      <template slot="windLoad" slot-scope="{ row, index }">
+        <Input :value="row.windLoad" @on-change="onConfigChange($event.target.value, index, 'windLoad')" />
+      </template>
+      <!-- ========================================================= -->
+      <!-- combination 载荷组合系数 -->
+      <!-- ========================================================= -->
+      <template slot="combination" slot-scope="{ row, index }">
+        <Input :value="row.combination" @on-change="onConfigChange($event.target.value, index, 'combination')" />
+      </template>
+      <!-- ========================================================= -->
+      <!-- dead 自重 -->
+      <!-- ========================================================= -->
+      <template slot="dead" slot-scope="{ row, index }">
+        <Input :value="row.dead" @on-change="onConfigChange($event.target.value, index, 'dead')" />
+      </template>
+      <!-- ========================================================= -->
+      <!-- waveLoad 波流载荷 -->
+      <!-- ========================================================= -->
+      <template slot="waveLoad" slot-scope="{ row, index }">
+        <Input :value="row.waveLoad" @on-change="onConfigChange($event.target.value, index, 'waveLoad')" />
+      </template>
+      <!-- ========================================================= -->
+      <!-- members 结构重要性系数 -->
+      <!-- ========================================================= -->
+      <template slot="members" slot-scope="{ row, index }">
+        <Input :value="row.members" @on-change="onConfigChange($event.target.value, index, 'members')" />
+      </template>
+      <!-- ========================================================= -->
     </Table>
   </div>
 </template>
@@ -89,20 +119,41 @@ import { baseDictionary, expressions } from '@/config'
 const columns = [
   {
     type: 'selection',
-    width: 60
+    width: 50
   },
   {
     title: '校核类型',
     slot: 'name',
-    width: 200
+    width: 100
   },
   {
     title: '阈值配置',
-    slot: 'config'
+    slot: 'config',
+    width: 300
   },
   {
     title: '表达式',
     slot: 'expression'
+  },
+  {
+    title: '风机载荷',
+    slot: 'windLoad'
+  },
+  {
+    title: '载荷组合系数',
+    slot: 'combination'
+  },
+  {
+    title: '自重',
+    slot: 'dead'
+  },
+  {
+    title: '波流载荷',
+    slot: 'waveLoad'
+  },
+  {
+    title: '结构重要性系数',
+    slot: 'members'
   }
 ]
 
@@ -126,7 +177,13 @@ export default {
     return {
       columns,
       baseDictionary,
-      expressions
+      expressions,
+      magicConfig: this.baseConfig
+    }
+  },
+  watch: {
+    baseConfig (_) {
+      this.magicConfig = _
     }
   },
   methods: {
@@ -144,7 +201,20 @@ export default {
       const _limitedValue = [...row.limitedValue]
       _limitedValue[ind] = Object.assign({}, _limitedValue[ind], { [key]: value })
       const _row = Object.assign({}, row, { limitedValue: _limitedValue })
-      this.$emit('on-table-change', _row)
+      this.updateMagic(_row, ind)
+      // this.$emit('on-table-change', _row)
+    },
+    updateMagic (row, ind) {
+      const _magicConfig = [...this.magicConfig]
+      _magicConfig[ind] = row
+      this.magicConfig = _magicConfig
+    },
+    onConfigChange (value, ind, key) {
+      const row = this.magicConfig[ind]
+      const _row = Object.assign({}, row, { [key]: value })
+      console.log(_row)
+      this.updateMagic(_row, ind)
+      // this.$emit('on-table-change', _row)
     },
     onSelect (selection, row) {
       this.handleSelect(row, true)
@@ -154,7 +224,8 @@ export default {
     },
     handleSelect (row, checked) {
       const _row = Object.assign({}, row, { _checked: checked })
-      this.$emit('on-table-change', _row)
+      // this.updateMagic(_row, ind)
+      // this.$emit('on-table-change', _row)
     },
     onSelectAll () {
       this.$emit('on-select-all')

@@ -18,6 +18,9 @@ Vue.use(fetch)
 Vue.component('iSelect', Select)
 Vue.component('iOption', Option)
 Vue.prototype.$Message = Message
+Vue.prototype.$Message.config({
+  duration: 5
+})
 new Vue({
   router,
   store,

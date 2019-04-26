@@ -44,8 +44,8 @@
               </Option>
             </Select>
           </FormItem>
-          <FormItem label="载荷数据来源：" prop="dataOrigin">
-            <Select placeholder="请选择载荷数据来源" v-model="formValidate.dataOrigin" @on-change="onChange">
+          <FormItem label="载荷数据来源：" prop="loadDatasource">
+            <Select placeholder="请选择载荷数据来源" v-model="formValidate.loadDatasource" @on-change="onChange">
               <Option value="0">
                 LCC载荷
               </Option>
@@ -134,13 +134,13 @@ export default {
       visible: false,
       formValidate: {
         projectId: 0,
-        dataOrigin: ''
+        loadDatasource: ''
       },
       ruleValidate: {
         projectId: [
           { required: true, trigger: 'change', message: '不能为空' }
         ],
-        dataOrigin: [
+        loadDatasource: [
           { required: true, trigger: 'change', message: '不能为空' }
         ]
       }
@@ -208,7 +208,7 @@ export default {
             const res = await this.$post('towerTasks', {
               json: {
                 projectId: this.formValidate.projectId,
-                isOnline: this.formValidate.dataOrigin === '1'
+                loadDatasource: Number(this.formValidate.loadDatasource)
               }
             })
             if (res.code === 0) {

@@ -19,20 +19,13 @@
             </FormItem>
           </div>
           <div class="w-1/2">
-            <FormItem label="基础形式：" prop="baseType" class="w-9/10">
-              <Select placeholder="请选择载荷数据来源" v-model="basicFormValidate.baseType">
-                <Option value="need_a_name_1">
-                  单桩
-                </Option>
-                <Option value="need_a_name_2">
-                  高桩承台
-                </Option>
-              </Select>
+            <FormItem label="基础类型：" class="w-9/10">
+              {{ basicFormValidate.foundationForm === 1 ? '单桩' : '高桩' }}
             </FormItem>
           </div>
           <div class="w-1/2">
             <FormItem label="塔架设计任务名称：" prop="towerTaskId" class="w-9/10">
-              <Select placeholder="请选择载荷数据来源" v-model="basicFormValidate.towerTaskId">
+              <Select placeholder="请选择塔架设计任务" v-model="basicFormValidate.towerTaskId">
                 <Option :value="item.id" v-for="item in towerTaskList" :key="item.id">
                   {{ item.taskName }}
                 </Option>
@@ -60,20 +53,17 @@
       <div class="px-6">
         <ConstraintTable
           :baseConfig="baseConfig"
+          ref="constraints"
           @on-table-change="onTableChange"
           @on-select-all="onTableSelectAll"
           @on-cancel-all="onTableCancelAll" />
       </div>
     </Fiche>
     <Fiche title="参数信息" class="my-6">
-      <div class="p-3">
+      <div>
         <Tabs :animated="false">
           <TabPane label="几何参数">
-            <BasicParamsCard
-              basicType="geometry"
-              :fileId="geometryFileId"
-              :fileName="geometryFileName"
-              @on-change="onGeometryChange" />
+            <BasicParamsCard basicType="geometry" ref="geometry" />
           </TabPane>
           <TabPane label="海况参数">
             海况参数
@@ -101,7 +91,10 @@ import Fiche from '@/components/Fiche'
 import ConstraintTable from '@/components/ConstraintTable'
 import BasicParamsCard from '@/components/BasicParamsCard'
 
+import { mapMutations } from 'vuex'
+
 import { baseConfig } from '@/config'
+import { debug } from 'util'
 
 /**
  * 海况基础信息上传文件 fileKey: seaStateBase
@@ -126,16 +119,14 @@ export default {
   },
   data () {
     return {
-      baseConfig,
+      baseConfig: [],
       towerTaskList: [],
       basicFormValidate: {
 
       },
       basicRuleValidate: {
 
-      },
-      geometryFileId: -1,
-      geometryFileName: ''
+      }
     }
   },
   computed: {
@@ -147,21 +138,38 @@ export default {
     this.init()
     this.getTowerTaskList()
   },
+  beforeDestroy () {
+    this.syncGeometry({
+      geometry: {}
+    })
+  },
   methods: {
+    ...mapMutations('foundation', ['syncGeometry']),
     async init () {
       if (this.$route.params.foundationId === 'create') return
       const res = await this.$get(`foundations/${this.$route.params.foundationId}`)
       this.basicFormValidate = {
-        baseType: res.body.baseType,
+        foundationForm: res.body.foundationForm,
         projectName: res.body.projectName,
         taskName: res.body.taskName,
         towerTaskId: res.body.towerTaskId,
         waterDepth: res.body.waterDepth,
         baseUltimate: res.body.baseUltimate
       }
+      if (res.body.foundationForm === 1) {
+        // 单桩
+        this.baseConfig = baseConfig.filter(b => b.name !== 'tension')
+      } else {
+        this.baseConfig = baseConfig.filter(b => b.name !== 'compression' && b.name !== 'fatigue')
+      }
+
       if (res.body.geometry.length > 0) {
-        this.geometryFileId = res.body.geometry[0].fileId
-        this.geometryFileName = res.body.geometry[0].fileName
+        this.syncGeometry({
+          geometry: {
+            fileId: res.body.geometry[0].fileId,
+            fileName: res.body.geometry[0].fileName
+          }
+        })
       }
       if (res.body.constraints) {
         this.assembleBaseConfigs(res.body.constraints)
@@ -174,6 +182,7 @@ export default {
       this.towerTaskList = res.body.items
     },
     onTableChange (row) {
+      console.log(row)
       const _baseConfig = [...this.baseConfig]
       const index = _baseConfig.findIndex(b => b.name === row.name)
       _baseConfig[index] = row
@@ -194,42 +203,53 @@ export default {
       this.baseConfig = _baseConfig
     },
     async save () {
-      const constraints = this.baseConfig.map(item => {
-        const _item = Object.assign({}, item, { checked: item._checked })
-        Reflect.deleteProperty(_item, '_checked')
-        Reflect.deleteProperty(_item, 'multiple')
-        return _item
-      })
-      try {
-        await this.$put(`foundations/${this.$route.params.foundationId}`, {
-          json: {
-            constraints,
-            baseType: this.basicFormValidate.baseType,
-            waterDepth: this.basicFormValidate.waterDepth,
-            towerTaskId: this.basicFormValidate.towerTaskId,
-            baseUltimate: this.basicFormValidate.baseUltimate
-          }
-        })
-        Message.success('保存成功')
-        this.$router.push({ name: 'foundations' })
-      } catch (error) {
-        Message.error('保存失败')
-      }
+      console.log(this.$refs.constraints.magicConfig)
+      // const constraints = this.baseConfig.map(item => {
+      //   const _item = Object.assign({}, item, { checked: item._checked })
+      //   Reflect.deleteProperty(_item, '_checked')
+      //   Reflect.deleteProperty(_item, 'multiple')
+      //   return _item
+      // })
+      // const geoms = ['codes', 'lrfdPHI', 'no_PNS', 'no_PS', 'pDelta', 'plTheory', 'shearDef', 'units']
+      // let geomConfig = {}
+      // geoms.forEach(g => {
+      //   geomConfig[g] = this.$refs.geometry[g]
+      // })
+      // try {
+      //   await this.$put(`foundations/${this.$route.params.foundationId}`, {
+      //     json: {
+      //       constraints,
+      //       geomConfig,
+      //       waterDepth: this.basicFormValidate.waterDepth,
+      //       towerTaskId: this.basicFormValidate.towerTaskId,
+      //       baseUltimate: this.basicFormValidate.baseUltimate
+      //     },
+      //     silent: true
+      //   })
+      //   Message.success('保存成功')
+      //   setTimeout(() => {
+      //     this.$router.push({ name: 'foundations' })
+      //   }, 600)
+      // } catch (error) {
+      //   // Message.error('保存失败')
+      // }
     },
     assembleBaseConfigs (constraints) {
-      const _baseConfig = [...baseConfig]
+      const _baseConfig = [...this.baseConfig]
       _baseConfig.forEach((item, ind) => {
         item._checked = constraints[ind].checked
         item.limitedValue = constraints[ind].limitedValue
+        if (constraints[ind].checkedConfig) {
+          Object.entries(constraints[ind].checkedConfig).forEach(c => {
+            item[c[0]] = c[1]
+          })
+        }
       })
+      console.log(_baseConfig)
       this.baseConfig = _baseConfig
     },
     cancel () {
       this.$router.push({ name: 'foundations' })
-    },
-    onGeometryChange ({ fileId, fileName }) {
-      this.geometryFileId = fileId
-      this.geometryFileName = fileName
     }
   }
 }

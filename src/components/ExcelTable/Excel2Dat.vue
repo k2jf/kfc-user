@@ -19,9 +19,7 @@
           {{ datName }}
         </h2>
         <div class="dat p-2">
-          <pre>
-              {{ datContent }}
-            </pre>
+          <pre>{{ datContent }}</pre>
         </div>
       </div>
     </split>

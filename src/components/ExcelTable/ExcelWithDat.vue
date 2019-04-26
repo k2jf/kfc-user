@@ -2,8 +2,9 @@
   <div class="wrap">
     <div class="split-left">
       <h2 class="text-sm bg-grey-lighter pl-2 relative">
-        <aside class="absolute pin-t pin-r w-8 h-8 z-10">
-          <Icon type="ios-expand" @click="modal = true" />
+        <aside class="absolute pin-t pin-r w-24 h-8 z-10" @click="modal = true">
+          <span class="open-dat pr-2">打开dat文件</span>
+          <Icon type="ios-expand" />
         </aside>
         {{ excelName }}
       </h2>
@@ -26,9 +27,7 @@
       :styles="{top: '36px'}"
       v-model="modal">
       <div class="ido-dat">
-        <pre>
-          {{ datContent }}
-        </pre>
+        <pre>{{ datContent }}</pre>
       </div>
     </Modal>
   </div>
@@ -74,6 +73,13 @@ export default {
   data: () => ({
     modal: false
   })
+  // watch: {
+  //   datContent (value) {
+  //     if (value && value.length > 0) {
+  //       this.modal = true
+  //     }
+  //   }
+  // }
 }
 </script>
 
@@ -100,11 +106,18 @@ export default {
     height: 40px;
     line-height: 40px;
 
-    i:hover {
-      color: rgb(47, 106, 184);
-      font-weight: bold;
-      cursor: pointer;
-      transform: scale(1.1);
+    .open-dat {
+      font-size: 12px;
+      font-weight: normal;
+    }
+
+    aside:hover {
+      i, span {
+        color: rgb(47, 106, 184);
+        font-weight: bold;
+        cursor: pointer;
+        // transform: scale(1.1);
+      }
     }
   }
 </style>

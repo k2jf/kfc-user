@@ -43,7 +43,7 @@ export default {
 
     /* eslint-disable */
     // custom styles
-    cDg.style.width = '100%'
+    // cDg.style.width = '100%'
     cDg.style.height = '100%'
     cDg.style.cellFont = '12px sans-serif'
     cDg.style.activeCellFont = '12px sans-serif'
@@ -55,7 +55,7 @@ export default {
     this.dataGrid = cDg
 
     if (this.name === 'geometry') {
-      const clientW = document.getElementById('ido-body').offsetWidth - 110
+      const clientW = document.getElementById('ido-body').offsetWidth - 90
       let cellWidth = Math.floor(clientW / 6)
       if (cellWidth < 260) {
         console.log(1)

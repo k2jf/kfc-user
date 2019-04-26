@@ -19,8 +19,8 @@
             </FormItem>
           </div>
           <div class="w-1/2">
-            <FormItem label="载荷数据来源：" prop="dataOrigin" class="w-9/10">
-              {{ towerFormValidate.dataOrigin }}
+            <FormItem label="载荷数据来源：" prop="loadDatasource" class="w-9/10">
+              {{ towerFormValidate.loadDatasource }}
               <!-- <Select disabled placeholder="请选择载荷数据来源" v-model="towerFormValidate.dataOrigin">
                 <Option value="0">
                   LCC载荷
@@ -436,7 +436,7 @@ export default {
           towerHeight: res.body.towerHeight,
           towerDiameter: res.body.bottomDiameter,
           towerLegNum: res.body.sectionNumber,
-          dataOrigin: res.body.isOnline ? '载荷门户' : 'LCC载荷',
+          loadDatasource: res.body.loadDatasource === 1 ? '载荷门户' : 'LCC载荷',
           fatiguePalyload: res.body.bottomFatigue,
           limitPayload: res.body.bottomUltimate,
           comment: res.body.remark

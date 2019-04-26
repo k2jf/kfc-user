@@ -46,7 +46,8 @@
             @click.native="collapsedSider" />
           <span class="text-2xl">iDO 海上风机支撑结构一体化设计平台</span>
           <aside class="float-right mr-6">
-            <Avatar icon="ios-person"></Avatar>
+            <Avatar class="alita" :src="alita" v-if="['kk', 'kangkai'].includes(userName)"></Avatar>
+            <Avatar icon="ios-person" v-else></Avatar>
             <Dropdown trigger="click" v-if="userName" @on-click="onDropdownClick">
               <b class="px-4 text-base cursor-pointer">{{ userName }} <Icon type="ios-arrow-down" /></b>
               <DropdownMenu slot="list">
@@ -79,6 +80,7 @@ import logo from '@/assets/logo.png'
 import IDO from '@/assets/IDO.png'
 import logo1 from '@/assets/gw_logo_1.png'
 import logo2 from '@/assets/gw_logo_2.png'
+import alita from '@/assets/Alita.jpg'
 import BreadCrumb from '@/components/BreadCrumb'
 import GoldWind from '@/components/GoldWind'
 
@@ -113,6 +115,7 @@ export default {
   },
   data () {
     return {
+      alita,
       isCollapsed: false,
       logo: logo,
       IDO: IDO,
@@ -312,5 +315,12 @@ export default {
     transition: font-size .2s ease .2s, transform .2s ease .2s;
     vertical-align: middle;
     font-size: 22px;
+}
+.alita:hover {
+    transform: rotate(666turn);
+    transition-delay: 1s;
+    transition-property: all;
+    transition-duration: 59s;
+    transition-timing-function: cubic-bezier(.34,0,.84,1);
 }
 </style>

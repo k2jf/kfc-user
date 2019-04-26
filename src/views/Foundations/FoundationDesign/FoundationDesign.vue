@@ -23,12 +23,32 @@
         <Form
           :model="formValidate"
           :rules="ruleValidate"
-          :label-width="100"
+          :label-width="120"
           ref="formValidate">
           <FormItem label="项目名称：" prop="projectId">
             <Select placeholder="请选择一个项目" v-model="formValidate.projectId">
               <Option :value="item.projectId + ''" v-for="item in projects" :key="item.id">
                 {{ item.projectName }}
+              </Option>
+            </Select>
+          </FormItem>
+          <FormItem label="载荷数据来源：" prop="loadDatasource">
+            <Select placeholder="请选择载荷数据来源" v-model="formValidate.loadDatasource">
+              <Option value="0">
+                LCC载荷
+              </Option>
+              <Option value="1">
+                载荷门户
+              </Option>
+            </Select>
+          </FormItem>
+          <FormItem label="基础类型：" prop="foundationForm">
+            <Select placeholder="请选择基础类型" v-model="formValidate.foundationForm">
+              <Option value="1">
+                单桩
+              </Option>
+              <Option value="2">
+                高桩
               </Option>
             </Select>
           </FormItem>
@@ -103,6 +123,12 @@ export default {
       ruleValidate: {
         projectId: [
           { required: true, message: '项目不能为空', trigger: 'blur' }
+        ],
+        loadDatasource: [
+          { required: true, message: '载荷数据来源不能为空', trigger: 'change' }
+        ],
+        foundationForm: [
+          { required: true, message: '基础类型不能为空', trigger: 'change' }
         ]
       }
     }
@@ -146,19 +172,24 @@ export default {
       this.$router.push({ name: 'foundation-design', params: { foundationId: row.id } })
     },
     async asyncOK () {
+      console.log(1)
       this.loading = true
       this.$refs.formValidate.validate(async (valid) => {
         if (valid) {
+          console.log(2)
           try {
             const res = await this.$post('foundations', {
               json: {
-                projectId: this.formValidate.projectId
+                projectId: this.formValidate.projectId,
+                loadDatasource: Number(this.formValidate.loadDatasource),
+                foundationForm: Number(this.formValidate.foundationForm)
               }
             })
             this.visible = false
             this.loading = false
             this.$router.push({ name: 'foundation-design', params: { foundationId: res.body.id } })
           } catch (error) {
+            console.error(error)
             this.loading = false
           }
         } else {

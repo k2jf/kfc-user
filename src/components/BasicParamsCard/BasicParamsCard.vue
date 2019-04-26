@@ -2,7 +2,7 @@
   <div class="basic-params-card">
     <div>
       <Row>
-        <ICol span="6" style="line-height: 32px;" v-if="input === 'excel'">
+        <ICol span="4" style="line-height: 32px;">
           <span class="inline-block w-24 text-right">
             {{ excelTitle }}：
           </span>
@@ -34,55 +34,70 @@
           </Select>
         </ICol> -->
         <ICol span="4">
-          <span class="inline-block w-16 text-right">Units：</span>
-          <Input style="width: 60px" />
+          <span class="inline-block w-24 text-right">Units：</span>
+          <Input style="width: 60px" v-model="units" />
         </ICol>
         <ICol span="4">
-          <span class="inline-block w-16 text-right">P-Delta：</span>
-          <Input style="width: 60px" />
+          <span class="inline-block w-24 text-right">P-Delta：</span>
+          <Input style="width: 60px" v-model="pDelta" />
         </ICol>
         <ICol span="4">
-          <span class="inline-block w-16 text-right">ShearDef：</span>
-          <Input style="width: 60px" />
+          <span class="inline-block w-24 text-right">ShearDef：</span>
+          <Input style="width: 60px" v-model="shearDef" />
         </ICol>
         <ICol span="4">
-          <span class="inline-block w-16 text-right">No.Pns：</span>
-          <Input style="width: 60px" />
+          <span class="inline-block w-24 text-right">No.Pns：</span>
+          <Input style="width: 60px" v-model="no_PNS" />
+        </ICol>
+        <ICol span="4">
+          <span class="inline-block w-24 text-right">No.PS：</span>
+          <Input style="width: 60px" v-model="no_PS" />
         </ICol>
       </Row>
       <Row class="my-3">
+        <ICol span="4">
+          <span class="inline-block w-24 text-right">Codes：</span>
+          <Input style="width: 60px" v-model="codes" />
+        </ICol>
+        <ICol span="4">
+          <span class="inline-block w-24 text-right">PL Theory：</span>
+          <Input style="width: 60px" v-model="plTheory" />
+        </ICol>
+        <ICol span="4">
+          <span class="inline-block w-24 text-right">LRFD PHI：</span>
+          <Input style="width: 60px" v-model="lrfdPHI" />
+        </ICol>
         <ICol span="6">
-          <span class="inline-block w-24 text-right">No.PS：</span>
-          <Input style="width: 60px" />
-        </ICol>
-        <ICol span="4">
-          <span class="inline-block w-16 text-right">No.Pns：</span>
-          <Input style="width: 60px" />
-        </ICol>
-        <ICol span="4">
-          <span class="inline-block w-16 text-right">No.Pns：</span>
-          <Input style="width: 60px" />
-        </ICol>
-        <ICol span="4">
-          <span class="inline-block w-16 text-right">No.Pns：</span>
-          <Input style="width: 60px" />
-        </ICol>
-        <ICol span="4">
-          <Button type="info">
+          <Button type="info" class="mx-8" @click="createDat">
             生成模型
+          </Button>
+          <Button @click="clearTable">
+            清空表格
           </Button>
         </ICol>
       </Row>
     </div>
     <Excel2Dat
       :excelName="fileName"
-      datName="xxx.dat"
-      :datContent="DAT"
+      :datName="datName"
+      :datContent="datContent"
       :paramType="basicType"
       :sheetdata="sheetdata"
-      :ws="originSheets" />
-    </Split>
-  </div>
+      :ws="originSheets"
+      v-if="isSplit" />
+    <ExcelWithDat
+      :excelName="fileName"
+      :datName="datName"
+      :datContent="datContent"
+      :paramType="basicType"
+      :sheetdata="sheetdata"
+      :ws="originSheets"
+      v-else />
+    <div class="transform text-right mt-2">
+      <a href="javascript:void 0" class="ido-link" @click="isSplit = !isSplit">
+        改变dat显示方式
+      </a>
+    </div>
   </div>
 </template>
 
@@ -90,70 +105,75 @@
 // geometry： 几何
 // seaState： 海况
 // geology： 地质
-import { Input, Select, Option, Upload, Row, Col, Button, Message, Split } from 'iview'
-import ExcelTable from '@/components/ExcelTable'
+import { Input, Upload, Row, Col, Button, Message } from 'iview'
 import { baseUrl } from '@/config'
 import XLSX from 'xlsx'
-import mixins from '@/mixins/basicExcel.js'
-import Excel2Dat from '@/components/ExcelTable/ExcelWithDat'
+import ExcelWithDat from '@/components/ExcelTable/ExcelWithDat'
+import Excel2Dat from '@/components/ExcelTable/Excel2Dat'
 
-import DAT from './dat'
-
-// const DataGrid2 = Object.assign({}, DataGrid, {
-//   mixins: [mixins]
-// })
+import { mapState, mapMutations } from 'vuex'
 
 const mapping = {
   'geometry': '几何图形参数表'
+}
+
+const datMapping = {
+  'geometry': 'sacinp.dat',
+  'seaState': 'seainp.dat',
+  'geology': 'psiinp.dat'
 }
 
 export default {
   name: 'BasicParamsCard',
   components: {
     Input,
-    Select,
-    Option,
     Upload,
     Row,
     ICol: Col,
     Button,
-    DataGrid: ExcelTable,
-    Split,
-    Excel2Dat
+    Excel2Dat,
+    ExcelWithDat
+
   },
   props: {
     basicType: {
       type: String,
       required: true
-    },
-    fileId: {
-      type: Number,
-      required: true
-    },
-    fileName: {
-      type: String,
-      required: true
     }
   },
-  data: () => ({
-    DAT,
-    input: 'excel',
-    name: '',
-    nodes: [1, 2, 3, 4, 5, 6, 7],
-    node: 7,
-    steels: ['Q345', 'Q346', 'Q347', 'Q348', 'Q349'],
-    steel: 'Q345',
-    excelTitle: '',
-    action: '',
-    projectName: '',
-    baseUltimate: 0,
-    sheetdata: [],
-    originSheets: {},
-    split: 0.9
-  }),
+  data () {
+    return {
+      input: 'excel',
+      name: '',
+      excelTitle: '',
+      action: '',
+      sheetdata: [],
+      originSheets: {},
+      datContent: '',
+      datName: datMapping[this.basicType],
+      isSplit: false,
+      codes: '',
+      lrfdPHI: '',
+      no_PNS: '',
+      no_PS: '',
+      pDelta: '',
+      plTheory: '',
+      shearDef: '',
+      units: ''
+    }
+  },
+  computed: {
+    ...mapState({
+      fileId: state => state.foundation.geometry.fileId,
+      fileName: state => state.foundation.geometry.fileName
+    })
+  },
   watch: {
     fileId (id) {
-      this.getExcel(id)
+      if (id && id > -1) {
+        this.getExcel(id)
+        this.getDat(id)
+      }
     }
   },
   created () {
@@ -161,6 +181,7 @@ export default {
     this.action = baseUrl + `foundations/${this.$route.params.foundationId}/upload?fileKey=${this.basicType}`
   },
   methods: {
+    ...mapMutations('foundation', ['syncGeometry']),
     async getExcel (fileId) {
       try {
         const data = await this.$ky.get(`towerTasks/stream?fileId=${fileId}`).arrayBuffer()
@@ -176,15 +197,28 @@ export default {
 
       }
     },
-    onUploadError () {
-
+    async getDat (fileId) {
+      const res = await this.$get(`foundations/datFile?excelId=${this.fileId}`)
+      this.datContent = res.body.datText
     },
-    onUploadSuccess (response, file, fileList) {
+    onUploadError () {
+      Message.error('上传失败')
+    },
+    onUploadSuccess (res, file, fileList) {
       Message.success('上传成功')
-      this.$emit('on-change', {
-        fileId: response.body.fileId,
-        fileName: response.body.fileName
+      this.syncGeometry({
+        geometry: {
+          fileId: res.body.fileId,
+          fileName: res.body.fileName
+        }
       })
+    },
+    async createDat () {
+      const res = await this.$put(`foundations/datFile?excelId=${this.fileId}`)
+      this.datContent = res.body.datText
+    },
+    clearTable () {
+
     }
   }
 }

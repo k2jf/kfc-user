@@ -1,3 +1,9 @@
-import _ from './BasicParamsCard.vue'
+import Geometry from './Geometry.vue'
+import SeaState from './SeaState.vue'
+import Geology from './Geology.vue'
 
-export default _
+export {
+  Geometry,
+  SeaState,
+  Geology
+}

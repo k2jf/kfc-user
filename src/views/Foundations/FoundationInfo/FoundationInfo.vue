@@ -38,8 +38,8 @@
             </FormItem>
           </div>
           <div class="w-1/2">
-            <FormItem label="水深：" prop="waterDepth" class="w-9/10">
-              <Input v-model="basicFormValidate.waterDepth" />
+            <FormItem label="泥面高程(m)：" prop="mudlineElevation" class="w-9/10">
+              <Input v-model="basicFormValidate.mudlineElevation" />
             </FormItem>
           </div>
         </div>
@@ -53,23 +53,20 @@
       <div class="px-6">
         <ConstraintTable
           :baseConfig="baseConfig"
-          ref="constraints"
-          @on-table-change="onTableChange"
-          @on-select-all="onTableSelectAll"
-          @on-cancel-all="onTableCancelAll" />
+          ref="constraints" />
       </div>
     </Fiche>
     <Fiche title="参数信息" class="my-6">
       <div>
         <Tabs :animated="false">
           <TabPane label="几何参数">
-            <BasicParamsCard basicType="geometry" ref="geometry" />
+            <Geometry basicType="geometry" ref="geometry" />
           </TabPane>
           <TabPane label="海况参数">
-            海况参数
+            <SeaState basicType="seaState" ref="seaState" />
           </TabPane>
           <TabPane label="地质参数">
-            地质参数
+            <Geology basicType="geology" ref="geology" />
           </TabPane>
         </Tabs>
       </div>
@@ -86,15 +83,14 @@
 </template>
 
 <script>
-import { Button, Input, Form, FormItem, Select, Option, Icon, Tabs, TabPane, Message } from 'iview'
+import { Button, Input, Form, FormItem, Select, Option, Tabs, TabPane, Message } from 'iview'
 import Fiche from '@/components/Fiche'
 import ConstraintTable from '@/components/ConstraintTable'
-import BasicParamsCard from '@/components/BasicParamsCard'
+import { Geometry, SeaState, Geology } from '@/components/BasicParamsCard'
 
 import { mapMutations } from 'vuex'
 
-import { baseConfig } from '@/config'
-import { debug } from 'util'
+import { constraintConfig } from '@/config'
 
 /**
  * 海况基础信息上传文件 fileKey: seaStateBase
@@ -111,11 +107,12 @@ export default {
     FormItem,
     Select,
     Option,
-    Icon,
     ConstraintTable,
     Tabs,
     TabPane,
-    BasicParamsCard
+    Geometry,
+    SeaState,
+    Geology
   },
   data () {
     return {
@@ -153,14 +150,14 @@ export default {
         projectName: res.body.projectName,
         taskName: res.body.taskName,
         towerTaskId: res.body.towerTaskId,
-        waterDepth: res.body.waterDepth,
+        mudlineElevation: res.body.mudlineElevation,
         baseUltimate: res.body.baseUltimate
       }
       if (res.body.foundationForm === 1) {
         // 单桩
-        this.baseConfig = baseConfig.filter(b => b.name !== 'tension')
+        this.baseConfig = constraintConfig.filter(b => b.name !== 'tension')
       } else {
-        this.baseConfig = baseConfig.filter(b => b.name !== 'compression' && b.name !== 'fatigue')
+        this.baseConfig = constraintConfig.filter(b => b.name !== 'compression' && b.name !== 'fatigue')
       }
 
       if (res.body.geometry.length > 0) {
@@ -181,71 +178,63 @@ export default {
       })
       this.towerTaskList = res.body.items
     },
-    onTableChange (row) {
-      console.log(row)
-      const _baseConfig = [...this.baseConfig]
-      const index = _baseConfig.findIndex(b => b.name === row.name)
-      _baseConfig[index] = row
-      this.baseConfig = _baseConfig
-    },
-    onTableSelectAll () {
-      const _baseConfig = [...this.baseConfig]
-      _baseConfig.forEach(b => {
-        b._checked = true
-      })
-      this.baseConfig = _baseConfig
-    },
-    onTableCancelAll () {
-      const _baseConfig = [...this.baseConfig]
-      _baseConfig.forEach(b => {
-        b._checked = false
-      })
-      this.baseConfig = _baseConfig
-    },
     async save () {
-      console.log(this.$refs.constraints.magicConfig)
-      // const constraints = this.baseConfig.map(item => {
-      //   const _item = Object.assign({}, item, { checked: item._checked })
-      //   Reflect.deleteProperty(_item, '_checked')
-      //   Reflect.deleteProperty(_item, 'multiple')
-      //   return _item
-      // })
-      // const geoms = ['codes', 'lrfdPHI', 'no_PNS', 'no_PS', 'pDelta', 'plTheory', 'shearDef', 'units']
-      // let geomConfig = {}
-      // geoms.forEach(g => {
-      //   geomConfig[g] = this.$refs.geometry[g]
-      // })
-      // try {
-      //   await this.$put(`foundations/${this.$route.params.foundationId}`, {
-      //     json: {
-      //       constraints,
-      //       geomConfig,
-      //       waterDepth: this.basicFormValidate.waterDepth,
-      //       towerTaskId: this.basicFormValidate.towerTaskId,
-      //       baseUltimate: this.basicFormValidate.baseUltimate
-      //     },
-      //     silent: true
-      //   })
-      //   Message.success('保存成功')
-      //   setTimeout(() => {
-      //     this.$router.push({ name: 'foundations' })
-      //   }, 600)
-      // } catch (error) {
-      //   // Message.error('保存失败')
-      // }
+      const constraints = this.$refs.constraints.magicConfig.filter(m => m._checked).map(item => {
+        return {
+          checked: item._checked,
+          name: item.name,
+          limitedValue: item.limitedValue,
+          checkedConfig: {
+            windLoad: item.windLoad,
+            waveLoad: item.waveLoad,
+            combination: item.combination,
+            dead: item.dead,
+            members: item.members
+          }
+        }
+      })
+      const geoms = ['codes', 'lrfdPHI', 'no_PNS', 'no_PS', 'pDelta', 'plTheory', 'shearDef', 'units']
+      let geomConfig = {}
+      geoms.forEach(g => {
+        geomConfig[g] = this.$refs.geometry[g]
+      })
+      try {
+        await this.$put(`foundations/${this.$route.params.foundationId}`, {
+          json: {
+            constraints,
+            geomConfig,
+            mudlineElevation: this.basicFormValidate.mudlineElevation,
+            towerTaskId: this.basicFormValidate.towerTaskId,
+            baseUltimate: this.basicFormValidate.baseUltimate
+          },
+          silent: true
+        })
+        Message.success('保存成功')
+        setTimeout(() => {
+          this.$router.push({ name: 'foundations' })
+        }, 600)
+      } catch (error) {
+        // Message.error('保存失败')
+      }
     },
     assembleBaseConfigs (constraints) {
       const _baseConfig = [...this.baseConfig]
-      _baseConfig.forEach((item, ind) => {
-        item._checked = constraints[ind].checked
-        item.limitedValue = constraints[ind].limitedValue
-        if (constraints[ind].checkedConfig) {
-          Object.entries(constraints[ind].checkedConfig).forEach(c => {
-            item[c[0]] = c[1]
+      for (let i = 0; i < constraints.length; i++) {
+        const index = _baseConfig.findIndex(b => b.name === constraints[i].name)
+        const config = _baseConfig.find(b => b.name === constraints[i].name)
+        let _config = {
+          multiple: config.multiple,
+          name: constraints[i].name,
+          _checked: constraints[i].checked,
+          limitedValue: constraints[i].limitedValue
+        }
+        if (constraints[i].checkedConfig) {
+          Object.entries(constraints[i].checkedConfig).forEach(c => {
+            _config[c[0]] = c[1]
           })
         }
-      })
-      console.log(_baseConfig)
+        _baseConfig.splice(index, 1, _config)
+      }
       this.baseConfig = _baseConfig
     },
     cancel () {

@@ -37,7 +37,7 @@ export default [
         h(Tooltip, {
           props: {
             placement: 'top',
-            content: D(params.row.createTime).format('YYYY-MM-DD hh:mm:ss')
+            content: D(params.row.createTime).format('YYYY-MM-DD HH:mm:ss')
           }
         }, [D(params.row.createTime).format('YYYY-MM-DD')])
       ])

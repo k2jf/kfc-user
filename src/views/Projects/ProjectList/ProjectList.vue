@@ -15,7 +15,7 @@
       </a>
     </div>
     <div class="h-calc-16">
-      <Row>
+      <Row v-if="projects.length > 0">
         <ICol
           class="p-3 bt-4"
           :xs="12"
@@ -56,6 +56,9 @@
           </Card>
         </ICol>
       </Row>
+      <div v-else>
+        暂无项目
+      </div>
       <!-- <div
         class="w-full sm:w-1/2 md:w-1/2 lg:w-1/3 xl:w-1/3 mb-4 p-3"
         v-for="item in projects"
@@ -68,14 +71,6 @@
 <script>
 import { RadioGroup, Radio, Input, Card, Divider, Icon, Row, Col } from 'iview'
 import D from 'dayjs'
-
-const generate = (num) => {
-  let arr = []
-  for (let i = 0; i < num; i++) {
-    arr.push({ id: i, name: 'card' + i, date: D().format('YYYY-MM-DD') })
-  }
-  return arr
-}
 
 export default {
   name: 'ProjectList',
@@ -97,7 +92,7 @@ export default {
         { id: 'done', value: '已完成' }
       ],
       value: '',
-      projects: generate(12),
+      projects: [],
       D
     }
   },

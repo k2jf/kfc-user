@@ -1,5 +1,5 @@
 <template>
-  <div class="table-result h-full px-3">
+  <div class="table-result h-full px-3 overflow-auto">
     <div class="result">
       <Table
         border
@@ -26,6 +26,7 @@
       <Table
         border
         stripe
+        :height="500"
         :columns="adjustColumns"
         :data="adjustData">
         <template slot="thickness" slot-scope="{ row }">
@@ -36,12 +37,18 @@
         </template>
       </Table>
     </div>
+    <div class="operator text-center pt-4">
+      <Button type="primary" class="mr-3">
+        保存
+      </Button>
+      <Button>取消</Button>
+    </div>
   </div>
 </template>
 
 <script>
 import { columns, adjustColumns } from './columns.js'
-import { Table, Row, Col, Input, inputNumber } from 'iview'
+import { Table, Row, Col, Input, inputNumber, Button } from 'iview'
 
 export default {
   name: 'TableResult',
@@ -50,7 +57,8 @@ export default {
     Row,
     ICol: Col,
     Input,
-    inputNumber
+    inputNumber,
+    Button
   },
   data: () => ({
     results: {},

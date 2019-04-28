@@ -25,7 +25,7 @@ export const sheetJSFT = [
 export const makeCols = refstr => Array(XLSX.utils.decode_range(refstr).e.c + 1)
   .fill(0).map((x, i) => ({ name: XLSX.utils.encode_col(i), key: i }))
 
-export const baseConfig = [
+export const constraintConfig = [
   {
     _checked: false,
     multiple: true,

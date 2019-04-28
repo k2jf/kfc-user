@@ -48,8 +48,7 @@
                 <Input
                   :value="item.value"
                   style="width: 100%"
-                  @on-change="onInputChange($event.target.value, row, ind)"
-                  @on-blur="onInputBlur($event.target.value, row, ind)" />
+                  @on-change="onInputChange($event.target.value, row, ind)" />
               </ICol>
             </Row>
           </div>
@@ -178,31 +177,29 @@ export default {
       columns,
       baseDictionary,
       expressions,
-      magicConfig: this.baseConfig
+      magicConfig: [...this.baseConfig]
     }
   },
   watch: {
     baseConfig (_) {
-      this.magicConfig = _
+      this.magicConfig = [..._]
     }
+  },
+  beforeDestroy () {
+    this.magicConfig = []
   },
   methods: {
     onSelectChange (value, row, ind) {
       this.equip(...[...arguments, 'operator'])
     },
-    onInputBlur (value, row, ind) {
-      this.equip(...[...arguments, 'value'])
-    },
-    onInputChange (value, row, ind) {
-      const _limitedValue = [...row.limitedValue]
-      Object.assign(_limitedValue[ind], { value })
+    onInputChange (value, ...others) {
+      this.equip(...[Number(value), ...others, 'value'])
     },
     equip (value, row, ind, key) {
       const _limitedValue = [...row.limitedValue]
-      _limitedValue[ind] = Object.assign({}, _limitedValue[ind], { [key]: value })
-      const _row = Object.assign({}, row, { limitedValue: _limitedValue })
+      _limitedValue[ind] = Object.assign(_limitedValue[ind], { [key]: value })
+      const _row = Object.assign({}, row, { limitedValue: _limitedValue, _checked: this.magicConfig[ind]._checked })
       this.updateMagic(_row, ind)
-      // this.$emit('on-table-change', _row)
     },
     updateMagic (row, ind) {
       const _magicConfig = [...this.magicConfig]
@@ -211,10 +208,8 @@ export default {
     },
     onConfigChange (value, ind, key) {
       const row = this.magicConfig[ind]
-      const _row = Object.assign({}, row, { [key]: value })
-      console.log(_row)
+      const _row = Object.assign({}, row, { [key]: Number(value), _checked: this.magicConfig[ind]._checked })
       this.updateMagic(_row, ind)
-      // this.$emit('on-table-change', _row)
     },
     onSelect (selection, row) {
       this.handleSelect(row, true)
@@ -224,14 +219,22 @@ export default {
     },
     handleSelect (row, checked) {
       const _row = Object.assign({}, row, { _checked: checked })
-      // this.updateMagic(_row, ind)
-      // this.$emit('on-table-change', _row)
+      const ind = this.magicConfig.findIndex(b => b.name === row.name)
+      this.updateMagic(_row, ind)
     },
     onSelectAll () {
-      this.$emit('on-select-all')
+      const _magicConfig = [...this.magicConfig]
+      _magicConfig.forEach(b => {
+        b._checked = true
+      })
+      this.magicConfig = _magicConfig
     },
     onSelectNone () {
-      this.$emit('on-cancel-all')
+      const _magicConfig = [...this.magicConfig]
+      _magicConfig.forEach(b => {
+        b._checked = false
+      })
+      this.magicConfig = _magicConfig
     }
   }
 }
@@ -270,6 +273,8 @@ export default {
 }
 .expression-item {
   height: 53px;
+  overflow: hidden;
+  white-space: nowrap;
 
   &.multiple-row {
     line-height: 32px;

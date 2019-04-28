@@ -59,7 +59,7 @@ export default {
     },
     title: {
       type: String,
-      default: 'IDO'
+      default: 'iDO'
     },
     subTitle: {
       type: String,

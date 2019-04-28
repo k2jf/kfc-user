@@ -2,7 +2,7 @@
 <template>
   <div style="height: 100%;">
     <Row :gutter="16" class="margin-bottom">
-      <Col span="16">
+      <Col span="18">
       资源类型:
       <Select
         transfer
@@ -24,8 +24,22 @@
       >
         添加权限
       </Button>
+      <Button
+        type="primary"
+        style="margin-left: 10px"
+        @click="showSettingModal"
+      >
+        批量编辑
+      </Button>
+      <Button
+        type="primary"
+        style="margin-left: 10px"
+        @click="showConfirmModal(getResourceIds.join(','))"
+      >
+        批量删除
+      </Button>
       </Col>
-      <Col span="8">
+      <Col span="6">
       <Input
         placeholder="搜索资源个例"
         v-model="resourceData.fuzzyName"
@@ -40,13 +54,21 @@
       v-if="currentUser"
       @on-submit="getSubmitResource"
       @on-close="isShowAuthModal = false" />
+    <ResourceSetting
+      :currentUser="currentUser"
+      :isShowSettingModal="isShowSettingModal"
+      :resourceIdList="getResourceIds"
+      :operations="getOperations"
+      v-if="currentUser"
+      @on-submit="onReloadList"
+      @on-close="isShowSettingModal = false" />
     <Table
       :columns="resourceData.columns"
       :data="resourceData.data"
       size="small"
-      height="300"
       :loading="resourceData.loading"
-      class="margin-bottom"></Table>
+      class="margin-bottom"
+      @on-selection-change="onSelectionChange"></Table>
     <ConfirmModal ref="confirmModal" @transfer-ok="onDeleteClick"></ConfirmModal>
   </div>
 </template>
@@ -55,6 +77,8 @@
 // eslint-disable-next-line
 import { Col, Row, Input, Select, Option, Table, Icon, Button, Switch, DatePicker } from 'iview'
 import ResourceEdit from './ResourceEdit.vue'
+import ResourceSetting from './ResourceSetting.vue'
+import OperationCell from './OperationCell.vue'
 import ConfirmModal from '../components/ConfirmModal.vue'
 
 import api from '../api'
@@ -70,7 +94,8 @@ export default {
     Table,
     Button,
     ResourceEdit,
-    ConfirmModal
+    ConfirmModal,
+    ResourceSetting
   },
   props: {
     currentUser: {
@@ -83,6 +108,7 @@ export default {
   },
   data () {
     return {
+      isShowSettingModal: false,
       isShowAuthModal: false,
       resourceTypeList: [],
       id: null, // 删除id
@@ -91,11 +117,28 @@ export default {
         fuzzyName: '',
         typeId: 0,
         data: [],
+        selections: [],
         columns: [
-          { title: '资源个例名称', key: 'resourceName', minWidth: 130 },
-          { title: '权限', key: 'operations', minWidth: 80 },
+          { type: 'selection', width: 60, align: 'center' },
+          { title: '资源个例名称', key: 'resourceName', minWidth: 100 },
+          { title: '操作类型',
+            minWidth: 220,
+            render: (h, params) => {
+              return h(OperationCell, {
+                props: {
+                  operations: params.row.operations,
+                  operationList: this.getOperations
+                },
+                on: {
+                  change: (operations) => {
+                    this.onOperationChange(operations, params.index)
+                  }
+                }
+              })
+            }
+          },
           { title: '起止时间',
-            minWidth: 240,
+            minWidth: 220,
             render: (h, params) => {
               return h('div', [
                 h(DatePicker, {
@@ -118,7 +161,7 @@ export default {
             }
           },
           { title: '是否生效',
-            minWidth: 100,
+            width: 90,
             render: (h, params) => {
               return h('div', [
                 h(Switch, {
@@ -171,6 +214,17 @@ export default {
       }
     }
   },
+  computed: {
+    getResourceIds () {
+      return this.resourceData.selections.map(item => item.resourceId)
+    },
+    getOperations () {
+      let typeId = this.resourceData.typeId
+      let typeInfo = this.resourceTypeList.find(item => item.id === typeId)
+      if (!this.resourceTypeList.length || !typeInfo) return []
+      return typeInfo ? typeInfo.operations : []
+    }
+  },
   watch: {
     currentUser: {
       handler (curVal, oldVal) {
@@ -191,16 +245,30 @@ export default {
     onSearchClick () {
       this.getResourceData()
     },
+    onSelectionChange (selections) {
+      this.resourceData.selections = selections
+    },
     // 删除权限
     showConfirmModal (id) {
       this.id = id
+      if (!id) {
+        this.$Message.warning('请选择权限！')
+        return
+      }
       this.$refs.confirmModal.handleModal({
         content: '是否确认删除？'
       })
     },
+    showSettingModal () {
+      if (!this.resourceData.selections.length) {
+        this.$Message.warning('请选择权限！')
+        return
+      }
+      this.isShowSettingModal = true
+    },
     // 确认删除
     onDeleteClick () {
-      this.$axios.delete(`${api.authorizes}/${this.currentUser.id}/permissions/${this.id}`).then(res => {
+      this.$axios.delete(`${api.authorizes}/${this.currentUser.id}/permissions?resourceIds=${this.id}`).then(res => {
         this.$Message.success('删除成功！')
         this.getResourceData()
       })
@@ -217,9 +285,9 @@ export default {
       this.$axios.get(url).then(res => {
         res.data.body.permissions.forEach(item => {
           item.disabled = item.disabled === undefined ? false : item.disabled
-          item.effectTime = new Date(item.effectTime) || new Date()
-          item.expireTime = new Date(item.expireTime) || new Date()
-          item.valiableTime = [item.effectTime, item.expireTime]
+          item.effectTime = item.effectTime || new Date()
+          item.expireTime = item.expireTime || new Date()
+          item.valiableTime = [new Date(item.effectTime), new Date(item.expireTime)]
         })
         this.resourceData.data = res.data.body.permissions
       }).finally(() => {
@@ -230,20 +298,32 @@ export default {
       let { resourceId, effectTime, expireTime, disabled } = this.resourceData.data[index]
       effectTime = Number(new Date(effectTime))
       expireTime = Number(new Date(expireTime))
-      let url = `${api.authorizes}/${this.currentUser.id}/permissions/${resourceId}?effectTime=${effectTime}&expireTime=${expireTime}&disabled=${disabled}`
-      this.$axios.put(url)
+      let url = `${api.authorizes}/${this.currentUser.id}/permissions?resourceIds=${resourceId}&action=config`
+      this.$axios.put(url, { effectTime, expireTime, disabled }).then(() => {
+        this.getResourceData()
+      })
+    },
+    onOperationChange (operations, index) {
+      let { resourceId } = this.resourceData.data[index]
+      let url = `${api.authorizes}/${this.currentUser.id}/permissions?resourceIds=${resourceId}&action=config`
+      this.$axios.put(url, { operations })
     },
     // 资源类型改变
     onTypeChange () {
       this.getResourceData()
     },
     // 获取新增权限
-    getSubmitResource (resource) {
+    getSubmitResource (typeId) {
       this.isShowAuthModal = false
-      if (resource && resource.typeId === this.resourceData.typeId) {
+      if (typeId === this.resourceData.typeId) {
         // 新增权限类型为当前列表显示类型刷新页面
         this.getResourceData()
       }
+    },
+    // 批量编辑权限后刷新页面
+    onReloadList () {
+      this.isShowSettingModal = false
+      this.getResourceData()
     }
   }
 }

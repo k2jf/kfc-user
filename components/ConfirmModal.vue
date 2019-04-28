@@ -8,7 +8,9 @@
       {{ content }}
     </div>
     <div slot="footer">
-      <Button @click="onModalCancel">取消</Button>
+      <Button @click="onModalCancel">
+        取消
+      </Button>
       <Button type="primary" @click="onModalOk">
         确认
       </Button>

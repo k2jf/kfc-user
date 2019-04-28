@@ -2,7 +2,11 @@
 
 ## 确认删除后触发事件transfer-ok
 
+## 维护人：
+youli
+
 ##使用示例：
+```
   import ConfirmModal from './ConfirmModal.vue'
   <ConfirmModal ref="confirmModal" @transfer-ok="onDeleteOk"></ConfirmModal>
   <!-- 删除提示 -->
@@ -17,4 +21,5 @@
       duration: 3
     })
   }
-维护人：尤丽
+
+```

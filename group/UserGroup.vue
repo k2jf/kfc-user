@@ -160,7 +160,7 @@ export default {
       this.$axios.get(url).then(res => {
         this.group.data = res.data.body.userGroups
         if (this.tableHeight > res.data.body.userGroups.length * 40 + 32) {
-          this.tableHeight = res.data.body.userGroups.length * 40 + 32
+          this.tableHeight = res.data.body.userGroups.length ? res.data.body.userGroups.length * 40 + 32 : 72
         } else {
           let cur = this.$refs.groupContainer
           this.tableHeight = cur.clientHeight - 43

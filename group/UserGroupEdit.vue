@@ -23,7 +23,7 @@
 
 <script>
 import { Modal } from 'iview'
-import K2Transfer from '@/components/kfc-k2transfer'
+import K2Transfer from '@/components/kfc-transfer'
 
 import api from '../api'
 

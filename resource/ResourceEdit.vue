@@ -40,21 +40,13 @@
           </K2Transfer>
         </div>
       </FormItem>
-      <FormItem label="操作" prop="operations">
-        <CheckboxGroup v-model="operations">
-          <Checkbox
-            :label="item"
-            v-for="item in getOperations"
-            :key="item"></Checkbox>
-        </CheckboxGroup>
-      </FormItem>
     </Form>
   </Modal>
 </template>
 
 <script>
-import { Modal, Form, FormItem, Select, Option, CheckboxGroup, Checkbox } from 'iview'
-import K2Transfer from '@/components/kfc-k2transfer'
+import { Modal, Form, FormItem, Select, Option } from 'iview'
+import K2Transfer from '@/components/kfc-transfer'
 
 import api from '../api'
 
@@ -66,8 +58,6 @@ export default {
     FormItem,
     Select,
     Option,
-    CheckboxGroup,
-    Checkbox,
     K2Transfer
   },
   props: {
@@ -94,7 +84,6 @@ export default {
   data () {
     return {
       isShowModal: this.isShowAuthModal,
-      operations: [], // 选中操作
       resourceData: {
         typeId: this.typeId,
         data: [],
@@ -112,10 +101,6 @@ export default {
           label: item.name
         }
       })
-    },
-    getOperations () {
-      if (!this.resourceData.typeId) return
-      return this.resourceTypeList.find(item => item.id === this.resourceData.typeId).operations
     }
   },
   watch: {
@@ -124,7 +109,6 @@ export default {
         this.isShowModal = curVal
         // 清空选中参数
         this.resourceData.selectKeys.splice(0, this.resourceData.selectKeys.length)
-        this.operations.splice(0, this.operations.length)
         this.resourceData.typeId = ''
         this.resourceData.data.splice(0, this.resourceData.data.length)
       }
@@ -145,13 +129,13 @@ export default {
     onClickOk () {
       let resourceIds = this.resourceData.selectKeys.join(',')
       let permission = {
-        resourceIds,
-        operations: this.operations.join(',')
+        resourceTypeId: this.resourceData.typeId,
+        resourceIds
       }
 
       this.$axios.put(`${api.authorizes}/${this.currentUser.id}/permissions`, permission).then(res => {
         this.$Message.success('新建成功！')
-        this.$emit('on-submit', permission)
+        this.$emit('on-submit', this.resourceData.typeId)
         this.$refs.formValidate.resetFields()
       }).catch(() => {
         this.$emit('on-close')
@@ -171,8 +155,17 @@ export default {
     onTypeChange () {
       // 清空选中参数
       this.resourceData.selectKeys.splice(0, this.resourceData.selectKeys.length)
-      this.operations.splice(0, this.operations.length)
       this.getResourceData()
+
+      let { typeId } = this.resourceData
+      let { id } = this.currentUser
+      let url = `${api.authorizes}/${id}/permissions?resourceTypeId=${typeId}`
+
+      if (typeId === undefined) return
+
+      this.$axios.get(url).then(res => {
+        this.resourceData.selectKeys = res.data.body.permissions.map(item => item.resourceId)
+      })
     },
     handleChange (selectedFields) {
       this.resourceData.selectKeys = selectedFields

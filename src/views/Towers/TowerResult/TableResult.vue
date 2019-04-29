@@ -29,7 +29,7 @@
         :height="500"
         :columns="adjustColumns"
         :data="adjustData">
-        <template slot="limt" slot-scope="{row, column}">
+        <template slot="limit" slot-scope="{row, column}">
           <span :class="markClass(row, column)">{{ row[column.title] }}</span>
         </template>
         <template slot="thickness" slot-scope="{ row, index }">

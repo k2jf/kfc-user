@@ -58,7 +58,7 @@
     </Fiche>
     <Fiche title="参数信息" class="my-6">
       <div>
-        <Tabs :animated="false">
+        <Tabs :animated="false" @on-click="onTabClick">
           <TabPane label="几何参数">
             <Geometry basicType="geometry" ref="geometry" />
           </TabPane>
@@ -136,12 +136,12 @@ export default {
     this.getTowerTaskList()
   },
   beforeDestroy () {
-    this.syncGeometry({
-      geometry: {}
-    })
+    this.syncGeometry({ geometry: {} })
+    this.syncSeaState({ seaState: {} })
+    this.syncGeology({ geology: {} })
   },
   methods: {
-    ...mapMutations('foundation', ['syncGeometry']),
+    ...mapMutations('foundation', ['syncGeometry', 'syncSeaState', 'syncGeology']),
     async init () {
       if (this.$route.params.foundationId === 'create') return
       const res = await this.$get(`foundations/${this.$route.params.foundationId}`)
@@ -165,6 +165,24 @@ export default {
           geometry: {
             fileId: res.body.geometry[0].fileId,
             fileName: res.body.geometry[0].fileName
+          }
+        })
+      }
+
+      if (res.body.geology.length > 0) {
+        this.syncGeology({
+          geology: {
+            fileId: res.body.geology[0].fileId,
+            fileName: res.body.geology[0].fileName
+          }
+        })
+      }
+
+      if (res.body.seaState.length > 0) {
+        this.syncSeaState({
+          seaState: {
+            fileId: res.body.seaState[0].fileId,
+            fileName: res.body.seaState[0].fileName
           }
         })
       }
@@ -239,6 +257,11 @@ export default {
     },
     cancel () {
       this.$router.push({ name: 'foundations' })
+    },
+    onTabClick () {
+      this.$nextTick(() => {
+        window.dispatchEvent(new Event('resize'))
+      })
     }
   }
 }

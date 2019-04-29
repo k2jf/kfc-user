@@ -268,18 +268,18 @@
         ref="conditionFormValidate">
         <Row>
           <ICol span="6">
-            <FormItem label="SRF_BCKlimt >= " prop="SRF_BCKlimt" class="w-9/10">
-              <Input v-model="conditionFormValidate.SRF_BCKlimt" />
+            <FormItem label="SRF_BCKlimit >= " prop="SRF_BCKlimit" class="w-9/10">
+              <Input v-model="conditionFormValidate.SRF_BCKlimit" />
             </FormItem>
           </ICol>
           <ICol span="6">
-            <FormItem label="SRF_ULSlimt >= " prop="SRF_ULSlimt" class="w-9/10">
-              <Input v-model="conditionFormValidate.SRF_ULSlimt" />
+            <FormItem label="SRF_ULSlimit >= " prop="SRF_ULSlimit" class="w-9/10">
+              <Input v-model="conditionFormValidate.SRF_ULSlimit" />
             </FormItem>
           </ICol>
           <ICol span="6">
-            <FormItem label="SRF_FLSlimt >= " prop="SRF_FLSlimt" class="w-9/10">
-              <Input v-model="conditionFormValidate.SRF_FLSlimt" />
+            <FormItem label="SRF_FLSlimit >= " prop="SRF_FLSlimit" class="w-9/10">
+              <Input v-model="conditionFormValidate.SRF_FLSlimit" />
             </FormItem>
           </ICol>
         </Row>
@@ -678,16 +678,16 @@ export default {
               step: Number(this.data[0].config.algconfStep)
             }],
             constraints: [{
-              name: 'SRF_BCKlimt',
-              value: Number(this.conditionFormValidate.SRF_BCKlimt),
+              name: 'SRF_BCKlimit',
+              value: Number(this.conditionFormValidate.SRF_BCKlimit),
               operator: 'gte'
             }, {
-              name: 'SRF_ULSlimt',
-              value: Number(this.conditionFormValidate.SRF_ULSlimt),
+              name: 'SRF_ULSlimit',
+              value: Number(this.conditionFormValidate.SRF_ULSlimit),
               operator: 'gte'
             }, {
-              name: 'SRF_FLSlimt',
-              value: Number(this.conditionFormValidate.SRF_FLSlimt),
+              name: 'SRF_FLSlimit',
+              value: Number(this.conditionFormValidate.SRF_FLSlimit),
               operator: 'gte'
             }]
           }

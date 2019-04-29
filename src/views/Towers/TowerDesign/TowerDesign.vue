@@ -1,27 +1,27 @@
 <template>
   <div class="tower-design h-full p-3">
     <div class="h-12">
-      <!-- <span>项目名称：</span>
+      <span>项目名称：</span>
       <Input
         style="width: 180px;margin-right: 20px;"
         placeholder="请输入项目名称"
         icon="ios-search"
-        v-model="value" />
+        v-model="projectName" />
       <span>塔架高度（m）：</span>
       <Input
         style="width: 180px;margin-right: 20px;"
         placeholder="请输入塔底高度"
         icon="ios-search"
-        v-model="value" />
+        v-model="towerHeight" />
       <span>塔底直径（m）：</span>
       <Input
         style="width: 180px"
         placeholder="请输入塔底直径"
         icon="ios-search"
-        v-model="value" />
-      <Button class="ml-3" type="primary">
+        v-model="bottomDiameter" />
+      <Button class="mx-3" type="primary" @click="filtrate">
         查询
-      </Button> -->
+      </Button>
       <Button type="primary" @click="createNewTask">
         新增任务
       </Button>
@@ -120,7 +120,9 @@ export default {
   },
   data () {
     return {
-      value: '',
+      projectName: '',
+      towerHeight: '',
+      bottomDiameter: '',
       columns,
       data: [],
       isOnline: false,
@@ -146,7 +148,6 @@ export default {
     }
   },
   mounted () {
-    this.getTaskList(this.pageInfo)
     this.setListInterval()
   },
   beforeDestroy () {
@@ -165,12 +166,10 @@ export default {
     },
     onPageChange (pageNum) {
       this.pageInfo = Object.assign(this.pageInfo, { pageNum })
-      // this.getTaskList(this.pageInfo)
       this.setListInterval()
     },
     onPageSizeChange (pageSize) {
       this.pageInfo = Object.assign(this.pageInfo, { pageSize })
-      // this.getTaskList(this.pageInfo)
       this.setListInterval()
     },
     onChange (value) {
@@ -189,7 +188,6 @@ export default {
       } else {
         Message.success('提交成功')
         setTimeout(() => {
-          // this.getTaskList(this.pageInfo)
           this.setListInterval()
         }, 500)
       }
@@ -239,11 +237,15 @@ export default {
     onCancel () {
       this.$refs.formValidate.resetFields()
     },
+    filtrate () {
+      //
+    },
     setListInterval () {
       if (this.timer) {
         clearInterval(this.timer)
         this.timer = null
       }
+      this.getTaskList(this.pageInfo)
       this.timer = setInterval(() => {
         this.getTaskList(this.pageInfo)
       }, 5000)

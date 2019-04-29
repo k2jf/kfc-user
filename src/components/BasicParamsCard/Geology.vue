@@ -151,8 +151,8 @@ export default {
     async clearTable () {
       await this.$delete(`foundations/file?fileId=${this.fileId}`)
       this.datContent = ''
-      this.syncGeometry({
-        geometry: {}
+      this.syncGeology({
+        geology: {}
       })
     }
   }

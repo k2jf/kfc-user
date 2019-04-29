@@ -38,17 +38,17 @@ export const adjustColumns = [
   },
   {
     title: 'SRF_BCKlimt',
-    slot: 'limt',
+    slot: 'limit',
     className: 'ido-table-number'
   },
   {
     title: 'SRF_ULSlimt',
-    slot: 'limt',
+    slot: 'limit',
     className: 'ido-table-number'
   },
   {
     title: 'SRF_FLSlimt',
-    slot: 'limt',
+    slot: 'limit',
     className: 'ido-table-number'
   },
   {

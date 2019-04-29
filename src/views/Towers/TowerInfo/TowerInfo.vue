@@ -289,7 +289,7 @@
       <Button type="primary" @click="save">
         保存
       </Button>
-      <Button class="ml-3">
+      <Button class="ml-3" @click="cancelEdit">
         取消
       </Button>
     </div>
@@ -666,7 +666,6 @@ export default {
     },
     // update config of tower task
     async save () {
-      console.log(this.towerFormValidate.workCase)
       try {
         const res = await this.$put(`towerTasks/${this.$route.params.taskId}`, {
           silent: true,
@@ -703,6 +702,9 @@ export default {
       } catch (error) {
         Message.error('网络问题，保存失败')
       }
+    },
+    cancelEdit () {
+      this.$router.push({ name: 'towers' })
     }
   }
 }

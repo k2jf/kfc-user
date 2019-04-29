@@ -65,8 +65,9 @@
           <div class="h-10 pl-5 pt-3">
             <BreadCrumb :breadList="breadList"></BreadCrumb>
           </div>
-          <main class="overflow-y-auto h-calc-10" id="ido-body">
-            <router-view />
+          <main class="overflow-y-auto h-calc-10 relative" id="ido-body">
+            <Spin fix size="large" v-if="loading" />
+            <router-view fix />
           </main>
         </Content>
       </Layout>
@@ -75,7 +76,7 @@
 </template>
 
 <script>
-import { Layout, Sider, Menu, MenuItem, Header, Icon, Content, Avatar, Dropdown, DropdownMenu, DropdownItem } from 'iview'
+import { Layout, Sider, Menu, MenuItem, Header, Icon, Content, Avatar, Spin, Dropdown, DropdownMenu, DropdownItem } from 'iview'
 import logo from '@/assets/logo.png'
 import IDO from '@/assets/IDO.png'
 import logo1 from '@/assets/gw_logo_1.png'
@@ -111,7 +112,8 @@ export default {
     DropdownMenu,
     DropdownItem,
     BreadCrumb,
-    GoldWind
+    GoldWind,
+    Spin
   },
   data () {
     return {
@@ -129,7 +131,8 @@ export default {
   },
   computed: {
     ...mapState({
-      userName: state => state.userName
+      userName: state => state.userName,
+      loading: state => state.loading
     }),
     rotateIcon () {
       return [

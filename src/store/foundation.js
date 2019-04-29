@@ -19,7 +19,7 @@ export default {
     }
   },
   actions: {
-    updateBaseInfo ({ commit, state }, payload) {
+    updateBaseInfo ({ commit }, payload) {
 
     }
   }

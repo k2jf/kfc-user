@@ -15,17 +15,17 @@ export const _ky = ky.extend({
   prefixUrl: baseUrl,
   retry: 0,
   timeout: 300000,
-  throwHttpErrors: false,
-  hooks: {
-    afterResponse: [
-      (res, silent) => {
-        if (!res.ok && !silent) {
-          Message.error(res.status + '')
-        }
-        return res
-      }
-    ]
-  }
+  throwHttpErrors: false
+  // hooks: {
+  //   afterResponse: [
+  //     (res, silent) => {
+  //       if (!res.ok && !silent) {
+  //         Message.error(res.status + '')
+  //       }
+  //       return res
+  //     }
+  //   ]
+  // }
 })
 
 export const _fetch = (input, options) => {
@@ -36,7 +36,10 @@ export const _fetch = (input, options) => {
         if (json.code === 0) {
           resolve(json)
         } else {
-          Message.error(json.message || '未知')
+          Message.error({
+            content: json.message || '未知',
+            closable: true
+          })
           // throw new Error(json.message)
           reject(json.message)
         }

@@ -32,6 +32,7 @@
 <script>
 import { BarChart, StepLineChart, LineChart } from '@/components/Charts'
 import { Row, Col } from 'iview'
+import { mapState } from 'vuex'
 
 export default {
   name: 'ChartResult',
@@ -43,7 +44,6 @@ export default {
     ICol: Col
   },
   data: () => ({
-    results: {},
     checkXAxis: {
       name: 'SRF',
       min: 0,
@@ -52,6 +52,9 @@ export default {
     checkYAxis: { name: 'Height' }
   }),
   computed: {
+    ...mapState({
+      results: state => state.tower.results
+    }),
     barSeries () {
       const { optWeight, checkedWeight } = this.results
       if (!optWeight || !checkedWeight) return []
@@ -149,14 +152,7 @@ export default {
       }))
     }
   },
-  mounted () {
-    this.getTaskResult()
-  },
   methods: {
-    async getTaskResult () {
-      const res = await this.$get(`towerTasks/${this.$route.params.taskId}/result`)
-      this.results = res.body
-    },
     strip (num) {
       return parseFloat(num.toFixed(3))
     }

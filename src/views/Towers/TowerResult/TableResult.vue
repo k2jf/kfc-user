@@ -29,19 +29,25 @@
         :height="500"
         :columns="adjustColumns"
         :data="adjustData">
-        <template slot="thickness" slot-scope="{ row }">
+        <template slot="limt" slot-scope="{row, column}">
+          <span :class="markClass(row, column)">{{ row[column.title] }}</span>
+        </template>
+        <template slot="thickness" slot-scope="{ row, index }">
           <inputNumber
             :step="formatStep"
             :formatter="value => Number(value).toFixed(3)"
-            v-model="row.thickness" />
+            v-model="row.thickness"
+            @on-change="onNumberChange($event, index)" />
         </template>
       </Table>
     </div>
     <div class="operator text-center pt-4">
-      <Button type="primary" class="mr-3">
+      <Button type="primary" class="mr-3" @click="save">
         保存
       </Button>
-      <Button>取消</Button>
+      <Button @click="cancel">
+        取消
+      </Button>
     </div>
   </div>
 </template>
@@ -49,6 +55,7 @@
 <script>
 import { columns, adjustColumns } from './columns.js'
 import { Table, Row, Col, Input, inputNumber, Button } from 'iview'
+import { mapState, mapGetters, mapActions } from 'vuex'
 
 export default {
   name: 'TableResult',
@@ -61,22 +68,25 @@ export default {
     Button
   },
   data: () => ({
-    results: {},
-    constraints: [],
     columns,
     step: 0.5,
     formatStep: 0.5,
     adjustColumns
   }),
   computed: {
+    ...mapState({
+      results: state => state.tower.results,
+      adjustOptResult: state => state.tower.adjustOptResult
+    }),
+    ...mapGetters('tower', ['constraints']),
     resultData () {
       const { optWeight, checkedWeight } = this.results
       if (!optWeight || !checkedWeight) return []
       return [this.arr2Obj(checkedWeight), this.arr2Obj(optWeight)]
     },
     adjustData () {
-      const { optResult } = this.results
-      if (!optResult) return []
+      const optResult = { ...this.adjustOptResult }
+      if (!optResult.items) return []
       const { headers, items } = optResult
       let _headers = headers.map((h, i) => {
         let _h = h
@@ -101,15 +111,8 @@ export default {
       })
     }
   },
-  mounted () {
-    this.getTaskResult()
-  },
   methods: {
-    async getTaskResult () {
-      const res = await this.$get(`towerTasks/${this.$route.params.taskId}/result`)
-      this.results = res.body
-      this.constraints = res.body.Constraints
-    },
+    ...mapActions('tower', ['getResults', 'getAdjustOptResult']),
     arr2Obj (arr) {
       let obj = {}
       arr.forEach(a => {
@@ -122,6 +125,25 @@ export default {
     },
     onBlur () {
       this.formatStep = Number(this.step)
+    },
+    markClass (row, column) {
+      if (this.constraints.length === 0) return ''
+      const key = column.title
+      const standard = this.constraints.find(c => c.name === key).value
+      const value = row[key]
+      return value < standard ? 'text-red-light' : ''
+    },
+    onNumberChange (value, index) {
+      const { optResult } = this.results
+      const thicknessList = optResult.items.map(item => item[4])
+      thicknessList[index] = value
+      this.getAdjustOptResult({ towerId: this.$route.params.taskId, thicknessList })
+    },
+    save () {
+
+    },
+    cancel () {
+
     }
   }
 }

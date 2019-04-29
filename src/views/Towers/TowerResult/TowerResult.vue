@@ -18,6 +18,8 @@
 import ChartResult from './ChartResult'
 import TableResult from './TableResult'
 import { Tabs, TabPane } from 'iview'
+import { mapActions } from 'vuex'
+
 export default {
   name: 'TowerResult',
   components: {
@@ -29,9 +31,12 @@ export default {
   data: () => ({
     showTable: false
   }),
+  mounted () {
+    this.getResults({ towerId: this.$route.params.taskId })
+  },
   methods: {
+    ...mapActions('tower', ['getResults']),
     onClick (name) {
-      console.log(name)
       if (name === 'table' && !this.showTable) this.showTable = true
     }
   }

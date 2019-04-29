@@ -212,7 +212,6 @@ export default {
           }
           this.lastArea = this.getArea()
         }, 100, { leading: true })
-        console.log(this.$el)
         addListener(this.$el, this.__resizeHandler)
       }
       Object.defineProperties(this, {

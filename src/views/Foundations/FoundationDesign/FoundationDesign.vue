@@ -172,11 +172,9 @@ export default {
       this.$router.push({ name: 'foundation-design', params: { foundationId: row.id } })
     },
     async asyncOK () {
-      console.log(1)
       this.loading = true
       this.$refs.formValidate.validate(async (valid) => {
         if (valid) {
-          console.log(2)
           try {
             const res = await this.$post('foundations', {
               json: {

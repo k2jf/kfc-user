@@ -196,10 +196,13 @@ export default {
       this.equip(...[Number(value), ...others, 'value'])
     },
     equip (value, row, ind, key) {
+      // ind 是 limitedValue 里的下标，不是 row 的下标
       const _limitedValue = [...row.limitedValue]
       _limitedValue[ind] = Object.assign(_limitedValue[ind], { [key]: value })
-      const _row = Object.assign({}, row, { limitedValue: _limitedValue, _checked: this.magicConfig[ind]._checked })
-      this.updateMagic(_row, ind)
+      const index = this.magicConfig.findIndex(m => m.name === row.name)
+      const magicRow = this.magicConfig[index]
+      const _row = Object.assign({}, magicRow, { limitedValue: _limitedValue })
+      this.updateMagic(_row, index)
     },
     updateMagic (row, ind) {
       const _magicConfig = [...this.magicConfig]
@@ -208,7 +211,7 @@ export default {
     },
     onConfigChange (value, ind, key) {
       const row = this.magicConfig[ind]
-      const _row = Object.assign({}, row, { [key]: Number(value), _checked: this.magicConfig[ind]._checked })
+      const _row = Object.assign({}, row, { [key]: Number(value) })
       this.updateMagic(_row, ind)
     },
     onSelect (selection, row) {
@@ -218,8 +221,9 @@ export default {
       this.handleSelect(row, false)
     },
     handleSelect (row, checked) {
-      const _row = Object.assign({}, row, { _checked: checked })
       const ind = this.magicConfig.findIndex(b => b.name === row.name)
+      const magicRow = this.magicConfig[ind]
+      const _row = Object.assign({}, magicRow, { _checked: checked })
       this.updateMagic(_row, ind)
     },
     onSelectAll () {

@@ -58,12 +58,10 @@ export default {
       const clientW = document.getElementById('ido-body').offsetWidth - 90
       let cellWidth = Math.floor(clientW / 6)
       if (cellWidth < 260) {
-        console.log(1)
         cellWidth = Math.floor((clientW - 260) / 5)
         this.dataGrid.style.cellWidth = cellWidth
         this.dataGrid.setColumnWidth(4, 260)
       } else {
-        console.log(2)
         this.dataGrid.style.cellWidth = cellWidth
       }
       // const elWidth = Math.floor((this.gridWidth - 260) / 5)

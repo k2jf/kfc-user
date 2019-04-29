@@ -27,7 +27,7 @@
       </FormItem>
       <FormItem label="资源列表">
         <div class="form-card">
-          <K2Transfer
+          <Transfer
             :data="getTransferData"
             filterable
             :style="{width: '702px', margin: '0 auto'}"
@@ -37,7 +37,7 @@
             :titles="resourceData.titles"
             @on-change="handleChange"
             @on-dblclick="handleChange">
-          </K2Transfer>
+          </Transfer>
         </div>
       </FormItem>
     </Form>
@@ -46,7 +46,7 @@
 
 <script>
 import { Modal, Form, FormItem, Select, Option } from 'iview'
-import K2Transfer from '@/components/kfc-transfer'
+import Transfer from '@/components/kfc-transfer'
 
 import api from '../api'
 
@@ -58,7 +58,7 @@ export default {
     FormItem,
     Select,
     Option,
-    K2Transfer
+    Transfer
   },
   props: {
     currentUser: {

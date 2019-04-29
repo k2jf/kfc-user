@@ -7,7 +7,7 @@
     @on-ok="onClickOk"
     @on-cancel="onClickCancel"
   >
-    <K2Transfer
+    <Transfer
       :data="group.data"
       filterable
       :style="{width: '702px', margin: '0 auto'}"
@@ -17,13 +17,13 @@
       :titles="group.titles"
       @on-change="handleChange"
       @on-dblclick="handleChange">
-    </K2Transfer>
+    </Transfer>
   </Modal>
 </template>
 
 <script>
 import { Modal } from 'iview'
-import K2Transfer from '@/components/kfc-transfer'
+import Transfer from '@/components/kfc-transfer'
 
 import api from '../api'
 
@@ -31,7 +31,7 @@ export default {
   name: 'UserGroupEdit',
   components: {
     Modal,
-    K2Transfer
+    Transfer
   },
   props: {
     currentUser: {

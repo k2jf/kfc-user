@@ -10,11 +10,11 @@
       <FormItem prop="email" label="邮箱:">
         <Input placeholder="请输入邮箱" v-model="user.email" />
       </FormItem>
-      <FormItem label="权限:" v-if="user.permissions && user.permissions.length">
+      <FormItem label="权限:">
         <div class="auth-detail">
           <Table
             :columns="permissionColumns"
-            :data="user.permissions"
+            :data="user.permissions || []"
             size="small"
             class="margin-bottom"></Table>
         </div>
@@ -54,7 +54,7 @@ export default {
       permissionColumns: [
         { title: '资源个例名称', key: 'resourceName', minWidth: 130 },
         { title: '权限', key: 'operations', minWidth: 130 },
-        { title: '是否生效',
+        { title: '是否启用',
           minWidth: 100,
           render: (h, params) => {
             return h(

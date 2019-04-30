@@ -98,6 +98,7 @@ export default {
         this.resource.isDisabled = []
         this.resource.effectTime = null
         this.resource.expireTime = null
+        this.resource.valiableTime = null
       }
     }
   },

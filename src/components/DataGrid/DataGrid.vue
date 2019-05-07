@@ -38,11 +38,17 @@ export default {
     this.dataGrid.addEventListener('beforesortcolumn', this.preventDefault)
     this.dataGrid.addEventListener('contextmenu', this.preventDefault)
     this.dataGrid.addEventListener('beforeendedit', this.endedit)
+    this.dataGrid.addEventListener('beginedit', this.beginedit)
+    window.addEventListener('mousewheel', this.scrollFunc, false)
+    document.addEventListener('click', this.scrollFunc, false)
   },
   beforeDestroy () {
     this.dataGrid.removeEventListener('beforesortcolumn', this.preventDefault)
     this.dataGrid.removeEventListener('contextmenu', this.preventDefault)
     this.dataGrid.removeEventListener('beforeendedit', this.endedit)
+    this.dataGrid.removeEventListener('beginedit', this.beginedit)
+    window.removeEventListener('mousewheel', this.scrollFunc, false)
+    document.removeEventListener('mousewheel', this.scrollFunc, false)
   },
   methods: {
     preventDefault (e) {
@@ -67,6 +73,15 @@ export default {
       }
       // BUG: doesn't work!!
       e.ctx.fillStyle = 'red'
+    },
+    beginedit (e) {
+      this.activeInput = e.input
+    },
+    scrollFunc () {
+      if (this.activeInput && this.activeInput.offsetWidth > 10) {
+        this.activeInput.value = ''
+        this.activeInput.style = 'position: fixed; top: -5px; left: -5px; border: none; opacity: 0; cursor: pointer; width: 1px; height: 1px; line-height: normal; font-weight: normal; font-family: sans-serif; font-size: 16px;'
+      }
     },
     transformData (data) {
       /** ================================================================

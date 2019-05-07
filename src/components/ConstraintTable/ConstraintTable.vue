@@ -193,7 +193,8 @@ export default {
       this.equip(...[...arguments, 'operator'])
     },
     onInputChange (value, ...others) {
-      this.equip(...[Number(value), ...others, 'value'])
+      // this.equip(...[Number(value), ...others, 'value'])
+      this.equip(...[...arguments, 'value'])
     },
     equip (value, row, ind, key) {
       // ind 是 limitedValue 里的下标，不是 row 的下标

@@ -12,10 +12,7 @@
         :name="paramType"
         :sheetdata="sheetdata"
         :ws="ws"
-        v-if="excelName" />
-      <div class="text-sm text-center pt-32" v-else>
-        请先上传excel文件
-      </div>
+        ref="excelTable" />
     </div>
     <Modal
       draggable

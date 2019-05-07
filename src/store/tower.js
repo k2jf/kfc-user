@@ -4,7 +4,8 @@ export default {
   namespaced: true,
   state: {
     results: {},
-    adjustOptResult: {}
+    adjustOptResult: {},
+    optWeight: []
   },
   getters: {
     constraints (state) {
@@ -14,6 +15,9 @@ export default {
   mutations: {
     syncResults (state, payload) {
       state.results = payload.results
+    },
+    syncOptWeight (state, payload) {
+      state.optWeight = payload.optWeight
     },
     syncAdjustOptResult (state, payload) {
       state.adjustOptResult = payload.adjustOptResult
@@ -26,6 +30,7 @@ export default {
       try {
         const res = await _fetch(`towerTasks/${towerId}/result`, { method: 'get' })
         commit('syncResults', { results: res.body })
+        commit('syncOptWeight', { optWeight: res.body.optWeight })
         commit('syncAdjustOptResult', { adjustOptResult: res.body.optResult })
         commit('syncLoading', { loading: false }, { root: true })
       } catch (error) {
@@ -36,8 +41,9 @@ export default {
       commit('syncLoading', { loading: true }, { root: true })
       const { towerId, thicknessList } = payload
       try {
-        const res = await _fetch(`towerTasks/${towerId}/codeAdjust`, { method: 'post', json: thicknessList, silent: true })
-        commit('syncAdjustOptResult', { adjustOptResult: res.body })
+        const res = await _fetch(`towerTasks/${towerId}/codeAdjust`, { method: 'post', json: { thicknessList }, silent: true })
+        commit('syncAdjustOptResult', { adjustOptResult: res.body.optResult })
+        commit('syncOptWeight', { optWeight: res.body.optWeight })
         commit('syncLoading', { loading: false }, { root: true })
       } catch (err) {
         // if (typeof err === 'string') {

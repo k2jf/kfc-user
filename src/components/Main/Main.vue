@@ -10,16 +10,11 @@
         ref="side1"
         v-model="isCollapsed">
         <h2 class="gw-logo">
-          <!-- <img :src="logo1" alt="logo1" /> -->
           <div class="goldwind">
             <GoldWind />
           </div>
-          <img :src="logo2" alt="logo2" class="text-logo" />
+          <img :src="gwLogo" alt="gwLogo" class="text-logo" />
         </h2>
-        <!-- <h1 class="logo-wrap">
-          <img :src="logo" alt="logo" />
-          <img :src="IDO" alt="IDO" class="text-logo" />
-        </h1> -->
         <Menu
           :active-name="activeName"
           theme="dark"
@@ -77,10 +72,7 @@
 
 <script>
 import { Layout, Sider, Menu, MenuItem, Header, Icon, Content, Avatar, Spin, Dropdown, DropdownMenu, DropdownItem } from 'iview'
-import logo from '@/assets/logo.png'
-import IDO from '@/assets/IDO.png'
-import logo1 from '@/assets/gw_logo_1.png'
-import logo2 from '@/assets/gw_logo_2.png'
+import gwLogo from '@/assets/gw_logo_2.png'
 import alita from '@/assets/Alita.jpg'
 import BreadCrumb from '@/components/BreadCrumb'
 import GoldWind from '@/components/GoldWind'
@@ -119,10 +111,7 @@ export default {
     return {
       alita,
       isCollapsed: false,
-      logo: logo,
-      IDO: IDO,
-      logo1,
-      logo2,
+      gwLogo,
       user: 'DEV',
       breadList: [],
       navList,
@@ -165,7 +154,7 @@ export default {
     },
     handleBreadList (next) {
       const matched = next.matched.filter(m => !m.meta.ignore)
-      const breadList = [{ name: 'IDO', to: '/' }]
+      const breadList = [{ name: 'iDO', to: '/' }]
       matched.forEach((m, i) => {
         if (m.name !== 'index') {
           breadList.push({

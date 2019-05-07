@@ -90,7 +90,7 @@ import { Geometry, SeaState, Geology } from '@/components/BasicParamsCard'
 
 import { mapMutations } from 'vuex'
 
-import { constraintConfig } from '@/config'
+import { singlePileConfig, highPileConfig } from '@/config'
 
 /**
  * 海况基础信息上传文件 fileKey: seaStateBase
@@ -155,9 +155,9 @@ export default {
       }
       if (res.body.foundationForm === 1) {
         // 单桩
-        this.baseConfig = constraintConfig.filter(b => b.name !== 'tension')
+        this.baseConfig = [...singlePileConfig]
       } else {
-        this.baseConfig = constraintConfig.filter(b => b.name !== 'compression' && b.name !== 'fatigue')
+        this.baseConfig = [...highPileConfig]
       }
 
       if (res.body.geometry.length > 0) {

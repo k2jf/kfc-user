@@ -35,7 +35,8 @@ export default {
         },
         grid: {
           ...options.grid,
-          right: 40
+          right: 40,
+          left: 30
         },
         yAxis: {
           ...options.yAxis,

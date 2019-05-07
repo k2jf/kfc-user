@@ -36,8 +36,9 @@
           <inputNumber
             :step="formatStep"
             :formatter="value => Number(value).toFixed(3)"
+            :disabled="row.height === '0.000'"
             v-model="row.thickness"
-            @on-change="onNumberChange($event, index)" />
+            @on-change="onNumberChange($event, index, row)" />
         </template>
       </Table>
     </div>
@@ -76,13 +77,14 @@ export default {
   computed: {
     ...mapState({
       results: state => state.tower.results,
+      optWeight: state => state.tower.optWeight,
       adjustOptResult: state => state.tower.adjustOptResult
     }),
     ...mapGetters('tower', ['constraints']),
     resultData () {
-      const { optWeight, checkedWeight } = this.results
-      if (!optWeight || !checkedWeight) return []
-      return [this.arr2Obj(checkedWeight), this.arr2Obj(optWeight)]
+      const { checkedWeight } = this.results
+      if (this.optWeight.length === 0 || !checkedWeight) return []
+      return [this.arr2Obj(checkedWeight), this.arr2Obj(this.optWeight)]
     },
     adjustData () {
       const optResult = { ...this.adjustOptResult }
@@ -135,12 +137,20 @@ export default {
     },
     onNumberChange (value, index) {
       const { optResult } = this.results
-      const thicknessList = optResult.items.map(item => item[4])
-      thicknessList[index] = value
+      const items = [...optResult.items]
+      items[index][4] = value
+      let thicknessList = items.filter(item => item[0] !== 0).map(item => item[4])
       this.getAdjustOptResult({ towerId: this.$route.params.taskId, thicknessList })
     },
-    save () {
-
+    async save () {
+      console.log(1)
+      try {
+        await this.$post(`towerTasks/${this.$route.params.taskId}/save/adjustedResult`)
+        this.$Message.success('保存成功')
+        this.getResults({ towerId: this.$route.params.taskId })
+      } catch (err) {
+        console.log(err)
+      }
     },
     cancel () {
 

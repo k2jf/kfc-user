@@ -67,7 +67,21 @@
             <div class="text-grey">
               <a href="javascript:;">提交</a> |
               <a href="javascript:;" @click="viewTask(row)">编辑</a> |
-              <a href="javascript:;">结果</a> |
+              <a href="javascript:;">
+                <Dropdown>
+                  <a href="javascript:void(0)">
+                    结果
+                    <Icon type="ios-arrow-down"></Icon>
+                  </a>
+                  <DropdownMenu slot="list">
+                    <DropdownItem>驴打滚</DropdownItem>
+                    <DropdownItem>炸酱面</DropdownItem>
+                    <DropdownItem disabled>豆汁儿</DropdownItem>
+                    <DropdownItem>冰糖葫芦</DropdownItem>
+                    <DropdownItem divided>北京烤鸭</DropdownItem>
+                  </DropdownMenu>
+                </Dropdown>
+              </a> |
               <a href="javascript:;" @click="deleteTask(row)">删除</a>
             </div>
           </template>
@@ -89,7 +103,7 @@
   </div>
 </template>
 <script>
-import { Input, Button, Table, Page, Modal, Form, FormItem, Select, Option, Message } from 'iview'
+import { Input, Button, Table, Page, Modal, Form, FormItem, Select, Option, Message, Dropdown, DropdownMenu, DropdownItem, Icon } from 'iview'
 import columns from './columnDef'
 
 export default {
@@ -99,11 +113,15 @@ export default {
     Button,
     Table,
     Page,
+    Icon,
     Modal,
     Form,
     FormItem,
     Select,
-    Option
+    Option,
+    Dropdown,
+    DropdownMenu,
+    DropdownItem
   },
   data () {
     return {

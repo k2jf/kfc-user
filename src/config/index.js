@@ -1,4 +1,5 @@
 import XLSX from 'xlsx'
+import { singlePileConfig, highPileConfig } from './constraints'
 
 export const baseUrl = process.env.VUE_APP_BASE_URL + 'ido/api/v1/'
 export const jiraUrl = process.env.VUE_APP_BASE_URL + 'jira/rest/api/2/'
@@ -145,6 +146,8 @@ export const constraintConfig = [
   }
 ]
 
+export { singlePileConfig, highPileConfig }
+
 /* eslint-disable */
 export const baseDictionary = {
   mode:               '模态',
@@ -156,6 +159,7 @@ export const baseDictionary = {
   D_mudline:          'D泥面',
   D_pileTip:          'D桩端',
   D_tilt:             'R转角',
+  D_settlement:       '沉降',
   stress:             '应力',
   P1:                 'P1',
   P2:                 'P2',
@@ -164,7 +168,7 @@ export const baseDictionary = {
   gte:                '>=',
   lt:                 '<',
   lte:                '<=',
-  eq:                 '='
+  eq:                 '=',
 }
 /* eslint-enable */
 

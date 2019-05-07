@@ -41,11 +41,15 @@ export default [
   },
   {
     title: '塔架高度',
-    key: 'towerHeight'
+    key: 'towerHeight',
+    width: 90,
+    className: 'ido-table-number'
   },
   {
     title: '塔底直径',
-    key: 'bottomDiameter'
+    key: 'bottomDiameter',
+    width: 90,
+    className: 'ido-table-number'
   },
   {
     title: '设计者',

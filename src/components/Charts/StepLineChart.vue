@@ -47,7 +47,8 @@ export default {
         },
         grid: {
           ...options.grid,
-          right: 70
+          right: 70,
+          left: 30
         },
         series: this.series
       })

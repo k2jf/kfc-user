@@ -1,4 +1,4 @@
-import { _fetch } from '@/libs/fetch'
+// import { _fetch } from '@/libs/fetch'
 
 export default {
   namespaced: true,

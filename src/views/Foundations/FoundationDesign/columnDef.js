@@ -13,7 +13,8 @@ export default [
   },
   {
     title: '状态',
-    key: 'status'
+    key: 'status',
+    className: 'ido-table-number'
   },
   {
     title: '校核类型',
@@ -47,6 +48,6 @@ export default [
   {
     title: '操作',
     slot: 'operation',
-    width: 170
+    width: 180
   }
 ]

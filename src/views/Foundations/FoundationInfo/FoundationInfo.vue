@@ -52,6 +52,7 @@
       </p>
       <div class="px-6">
         <ConstraintTable
+          :type="constraintType"
           :baseConfig="baseConfig"
           ref="constraints" />
       </div>
@@ -123,7 +124,8 @@ export default {
       },
       basicRuleValidate: {
 
-      }
+      },
+      constraintType: 1
     }
   },
   computed: {
@@ -153,6 +155,7 @@ export default {
         mudlineElevation: res.body.mudlineElevation,
         baseUltimate: res.body.baseUltimate
       }
+      this.constraintType = res.body.foundationForm
       if (res.body.foundationForm === 1) {
         // 单桩
         this.baseConfig = [...singlePileConfig]
@@ -162,28 +165,19 @@ export default {
 
       if (res.body.geometry.length > 0) {
         this.syncGeometry({
-          geometry: {
-            fileId: res.body.geometry[0].fileId,
-            fileName: res.body.geometry[0].fileName
-          }
+          geometry: res.body.geometry[0]
         })
       }
 
       if (res.body.geology.length > 0) {
         this.syncGeology({
-          geology: {
-            fileId: res.body.geology[0].fileId,
-            fileName: res.body.geology[0].fileName
-          }
+          geology: res.body.geology[0]
         })
       }
 
       if (res.body.seaState.length > 0) {
         this.syncSeaState({
-          seaState: {
-            fileId: res.body.seaState[0].fileId,
-            fileName: res.body.seaState[0].fileName
-          }
+          seaState: res.body.seaState[0]
         })
       }
       if (res.body.constraints) {

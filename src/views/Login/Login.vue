@@ -1,19 +1,9 @@
 <template>
   <div class="ido-login" id="ido-login">
-    <div class="video">
-      <aside>
-        <a class="ido-link" href="javascript:void 0;" @click="handleVideoPlay">{{ operate }}</a>
-      </aside>
-      <video
-        :src="videoSrc"
-        autoplay="autoplay"
-        muted=""
-        playsinline=""
-        loop=""
-        id="video"
-        ref="video">
-      </video>
-    </div>
+    <div class="bg"></div>
+    <aside class="logo">
+      <img :src="src" alt="logo">
+    </aside>
     <div class="header">
       <slot name="title">
         <h1 v-if="title">
@@ -36,6 +26,7 @@
 
 <script>
 import { mapMutations } from 'vuex'
+import src from '@/assets/color_logo2.png'
 
 /* eslint-disable */
 const mapping = {
@@ -53,23 +44,19 @@ const mapping = {
 export default {
   name: 'Login',
   props: {
-    videoSrc: {
-      type: String,
-      default: 'http://www.goldwind.com.cn/images/video-banner-de59b60727.mp4'
-    },
     title: {
       type: String,
-      default: 'iDO'
+      default: 'Integrated Design Offshore Platform'
     },
     subTitle: {
       type: String,
-      default: '海上风机一体化设计平台'
+      default: '海上风机支撑结构一体化设计平台'
     }
   },
   data: () => ({
     user: '',
     password: '',
-    operate: 'PAUSE'
+    src
   }),
   methods: {
     ...mapMutations(['setUserName']),
@@ -90,60 +77,80 @@ export default {
       } else {
         this.$Message.error('用户名或密码错误')
       }
-    },
-    handleVideoPlay () {
-      const video = this.$refs.video
-      if (video.paused) {
-        this.operate = 'PAUSE'
-        video.play()
-      } else {
-        this.operate = 'PLAY'
-        video.pause()
-      }
     }
   }
 }
 </script>
 
-<style lang="less" scoped>
+<style lang="less">
+ @font-face {
+    font-family: GBK1;
+    src: url(../../assets/fonts/GBK1.ttf);
+  }
+  @font-face {
+    font-family: GBK2;
+    src: url(../../assets/fonts/GBK2.ttf);
+  }
+  @font-face {
+    font-family: GBK3;
+    src: url(../../assets/fonts/GBK3.ttf);
+  }
+  @font-face {
+    font-family: HelveticaNeueLTPro-Lt;
+    src: url(../../assets/fonts/HelveticaNeueLTPro-Lt.otf);
+  }
+  @font-face {
+    font-family: HelveticaNeueLTPro-Md_0;
+    src: url(../../assets/fonts/HelveticaNeueLTPro-Md_0.otf);
+  }
+  @font-face {
+    font-family: HelveticaNeueLTPro-Roman;
+    src: url(../../assets/fonts/HelveticaNeueLTPro-Roman.otf);
+  }
+  @font-face {
+    font-family: BergamoStd-Regular;
+    src: url(../../assets/fonts/BergamoStd-Regular.otf);
+  }
 
 .ido-login {
   height: 100%;
   width: 100%;
   overflow: hidden;
   position: relative;
+  // background: url(../../assets/login_bg.jpg);
+  // background-size: cover;
+  // filter: blur(6px);
 }
 
-.video {
-  width: 100%;
+.logo {
+  position: absolute;
+  width: 200px;
+  height: 60px;
+  left: 20px;
+  top: 20px;
+  z-index: 2;
+}
+
+.bg {
   height: 100%;
-  position: relative;
-  // background: url(http://www.goldwind.com.cn/images/index/slide/green-4b6771e38d.jpg);
-  // background-size: cover;
-
-  aside {
-    width: 40px;
-    height: 20px;
-    position: absolute;
-    right: 20px;
-    bottom: 20px;
-    z-index: 9;
-  }
-
-  video {
-    height: 100%;
-  }
+  width: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  background: url(../../assets/login_bg.jpg);
+  background-size: cover;
+  // filter: blur(4px);
 }
 
 .header{
   position: absolute;
-  top: calc(50% - 35px);
-  left: calc(50% - 255px);
+  top: calc(40% - 35px);
+  left: calc(24% - 255px);
   z-index: 2;
 
   h1 {
     color: #5379fa !important;
-    font-family: 'Exo', sans-serif;
+    font-family: 'HelveticaNeueLTPro-Roman.otf', sans-serif;
     font-size: 35px;
     font-weight: bold;
   }
@@ -151,12 +158,13 @@ export default {
   h2 {
     font-size: 20px;
     color: #fff;
+    font-family: 'GBK3', 'GBK2', 'GBK1', sans-serif;
   }
 }
 
 .login{
   position: absolute;
-  top: calc(50% - 75px);
+  top: calc(40% - 75px);
   left: 50%;
   height: 150px;
   width: 350px;

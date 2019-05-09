@@ -12,7 +12,7 @@
             :show-upload-list="false"
             :on-error="onUploadError"
             :on-success="onUploadSuccess">
-            <Button size="small" icon="ios-cloud-upload-outline" :class="fileId ? 'uploaded-color' : ''">
+            <Button size="small" icon="ios-cloud-upload-outline">
               上传文件
             </Button>
           </Upload>
@@ -71,7 +71,8 @@
       :paramType="basicType"
       :sheetdata="sheetdata"
       :ws="originSheets"
-      v-if="isSplit" />
+      v-if="isSplit"
+      ref="excel2Dat" />
     <ExcelWithDat
       :excelName="fileName"
       :datName="datName"
@@ -145,29 +146,44 @@ export default {
       pDelta: '',
       plTheory: '',
       shearDef: '',
-      units: '',
-      wsname: ''
+      units: ''
     }
   },
   computed: {
     ...mapState({
       fileId: state => state.foundation.geometry.fileId,
-      fileName: state => state.foundation.geometry.fileName || templateName
+      fileName: state => state.foundation.geometry.fileName || templateName,
+      config: state => state.foundation.geometry.config || {}
     })
   },
   watch: {
     fileId (id) {
       this.getExcel(id)
       if (id && id > -1) this.getDat(id)
+    },
+    config () {
+      this.setDefaultConfig()
     }
   },
   mounted () {
     this.excelTitle = '几何图形参数表'
     this.action = baseUrl + `foundations/${this.$route.params.foundationId}/upload?fileKey=${this.basicType}`
     this.getExcel(this.fileId)
+    this.setDefaultConfig()
   },
   methods: {
-    ...mapMutations('foundation', ['syncGeometry']),
+    ...mapMutations('foundation', ['syncGeometry', 'getDefaultConfig']),
+    setDefaultConfig () {
+      const config = this.$store.state.foundation.geometry.config || {}
+      this.codes = config.codes
+      this.units = config.units
+      this.no_PS = config.no_PS
+      this.pDelta = config.pDelta
+      this.no_PNS = config.no_PNS
+      this.lrfdPHI = config.lrfdPHI
+      this.shearDef = config.shearDef
+      this.plTheory = config.plTheory
+    },
     async getExcel (fileId) {
       try {
         let data
@@ -192,8 +208,9 @@ export default {
         const sheetdata = XLSX.utils.sheet_to_json(ws, { range, header: 1 })
         this.sheetdata = sheetdata
         this.originSheets = ws
+        this.preData = this.transformData(sheetdata)
       } catch (error) {
-
+        console.error(error)
       }
     },
     async getDat (fileId) {
@@ -204,54 +221,137 @@ export default {
         Message.error(error)
       }
     },
-    onUploadError () {
-      Message.error('上传失败')
+    onUploadError (error, file) {
+      console.error(error)
+      Message.error(file.message)
     },
     onUploadSuccess (res, file, fileList) {
       Message.success('上传成功')
       this.syncGeometry({
         geometry: {
           fileId: res.body.fileId,
-          fileName: res.body.fileName
+          fileName: res.body.fileName,
+          config: this.config
         }
       })
     },
+    getConfig () {
+      /* eslint-disable */
+      const {
+        codes,
+        lrfdPHI,
+        no_PNS,
+        no_PS,
+        pDelta,
+        plTheory,
+        shearDef,
+        units
+      } = this
+      return {
+        codes,
+        lrfdPHI,
+        no_PNS,
+        no_PS,
+        pDelta,
+        plTheory,
+        shearDef,
+        units
+      }
+      /* eslint-enable */
+    },
     async createDat () {
-      await this.updateExcel()
-      const res = await this.$put(`foundations/datFile?excelId=${this.fileId}`)
-      this.datContent = res.body.datText
+      await this.shouldUpdate()
+      try {
+        const res = await this.$put(`foundations/datFile?excelId=${this.fileId}`, {
+          json: this.getConfig()
+        })
+        this.syncGeometry({
+          geometry: {
+            fileId: this.fileId,
+            fileName: this.fileName,
+            config: this.getConfig()
+          }
+        })
+        this.datContent = res.body.datText
+        // this.
+      } catch (error) {
+        console.error(error)
+      }
+    },
+    getExcelData () {
+      let _data
+      if (this.isSplit) {
+        _data = this.$refs.excel2Dat.$refs.excelTable.dataGrid.data
+      } else {
+        _data = this.$refs.excelWithDat.$refs.excelTable.dataGrid.data
+      }
+      return _data
+    },
+    async shouldUpdate () {
+      return new Promise(async (resolve, reject) => {
+        const nowData = this.getExcelData()
+        if (this._.isEqual(nowData, this.preData)) {
+          resolve()
+        } else {
+          try {
+            await this.updateExcel()
+            resolve()
+          } catch (error) {
+            reject(error)
+          }
+        }
+      })
+    },
+    transformData (data) {
+      if (data.length === 0) return []
+      const formatSheetdata = []
+      const range = XLSX.utils.decode_range(this.originSheets['!ref'])
+      for (let i = 0; i < data.length; i++) {
+        const objData = {}
+        for (var k = range.s.c; k <= range.e.c; k++) {
+          const key = XLSX.utils.encode_col(k)
+          objData[key] = data[i][k] || ''
+        }
+        formatSheetdata.push(objData)
+      }
+      return formatSheetdata
     },
     async updateExcel () {
       return new Promise(async (resolve, reject) => {
         const workbook = XLSX.utils.book_new()
-        const _ws = this.$refs.excelWithDat.$refs.excelTable.dataGrid.data
+        const _ws = this.getExcelData()
         const ws = XLSX.utils.aoa_to_sheet(_ws.map(w => Object.values(w)))
         XLSX.utils.book_append_sheet(workbook, ws, this.wsname)
         const wopts = { bookType: 'xlsx', type: 'array' }
         const wbout = XLSX.write(workbook, wopts)
         const formdata = new FormData()
         const data = new Blob([wbout], { type: 'application/octet-stream' })
-        formdata.append('file', data, templateName)
+        formdata.append('file', data, this.fileName)
         const url = `foundations/${this.$route.params.foundationId}/upload?fileKey=${this.basicType}`
         const res = await this.$post(url, {
           headers: null,
           body: formdata
         })
         if (res.code === 0) {
-          console.log(res)
-          // this.file = {
-          //   ...this.file,
-          //   fileId: res.body.fileId
-          // }
-          // this.getTaskInfo()
+          this.syncGeometry({
+            geometry: {
+              fileId: res.body.fileId,
+              fileName: res.body.fileName,
+              config: this.config
+            }
+          })
+          resolve()
+        } else {
+          reject(res.message)
         }
       })
     },
     async clearTable () {
-      if (this.fileId) await this.$delete(`foundations/file?fileId=${this.fileId}`)
       this.datContent = ''
       this.syncGeometry({
-        geometry: {}
+        geometry: {
+          config: this.config
+        }
       })
     }
   }

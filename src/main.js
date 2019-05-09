@@ -5,6 +5,7 @@ import store from './store'
 import fetch from './libs/fetch'
 import { Select, Option, Message } from 'iview'
 import '@/plugins/echarts'
+import _ from 'lodash'
 
 import './index.css'
 import 'iview/dist/styles/iview.css'
@@ -21,6 +22,10 @@ Vue.prototype.$Message = Message
 Vue.prototype.$Message.config({
   duration: 5
 })
+
+// lodash
+Vue.prototype._ = _
+
 new Vue({
   router,
   store,

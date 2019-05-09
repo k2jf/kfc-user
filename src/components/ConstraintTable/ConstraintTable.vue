@@ -13,12 +13,12 @@
       @on-select-all-cancel="onSelectNone">
       <!-- 校核类型 -->
       <template slot="name" slot-scope="{ row }">
-        {{ baseDictionary[row.name] }}
+        {{ dictionary[row.name] }}
       </template>
       <!-- 阈值配置 -->
       <!-- ========================================================= -->
       <template slot="config" slot-scope="{ row }">
-        <div>
+        <div v-if="row.name !== 'mode'">
           <div
             class="px-4"
             :class="{
@@ -28,9 +28,9 @@
             v-for="(item,ind) in row.limitedValue"
             :key="ind">
             <Row>
-              <ICol span="4">
+              <ICol span="8">
                 <div class="item-name">
-                  {{ baseDictionary[item.name] }}
+                  {{ dictionary[item.name] }}
                 </div>
               </ICol>
               <ICol span="6">
@@ -44,11 +44,57 @@
                   </Option>
                 </Select>
               </ICol>
-              <ICol span="12">
+              <ICol span="8">
                 <Input
                   :value="item.value"
                   style="width: 100%"
                   @on-change="onInputChange($event.target.value, row, ind)" />
+              </ICol>
+            </Row>
+          </div>
+        </div>
+        <div v-else>
+          <div
+            class="px-4"
+            :class="{
+              'has-border': (row.multiple && ind < row.limitedValue.length - 1),
+              'multiple-row': row.multiple
+            }"
+            v-for="(item,ind) in row.limitedValue"
+            :key="ind">
+            <Row>
+              <ICol span="4">
+                <Input style="width: 100%" />
+              </ICol>
+              <ICol span="6" class="text-center">
+                <Select
+                  style="width: 50px"
+                  placeholder=""
+                  :value="item.operator"
+                  @on-change="onSelectChange($event, row, ind)">
+                  <Option :value="exp.value" v-for="(exp, index) in expressions" :key="index">
+                    {{ exp.label }}
+                  </Option>
+                </Select>
+              </ICol>
+              <ICol span="4">
+                <div class="item-name text-center">
+                  {{ dictionary[item.name] }}
+                </div>
+              </ICol>
+              <ICol span="6" class="text-center">
+                <Select
+                  style="width: 50px"
+                  placeholder=""
+                  :value="item.operator2"
+                  @on-change="onSelectChange($event, row, ind)">
+                  <Option :value="exp.value" v-for="(exp, index) in expressions" :key="index">
+                    {{ exp.label }}
+                  </Option>
+                </Select>
+              </ICol>
+              <ICol span="4">
+                <Input style="width: 100%" />
               </ICol>
             </Row>
           </div>
@@ -69,8 +115,8 @@
             v-for="(item,ind) in row.limitedValue"
             :key="ind">
             <span v-if="item.name && item.operator && item.value">
-              {{ baseDictionary[item.name] }}
-              {{ baseDictionary[item.operator] }}
+              {{ dictionary[item.name] }}
+              {{ dictionary[item.operator] }}
               {{ item.value }}
             </span>
           </div>
@@ -113,7 +159,7 @@
 
 <script>
 import { Select, Option, Input, Table, Row, Col } from 'iview'
-import { baseDictionary, expressions } from '@/config'
+import { baseDictionary, expressions, highDictionary } from '@/config'
 
 const columns = [
   {
@@ -167,6 +213,10 @@ export default {
     ICol: Col
   },
   props: {
+    type: {
+      type: Number,
+      required: true
+    },
     baseConfig: {
       type: Array,
       required: true
@@ -175,7 +225,7 @@ export default {
   data () {
     return {
       columns,
-      baseDictionary,
+      dictionary: baseDictionary,
       expressions,
       magicConfig: [...this.baseConfig]
     }
@@ -183,6 +233,9 @@ export default {
   watch: {
     baseConfig (_) {
       this.magicConfig = [..._]
+    },
+    type (value) {
+      this.dictionary = value === 1 ? baseDictionary : highDictionary
     }
   },
   beforeDestroy () {

@@ -12,7 +12,7 @@
             :show-upload-list="false"
             :on-error="onUploadError"
             :on-success="onUploadSuccess">
-            <Button size="small" icon="ios-cloud-upload-outline" :class="fileId ? 'uploaded-color' : ''">
+            <Button size="small" icon="ios-cloud-upload-outline">
               上传文件
             </Button>
           </Upload>
@@ -21,11 +21,10 @@
           <Button
             type="info"
             class="mx-8"
-            :disabled="!fileId"
             @click="createDat">
             生成模型
           </Button>
-          <Button :disabled="!fileId" @click="clearTable">
+          <Button @click="clearTable">
             清空表格
           </Button>
         </ICol>
@@ -46,7 +45,8 @@
       :paramType="basicType"
       :sheetdata="sheetdata"
       :ws="originSheets"
-      v-else />
+      v-else
+      ref="excelWithDat" />
     <div class="transform text-right mt-2">
       <a href="javascript:void 0" class="ido-link" @click="isSplit = !isSplit">
         改变dat显示方式
@@ -66,6 +66,8 @@ import ExcelWithDat from '@/components/ExcelTable/ExcelWithDat'
 import Excel2Dat from '@/components/ExcelTable/Excel2Dat'
 
 import { mapState, mapMutations } from 'vuex'
+
+const templateName = 'Geology.xlsx'
 
 export default {
   name: 'Geology',
@@ -92,36 +94,49 @@ export default {
       originSheets: {},
       datContent: '',
       datName: 'psiinp.dat',
-      isSplit: false
+      isSplit: false,
+      wsname: ''
     }
   },
   computed: {
     ...mapState({
       fileId: state => state.foundation.geology.fileId,
-      fileName: state => state.foundation.geology.fileName
+      fileName: state => state.foundation.geology.fileName || templateName
     })
   },
   watch: {
     fileId (id) {
-      if (id && id > -1) {
-        this.getExcel(id)
-        this.getDat(id)
-      }
+      this.getExcel(id)
+      if (id && id > -1) this.getDat(id)
     }
   },
   created () {
     this.action = baseUrl + `foundations/${this.$route.params.foundationId}/upload?fileKey=geology`
   },
+  mounted () {
+    this.getExcel(this.fileId)
+  },
   methods: {
     ...mapMutations('foundation', ['syncGeology']),
     async getExcel (fileId) {
       try {
-        const data = await this.$ky.get(`towerTasks/stream?fileId=${fileId}`).arrayBuffer()
+        let data
+        if (fileId) {
+          data = await this.$ky.get(`foundations/stream?fileId=${fileId}`).arrayBuffer()
+        } else {
+          data = await this.$ky.get(`foundations/${this.$route.params.foundationId}/fileTemplate?fileKey=${this.basicType}`).arrayBuffer()
+        }
         this._originData = data
         var workbook = XLSX.read(data, { type: 'array' })
         const wsname = Object.keys(workbook.Sheets)[0]
+        this.wsname = wsname
         const ws = workbook.Sheets[wsname]
-        const sheetdata = XLSX.utils.sheet_to_json(ws, { header: 1 })
+
+        let range = ws['!ref']
+        range = 'A1:' + range.split(':')[1]
+        ws['!ref'] = range
+
+        const sheetdata = XLSX.utils.sheet_to_json(ws, { range, header: 1 })
         this.sheetdata = sheetdata
         this.originSheets = ws
       } catch (error) {
@@ -145,11 +160,38 @@ export default {
       })
     },
     async createDat () {
+      await this.updateExcel()
       const res = await this.$put(`foundations/datFile?excelId=${this.fileId}`)
       this.datContent = res.body.datText
     },
+    async updateExcel () {
+      return new Promise(async (resolve, reject) => {
+        const workbook = XLSX.utils.book_new()
+        const _ws = this.$refs.excelWithDat.$refs.excelTable.dataGrid.data
+        const ws = XLSX.utils.aoa_to_sheet(_ws.map(w => Object.values(w)))
+        XLSX.utils.book_append_sheet(workbook, ws, this.wsname)
+        const wopts = { bookType: 'xlsx', type: 'array' }
+        const wbout = XLSX.write(workbook, wopts, this.wsname)
+        console.log(wbout, ws)
+        const formdata = new FormData()
+        const data = new Blob([wbout], { type: 'application/octet-stream' })
+        formdata.append('file', data, this.fileName)
+        const url = `foundations/${this.$route.params.foundationId}/upload?fileKey=${this.basicType}`
+        const res = await this.$post(url, {
+          headers: null,
+          body: formdata
+        })
+        if (res.code === 0) {
+          this.syncGeology({
+            geology: {
+              fileId: res.body.fileId,
+              fileName: res.body.fileName
+            }
+          })
+        }
+      })
+    },
     async clearTable () {
-      await this.$delete(`foundations/file?fileId=${this.fileId}`)
       this.datContent = ''
       this.syncGeology({
         geology: {}

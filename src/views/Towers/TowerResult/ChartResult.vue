@@ -11,7 +11,7 @@
         <h3 class="text-center">
           优化前后塔架壁厚
         </h3>
-        <StepLineChart :series="stepLineSeries" :yAxis="{ name: 'Height(m)' }" :xAxis="{ name: 'Width(m)' }" />
+        <StepLineChart :series="stepLineSeries" :yAxis="{ name: 'Height(m)' }" :xAxis="{ name: 'Width(mm)' }" />
       </ICol>
       <ICol span="12" class="h-half">
         <h3 class="text-center">
@@ -89,7 +89,7 @@ export default {
           step: 'start',
           data: _check,
           lineStyle: { width: 1 },
-          symbolSize: 2
+          symbolSize: 1
         },
         {
           name: '优化后',
@@ -97,7 +97,7 @@ export default {
           step: 'start',
           data: _opt,
           lineStyle: { width: 1 },
-          symbolSize: 2
+          symbolSize: 1
         }
       ]
     },

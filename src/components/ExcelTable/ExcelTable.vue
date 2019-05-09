@@ -70,16 +70,16 @@ export default {
     this.dataGrid.addEventListener('contextmenu', this.preventDefault)
     this.dataGrid.addEventListener('beforeendedit', this.endedit)
     this.dataGrid.addEventListener('beginedit', this.beginedit)
-    window.addEventListener('mousewheel', this.scrollFunc, false)
-    document.addEventListener('click', this.scrollFunc, false)
+    // window.addEventListener('mousewheel', this.scrollFunc, false)
+    // document.addEventListener('click', this.scrollFunc, false)
   },
   beforeDestroy () {
     this.dataGrid.removeEventListener('beforesortcolumn', this.preventDefault)
     this.dataGrid.removeEventListener('contextmenu', this.preventDefault)
     this.dataGrid.removeEventListener('beforeendedit', this.endedit)
     this.dataGrid.removeEventListener('beginedit', this.beginedit)
-    window.removeEventListener('mousewheel', this.scrollFunc, false)
-    document.removeEventListener('mousewheel', this.scrollFunc, false)
+    // window.removeEventListener('mousewheel', this.scrollFunc, false)
+    // document.removeEventListener('click', this.scrollFunc, false)
   },
   methods: {
     preventDefault (e) {
@@ -148,7 +148,6 @@ export default {
       if (data.length === 0) return []
       const formatSheetdata = []
       const range = XLSX.utils.decode_range(this.ws['!ref'])
-      console.log(range)
       for (let i = 0; i < data.length; i++) {
         const objData = {}
         for (var k = range.s.c; k <= range.e.c; k++) {

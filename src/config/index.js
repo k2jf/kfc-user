@@ -159,7 +159,7 @@ export const baseDictionary = {
   D_mudline:          'D泥面',
   D_pileTip:          'D桩端',
   D_tilt:             'R转角',
-  D_settlement:       '沉降',
+  D_settlement:       'S沉降',
   stress:             '应力',
   P1:                 'P1',
   P2:                 'P2',
@@ -169,6 +169,28 @@ export const baseDictionary = {
   lt:                 '<',
   lte:                '<=',
   eq:                 '=',
+}
+
+export const highDictionary = {
+  mode: '模态',
+  frequency: '频率',
+  compression: '抗压承载力',
+  tension: '抗拔承载力',
+  allowable: '许用值',
+  deflection: '变形',
+  D_mudline: 'D泥面',
+  D_pileTip: 'D桩端',
+  D_tilt: 'R基础顶转角',
+  D_settlement: 'S沉降',
+  stress: '应力',
+  P1: 'P1',
+  P2: 'P2',
+  fatigue: '疲劳',
+  gt: '>',
+  gte: '>=',
+  lt: '<',
+  lte: '<=',
+  eq: '=',
 }
 /* eslint-enable */
 

@@ -9,7 +9,8 @@
           :name="paramType"
           :sheetdata="sheetdata"
           :ws="ws"
-          v-if="excelName" />
+          v-if="excelName"
+          ref="excelTable" />
         <div class="text-sm text-center pt-32" v-else>
           请先上传excel文件
         </div>

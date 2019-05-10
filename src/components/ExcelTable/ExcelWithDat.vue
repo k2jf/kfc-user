@@ -2,9 +2,9 @@
   <div class="wrap">
     <div class="split-left">
       <h2 class="text-sm bg-grey-lighter pl-2 relative">
-        <aside class="absolute pin-t pin-r w-24 h-8 z-10" @click="modal = true">
-          <span class="open-dat pr-2">打开dat文件</span>
-          <Icon type="ios-expand" />
+        <aside class="absolute pin-t pin-r w-24 h-8 z-10" @click="modal = !modal">
+          <span class="open-dat pr-2">{{ modal ? '关闭' : '打开' }}dat文件</span>
+          <Icon type="md-code" />
         </aside>
         {{ excelName }}
       </h2>

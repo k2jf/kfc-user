@@ -2,7 +2,7 @@
   <div class="basic-params-card">
     <div>
       <Row class="mb-2">
-        <ICol span="5" style="line-height: 32px;">
+        <ICol span="4" style="line-height: 32px;">
           <span class="inline-block w-24 text-right">
             海况参数表：
           </span>
@@ -18,7 +18,7 @@
             </Button>
           </Upload>
         </ICol>
-        <ICol span="5" style="line-height: 32px;">
+        <ICol span="4" style="line-height: 32px;">
           <span class="inline-block w-24 text-right">
             载荷参数：
           </span>
@@ -32,6 +32,32 @@
               上传文件
             </Button>
           </Upload>
+        </ICol>
+        <ICol span="4">
+          <span class="inline-block w-24 text-right">波浪类型：</span>
+          <Input style="width: 60px" v-model="wave" />
+        </ICol>
+        <ICol span="4">
+          <span class="inline-block w-24 text-right">阶次：</span>
+          <Input style="width: 60px" v-model="degree" />
+        </ICol>
+        <ICol span="4">
+          <span class="inline-block w-24 text-right">方向1/°：</span>
+          <Input style="width: 60px" v-model="direction01" />
+        </ICol>
+        <ICol span="4">
+          <span class="inline-block w-24 text-right">方向2/°：</span>
+          <Input style="width: 60px" v-model="direction02" />
+        </ICol>
+      </Row>
+      <Row class="my-3">
+        <ICol span="4">
+          <span class="inline-block w-24 text-right">风速：</span>
+          <Input style="width: 60px" v-model="windSpeed" />
+        </ICol>
+        <ICol span="4">
+          <span class="inline-block w-24 text-right">泥面高程：</span>
+          <Input style="width: 60px" v-model="mudlineElevation" />
         </ICol>
         <ICol span="6">
           <Button
@@ -53,7 +79,8 @@
       :paramType="basicType"
       :sheetdata="sheetdata"
       :ws="originSheets"
-      v-if="isSplit" />
+      v-if="isSplit"
+      ref="excel2Dat" />
     <ExcelWithDat
       :excelName="fileName"
       :datName="datName"
@@ -61,7 +88,8 @@
       :paramType="basicType"
       :sheetdata="sheetdata"
       :ws="originSheets"
-      v-else />
+      v-else
+      ref="excelWithDat" />
     <div class="transform text-right mt-2">
       <a href="javascript:void 0" class="ido-link" @click="isSplit = !isSplit">
         改变dat显示方式
@@ -95,13 +123,13 @@ const templateName = 'SeaState.xlsx'
 export default {
   name: 'SeaState',
   components: {
+    Input,
     Upload,
     Row,
     ICol: Col,
     Button,
     Excel2Dat,
     ExcelWithDat
-
   },
   props: {
     basicType: {
@@ -118,19 +146,29 @@ export default {
       originSheets: {},
       datContent: '',
       datName: datMapping[this.basicType],
-      isSplit: false
+      isSplit: false,
+      wave: '',
+      degree: '',
+      direction01: '',
+      direction02: '',
+      windSpeed: '',
+      mudlineElevation: ''
     }
   },
   computed: {
     ...mapState({
       fileId: state => state.foundation.seaState.fileId,
-      fileName: state => state.foundation.seaState.fileName || templateName
+      fileName: state => state.foundation.seaState.fileName || templateName,
+      config: state => state.foundation.seaState.config || {}
     })
   },
   watch: {
     fileId (id) {
       this.getExcel(id)
       if (id && id > -1) this.getDat(id)
+    },
+    config () {
+      this.setDefaultConfig()
     }
   },
   mounted () {

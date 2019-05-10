@@ -273,7 +273,9 @@ export default {
           }
         })
         this.datContent = res.body.datText
-        // this.
+        if (!this.isSplit) {
+          this.$refs.excelWithDat.modal = true
+        }
       } catch (error) {
         console.error(error)
       }
@@ -382,19 +384,19 @@ export default {
   }
 </style>
 <style lang="less">
-  .uploaded-color {
-    border-color: #51d88a;
+  // .uploaded-color {
+  //   border-color: #51d88a;
 
-    &:active {
-      color: #51d88a;
-      border-color: #51d88a;
-    }
-    &:hover {
-      color: #51d88a;
-      border-color: #51d88a;
-    }
-    i, span {
-      color: #51d88a;
-    }
-  }
+  //   &:active {
+  //     color: #51d88a;
+  //     border-color: #51d88a;
+  //   }
+  //   &:hover {
+  //     color: #51d88a;
+  //     border-color: #51d88a;
+  //   }
+  //   i, span {
+  //     color: #51d88a;
+  //   }
+  // }
 </style>

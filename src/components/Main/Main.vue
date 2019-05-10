@@ -10,10 +10,11 @@
         ref="side1"
         v-model="isCollapsed">
         <h2 class="gw-logo">
-          <div class="goldwind">
+          <!-- <div class="goldwind">
             <GoldWind />
-          </div>
-          <img :src="gwLogo" alt="gwLogo" class="text-logo" />
+          </div> -->
+          <img :src="gwLogo" alt="gwLogo">
+          <img :src="textLogo" alt="textLogo" class="text-logo" />
         </h2>
         <Menu
           :active-name="activeName"
@@ -72,10 +73,10 @@
 
 <script>
 import { Layout, Sider, Menu, MenuItem, Header, Icon, Content, Avatar, Spin, Dropdown, DropdownMenu, DropdownItem } from 'iview'
-import gwLogo from '@/assets/gw_logo_2.png'
+import textLogo from '@/assets/gw_logo_2.png'
+import gwLogo from '@/assets/gw_logo_1.png'
 import alita from '@/assets/Alita.jpg'
 import BreadCrumb from '@/components/BreadCrumb'
-import GoldWind from '@/components/GoldWind'
 
 import { mapState, mapMutations } from 'vuex'
 
@@ -104,13 +105,13 @@ export default {
     DropdownMenu,
     DropdownItem,
     BreadCrumb,
-    GoldWind,
     Spin
   },
   data () {
     return {
       alita,
       isCollapsed: false,
+      textLogo,
       gwLogo,
       user: 'DEV',
       breadList: [],

@@ -3,19 +3,25 @@
 export default {
   namespaced: true,
   state: {
-    geometry: {},
-    seaState: {},
-    geology: {}
+    geometry: {
+      config: {}
+    },
+    seaState: {
+      config: {}
+    },
+    geology: {
+      config: {}
+    }
   },
   mutations: {
     syncGeometry (state, payload) {
-      state.geometry = payload.geometry
+      state.geometry = Object.assign({}, state.geometry, payload)
     },
     syncSeaState (state, payload) {
-      state.seaState = payload.seaState
+      state.seaState = Object.assign({}, state.seaState, payload)
     },
     syncGeology (state, payload) {
-      state.geology = payload.geology
+      state.geology = Object.assign({}, state.geology, payload)
     }
   },
   actions: {

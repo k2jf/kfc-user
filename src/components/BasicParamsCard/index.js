@@ -1,9 +1,13 @@
-import Geometry from './Geometry.vue'
-import SeaState from './SeaState.vue'
-import Geology from './Geology.vue'
+import GeometryParams from './GeometryParams.vue'
+import SeaStateParams from './SeaStateParams.vue'
+import GeologyParams from './GeologyParams.vue'
+
+import BasicParamsCard from './BasicParamsCard.vue'
+
+export default BasicParamsCard
 
 export {
-  Geometry,
-  SeaState,
-  Geology
+  GeometryParams,
+  SeaStateParams,
+  GeologyParams
 }

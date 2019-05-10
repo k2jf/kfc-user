@@ -61,13 +61,25 @@
       <div>
         <Tabs :animated="false" @on-click="onTabClick">
           <TabPane label="几何参数">
-            <Geometry basicType="geometry" ref="geometry" />
+            <BasicParamsCard basicType="geometry">
+              <template v-slot:params>
+                <GeometryParams />
+              </template>
+            </BasicParamsCard>
           </TabPane>
           <TabPane label="海况参数">
-            <SeaState basicType="seaState" ref="seaState" />
+            <BasicParamsCard basicType="seaState">
+              <template v-slot:params>
+                <SeaStateParams />
+              </template>
+            </BasicParamsCard>
           </TabPane>
           <TabPane label="地质参数">
-            <Geology basicType="geology" ref="geology" />
+            <BasicParamsCard basicType="geology">
+              <template v-slot:params>
+                <GeologyParams />
+              </template>
+            </BasicParamsCard>
           </TabPane>
         </Tabs>
       </div>
@@ -87,7 +99,8 @@
 import { Button, Input, Form, FormItem, Select, Option, Tabs, TabPane, Message } from 'iview'
 import Fiche from '@/components/Fiche'
 import ConstraintTable from '@/components/ConstraintTable'
-import { Geometry, SeaState, Geology } from '@/components/BasicParamsCard'
+import BasicParamsCard, { SeaStateParams, GeologyParams, GeometryParams } from '@/components/BasicParamsCard'
+// import BasicParamsCard from '@/components/BasicParamsCard'
 
 import { mapMutations } from 'vuex'
 
@@ -111,9 +124,10 @@ export default {
     ConstraintTable,
     Tabs,
     TabPane,
-    Geometry,
-    SeaState,
-    Geology
+    BasicParamsCard,
+    GeometryParams,
+    SeaStateParams,
+    GeologyParams
   },
   data () {
     return {
@@ -137,11 +151,11 @@ export default {
     this.init()
     this.getTowerTaskList()
   },
-  beforeDestroy () {
-    this.syncGeometry({ geometry: {} })
-    this.syncSeaState({ seaState: {} })
-    this.syncGeology({ geology: {} })
-  },
+  // beforeDestroy () {
+  //   this.syncGeometry({ geometry: {} })
+  //   this.syncSeaState({ seaState: {} })
+  //   this.syncGeology({ geology: {} })
+  // },
   methods: {
     ...mapMutations('foundation', ['syncGeometry', 'syncSeaState', 'syncGeology']),
     async init () {
@@ -165,21 +179,22 @@ export default {
 
       if (res.body.geometry.length > 0) {
         this.syncGeometry({
-          geometry: res.body.geometry[0]
-        })
-      }
-
-      if (res.body.geology.length > 0) {
-        this.syncGeology({
-          geology: res.body.geology[0]
+          ...res.body.geometry[0]
         })
       }
 
       if (res.body.seaState.length > 0) {
         this.syncSeaState({
-          seaState: res.body.seaState[0]
+          ...res.body.seaState[0]
         })
       }
+
+      if (res.body.geology.length > 0) {
+        this.syncGeology({
+          ...res.body.geology[0]
+        })
+      }
+
       if (res.body.constraints) {
         this.assembleBaseConfigs(res.body.constraints)
       }
@@ -205,16 +220,16 @@ export default {
           }
         }
       })
-      const geoms = ['codes', 'lrfdPHI', 'no_PNS', 'no_PS', 'pDelta', 'plTheory', 'shearDef', 'units']
-      let geomConfig = {}
-      geoms.forEach(g => {
-        geomConfig[g] = this.$refs.geometry[g]
-      })
+      // const geoms = ['codes', 'lrfdPHI', 'no_PNS', 'no_PS', 'pDelta', 'plTheory', 'shearDef', 'units']
+      // let geomConfig = {}
+      // geoms.forEach(g => {
+      //   geomConfig[g] = this.$refs.geometry[g]
+      // })
       try {
         await this.$put(`foundations/${this.$route.params.foundationId}`, {
           json: {
             constraints,
-            geomConfig,
+            // geomConfig,
             mudlineElevation: this.basicFormValidate.mudlineElevation,
             towerTaskId: this.basicFormValidate.towerTaskId,
             baseUltimate: this.basicFormValidate.baseUltimate

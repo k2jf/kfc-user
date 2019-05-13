@@ -113,6 +113,9 @@ export default {
         fileId: res.body.fileId,
         fileName: res.body.fileName
       })
+      // 因为上传 excel 后，fileId 不再自增，导致 父组件无法 watch fileId 来
+      // 自动更新，需要在此手动触发更新
+      this.$parent.$parent.getExcel(this.$parent.$parent.fileId)
     }
   }
 }

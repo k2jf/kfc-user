@@ -77,15 +77,14 @@ import textLogo from '@/assets/gw_logo_2.png'
 import gwLogo from '@/assets/gw_logo_1.png'
 import alita from '@/assets/Alita.jpg'
 import BreadCrumb from '@/components/BreadCrumb'
-
 import { mapState, mapMutations } from 'vuex'
 
 const navList = [
   { id: 0, name: '项目管理', to: 'projects', icon: 'ios-folder' },
   { id: 1, name: '载荷门户', link: 'http://internal-gw-zhy-loadportal-prod-front-474455559.cn-northwest-1.elb.amazonaws.com.cn/#/', icon: 'ios-search' },
   { id: 2, name: '塔架设计', to: 'towers', icon: 'md-build' },
-  { id: 3, name: '基础设计', to: 'foundations', icon: 'md-document' }
-  // { id: 4, name: '数据分析', to: 'data-analytics', icon: 'md-analytics' }
+  { id: 3, name: '基础设计', to: 'foundations', icon: 'md-document' },
+  { id: 4, name: '数据分析', to: 'analytics', icon: 'md-analytics' }
   // { id: 5, name: '数据管理', to: 'data-management', icon: 'md-podium' },
   // { id: 6, name: '用户管理', to: 'users', icon: 'md-contact' }
 ]

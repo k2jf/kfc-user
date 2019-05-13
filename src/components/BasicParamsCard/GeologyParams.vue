@@ -61,6 +61,7 @@ export default {
         fileId: res.body.fileId,
         fileName: res.body.fileName
       })
+      this.$parent.$parent.getExcel(this.$parent.$parent.fileId)
     }
   }
 }

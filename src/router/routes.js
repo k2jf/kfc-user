@@ -109,8 +109,8 @@ export default [
         ]
       },
       {
-        path: '/data-analytics',
-        name: 'data-analytics',
+        path: '/analytics',
+        name: 'analytics',
         meta: {
           breadName: '数据分析'
         },

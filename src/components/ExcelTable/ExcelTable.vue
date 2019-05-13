@@ -1,14 +1,13 @@
 <template>
-  <div class="ido-data-grid h-full w-full overflow-auto" :ref="name">
-  </div>
+  <div class="ido-data-grid h-full w-full overflow-auto" :ref="name"></div>
 </template>
 <script>
 import XLSX from 'xlsx'
+// import Handsontable from 'handsontable'
 import canvasDatagrid from 'canvas-datagrid'
 
 export default {
   name: 'ExcelTable',
-  // mixins: [mixins],
   props: {
     name: {
       type: String,
@@ -40,7 +39,6 @@ export default {
       showRowHeaders: false,
       selectionMode: 'none'
     })
-
     /* eslint-disable */
     // custom styles
     // cDg.style.width = '100%'
@@ -51,9 +49,7 @@ export default {
     cDg.style.rowHeaderCellFont = '12px sans-serif'
     cDg.style.columnHeaderCellFont = '12px sans-serif'
     /* eslint-enable */
-
     this.dataGrid = cDg
-
     if (this.name === 'geometry') {
       const clientW = document.getElementById('ido-body').offsetWidth - 90
       let cellWidth = Math.floor(clientW / 6)
@@ -70,16 +66,12 @@ export default {
     this.dataGrid.addEventListener('contextmenu', this.preventDefault)
     this.dataGrid.addEventListener('beforeendedit', this.endedit)
     this.dataGrid.addEventListener('beginedit', this.beginedit)
-    // window.addEventListener('mousewheel', this.scrollFunc, false)
-    // document.addEventListener('click', this.scrollFunc, false)
   },
   beforeDestroy () {
     this.dataGrid.removeEventListener('beforesortcolumn', this.preventDefault)
     this.dataGrid.removeEventListener('contextmenu', this.preventDefault)
     this.dataGrid.removeEventListener('beforeendedit', this.endedit)
     this.dataGrid.removeEventListener('beginedit', this.beginedit)
-    // window.removeEventListener('mousewheel', this.scrollFunc, false)
-    // document.removeEventListener('click', this.scrollFunc, false)
   },
   methods: {
     preventDefault (e) {
@@ -93,6 +85,8 @@ export default {
         // canvas-datagrid default set value to stirng,so we need to
         // manually transform to number
         let value = e.newValue
+        console.log(e.newValue, e.oldValue)
+        console.log(typeof e.newValue, typeof e.oldValue)
         if (typeof e.oldValue === 'number') {
           value = Number(e.newValue)
         }
@@ -152,7 +146,7 @@ export default {
         const objData = {}
         for (var k = range.s.c; k <= range.e.c; k++) {
           const key = XLSX.utils.encode_col(k)
-          objData[key] = data[i][k] || ''
+          objData[key] = data[i][k] === 0 ? 0 : (data[i][k] || '')
         }
         formatSheetdata.push(objData)
       }

@@ -25,6 +25,7 @@
     "dayjs": "^1.8.8",
     "echarts": "^4.2.1",
     "echarts-liquidfill": "^2.0.4",
+    "handsontable": "^7.0.2",
     "iview": "^3.2.2",
     "ky": "^0.9.0",
     "vue": "^2.6.6",

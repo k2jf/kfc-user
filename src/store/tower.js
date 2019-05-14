@@ -37,20 +37,24 @@ export default {
         commit('syncLoading', { loading: false }, { root: true })
       }
     },
-    async getAdjustOptResult ({ commit }, payload) {
-      commit('syncLoading', { loading: true }, { root: true })
-      const { towerId, thicknessList } = payload
-      try {
-        const res = await _fetch(`towerTasks/${towerId}/codeAdjust`, { method: 'post', json: { thicknessList }, silent: true })
-        commit('syncAdjustOptResult', { adjustOptResult: res.body.optResult })
-        commit('syncOptWeight', { optWeight: res.body.optWeight })
-        commit('syncLoading', { loading: false }, { root: true })
-      } catch (err) {
-        // if (typeof err === 'string') {
-        //   Message
-        // }
-        commit('syncLoading', { loading: false }, { root: true })
-      }
+    getAdjustOptResult ({ commit }, payload) {
+      return new Promise(async (resolve, reject) => {
+        commit('syncLoading', { loading: true }, { root: true })
+        const { towerId, thicknessList } = payload
+        try {
+          const res = await _fetch(`towerTasks/${towerId}/codeAdjust`, { method: 'post', json: { thicknessList }, silent: true })
+          commit('syncAdjustOptResult', { adjustOptResult: res.body.optResult })
+          commit('syncOptWeight', { optWeight: res.body.optWeight })
+          commit('syncLoading', { loading: false }, { root: true })
+          resolve()
+        } catch (err) {
+          // if (typeof err === 'string') {
+          //   Message
+          // }
+          commit('syncLoading', { loading: false }, { root: true })
+          reject(err)
+        }
+      })
     }
   }
 }

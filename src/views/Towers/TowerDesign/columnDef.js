@@ -31,11 +31,19 @@ export default [
           },
           ['运行成功'])
       case 3:
-        return h('div',
-          {
-            'class': 'text-red'
-          },
-          ['运行失败'])
+        // return h('div',
+        //   {
+        //     'class': 'text-red'
+        //   },
+        //   ['运行失败'])
+        return h('div', [
+          h(Tooltip, {
+            props: {
+              placement: 'top',
+              content: params.row.message
+            }
+          }, [h('div', { 'class': 'text-red' }, ['运行失败'])])
+        ])
       }
     }
   },

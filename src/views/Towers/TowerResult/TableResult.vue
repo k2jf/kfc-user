@@ -135,15 +135,19 @@ export default {
       const value = row[key]
       return value < standard ? 'text-red-light' : ''
     },
-    onNumberChange (value, index) {
+    async onNumberChange (value, index) {
       const { optResult } = this.results
       const items = [...optResult.items]
       items[index][4] = value
       let thicknessList = items.filter(item => item[0] !== 0).map(item => item[4])
-      this.getAdjustOptResult({ towerId: this.$route.params.taskId, thicknessList })
+      try {
+        await this.getAdjustOptResult({ towerId: this.$route.params.taskId, thicknessList })
+      } catch (error) {
+        // If failed, set data to previous status
+        this.getResults({ towerId: this.$route.params.taskId })
+      }
     },
     async save () {
-      console.log(1)
       try {
         await this.$post(`towerTasks/${this.$route.params.taskId}/save/adjustedResult`)
         this.$Message.success('保存成功')

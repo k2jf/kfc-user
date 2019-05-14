@@ -1,6 +1,5 @@
 <template>
   <div class="data-analysis h-full">
-    数据分析
     <div class="charts">
       <Chart :options="weight2LoadOptions" autoresize />
     </div>

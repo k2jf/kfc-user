@@ -150,14 +150,12 @@
         </Tabs>
       </div>
     </div>
-</div>
+  </div>
 </template>
 
 <script>
-import { Tag, Row, Col, Poptip, Tabs, TabPane, Card, Avatar } from 'iview'
+import { Tag, Row, Col, Poptip, Tabs, TabPane, Card } from 'iview'
 import Steps from '@/components/Steps'
-import GoldWind from '@/components/GoldWind'
-import { jiraUrl } from '@/config'
 
 export default {
   name: 'ProjectItem',
@@ -170,15 +168,8 @@ export default {
     Poptip,
     Tabs,
     TabPane,
-    Card,
-    Avatar,
-    GoldWind
-  },
-  async mounted () {
-    // const res = await this.$ky.get(`issue/${this.$route.params.projectId}`, {
-    //   prefixUrl: jiraUrl
-    // }).json()
-    // console.log(res)
+    Card
   }
+
 }
 </script>

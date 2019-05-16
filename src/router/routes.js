@@ -105,6 +105,14 @@ export default [
               breadName: '编辑基础任务'
             },
             component: () => import(/* webpackChunkName: "Foundations" */ '@/views/Foundations/FoundationInfo')
+          },
+          {
+            path: 'foundation-result/:foundationId',
+            name: 'foundation-result',
+            meta: {
+              breadName: '基础任务结果'
+            },
+            component: () => import(/* webpackChunkName: "Foundations" */ '@/views/Foundations/FoundationResult')
           }
         ]
       },

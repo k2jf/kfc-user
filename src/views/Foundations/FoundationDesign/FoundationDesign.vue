@@ -65,8 +65,9 @@
           :data="data">
           <template slot="operation" slot-scope="{ row }">
             <div class="text-grey">
-              <a href="javascript:;">提交</a> |
+              <a href="javascript:;" @click="submitTask(row.id)">提交</a> |
               <a href="javascript:;" @click="viewTask(row)">编辑</a> |
+              <a href="javascript:;" @click="viewTable(row.id)">查看交互表</a> |
               <a href="javascript:;">
                 <Dropdown>
                   <a href="javascript:void(0)">
@@ -151,8 +152,14 @@ export default {
       }
     }
   },
-  async mounted () {
-    this.getTaskList(this.pageInfo)
+  mounted () {
+    this.setListInterval()
+  },
+  beforeDestroy () {
+    if (this.timer) {
+      clearInterval(this.timer)
+      this.timer = null
+    }
   },
   methods: {
     async getTaskList ({ pageNum, pageSize }) {
@@ -164,11 +171,11 @@ export default {
     },
     onPageChange (pageNum) {
       this.pageInfo = Object.assign(this.pageInfo, { pageNum })
-      this.getTaskList(this.pageInfo)
+      this.setListInterval()
     },
     onPageSizeChange (pageSize) {
       this.pageInfo = Object.assign(this.pageInfo, { pageSize })
-      this.getTaskList(this.pageInfo)
+      this.setListInterval()
     },
     async createNewTask () {
       const res = await this.$get('projects')
@@ -188,6 +195,21 @@ export default {
     },
     viewTask (row) {
       this.$router.push({ name: 'foundation-design', params: { foundationId: row.id } })
+    },
+    viewTable (id) {
+      this.$router.push({ name: 'foundation-result', params: { foundationId: id } })
+    },
+    async submitTask (id) {
+      const res = await this.$put(`foundations/${id}/codeSubmit`, { silent: true })
+
+      if (res.code !== 0) {
+        Message.error(res.body.message)
+      } else {
+        Message.success('提交成功')
+        setTimeout(() => {
+          this.setListInterval()
+        }, 500)
+      }
     },
     async asyncOK () {
       this.loading = true
@@ -215,6 +237,16 @@ export default {
     },
     onCancel () {
       this.$refs.formValidate.resetFields()
+    },
+    setListInterval () {
+      if (this.timer) {
+        clearInterval(this.timer)
+        this.timer = null
+      }
+      this.getTaskList(this.pageInfo)
+      this.timer = setInterval(() => {
+        this.getTaskList(this.pageInfo)
+      }, 5000)
     }
   }
 }

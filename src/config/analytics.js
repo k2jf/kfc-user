@@ -1,4 +1,4 @@
-import echarts from 'echarts'
+// import { color as colorTool } from 'echarts'
 
 const schema = [
   { name: 'load', index: 0, text: '单位兆瓦塔底载荷', unit: ' kNm/MW' },
@@ -770,11 +770,11 @@ export const length2WeightOptions = {
   ]
 }
 
-const indices = {
-  name: 0,
-  group: 1,
-  id: 15
-}
+// const indices = {
+//   name: 0,
+//   group: 1,
+//   id: 15
+// }
 export const schema2 = [
   { name: 'project_name', index: 0 },
   { name: 'menufecter', index: 1 },
@@ -798,8 +798,8 @@ const fieldIndices = schema2.reduce(function (obj, item) {
   return obj
 }, {})
 
-const groupCategories = []
-const groupColors = []
+// const groupCategories = []
+// const groupColors = []
 
 // zlevel 为 1 的层开启尾迹特效
 // myChart.getZr().configLayer(1, {
@@ -1010,39 +1010,39 @@ const data = [
 
 ]
 
-function normalizeData (originData) {
-  const groupMap = {}
-  originData.forEach(function (row) {
-    const groupName = row[indices.group]
-    if (!groupMap.hasOwnProperty(groupName)) {
-      groupMap[groupName] = 1
-    }
-  })
+// function normalizeData (originData) {
+//   const groupMap = {}
+//   originData.forEach(function (row) {
+//     const groupName = row[indices.group]
+//     if (!groupMap.hasOwnProperty(groupName)) {
+//       groupMap[groupName] = 1
+//     }
+//   })
 
-  originData.forEach(function (row) {
-    row.forEach(function (item, index) {
-      if (index !== indices.name &&
-        index !== indices.group &&
-        index !== indices.id
-      ) {
-        // Convert null to zero, as all of them under unit "g".
-        row[index] = parseFloat(item) || 0
-      }
-    })
-  })
+//   originData.forEach(function (row) {
+//     row.forEach(function (item, index) {
+//       if (index !== indices.name &&
+//         index !== indices.group &&
+//         index !== indices.id
+//       ) {
+//         // Convert null to zero, as all of them under unit "g".
+//         row[index] = parseFloat(item) || 0
+//       }
+//     })
+//   })
 
-  for (const groupName in groupMap) {
-    if (groupMap.hasOwnProperty(groupName)) {
-      groupCategories.push(groupName)
-    }
-  }
-  const hStep = Math.round(300 / (groupCategories.length - 1))
-  for (let i = 0; i < groupCategories.length; i++) {
-    groupColors.push(echarts.color.modifyHSL('#5A94DF', hStep * i))
-  }
+//   for (const groupName in groupMap) {
+//     if (groupMap.hasOwnProperty(groupName)) {
+//       groupCategories.push(groupName)
+//     }
+//   }
+//   const hStep = Math.round(300 / (groupCategories.length - 1))
+//   for (let i = 0; i < groupCategories.length; i++) {
+//     groupColors.push(colorTool.modifyHSL('#5A94DF', hStep * i))
+//   }
 
-  return originData
-}
+//   return originData
+// }
 
 export const axisOptions = {
   backgroundColor: 'rgba(51,51,51,1)',
@@ -1076,7 +1076,7 @@ export const axisOptions = {
   toolbox: {
     show: true,
     orient: 'vertical',
-    top: '14%',
+    top: '20%',
     feature: {
       dataZoom: {},
       dataView: { readOnly: false },

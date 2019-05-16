@@ -1,48 +1,60 @@
-import { Tooltip } from 'iview'
+import { Tooltip, Icon } from 'iview'
 import D from 'dayjs'
 
 export default [
   {
     title: '任务名称',
-    key: 'taskName',
-    width: 240
+    key: 'taskName'
+    // width: 240
   },
   {
     title: '项目名称',
     key: 'projectName'
+    // width: 240
   },
   {
     title: '状态',
+    width: 112,
     render: (h, params) => {
       const { status } = params.row
       switch (status) {
       case 0:
-        return h('div', ['已创建'])
+        return h('div',
+          {
+            'class': 'pl-2'
+          },
+          ['已创建'])
       case 1:
         return h('div',
           {
-            'class': 'text-blue'
+            'class': 'text-blue pl-2'
           },
           ['运行中'])
       case 2:
         return h('div',
           {
-            'class': 'text-green'
+            'class': 'text-green pl-2'
           },
           ['运行成功'])
       case 3:
-        // return h('div',
-        //   {
-        //     'class': 'text-red'
-        //   },
-        //   ['运行失败'])
-        return h('div', [
+        return h('div', { 'class': 'text-red pl-2' }, [
           h(Tooltip, {
             props: {
               placement: 'top',
               content: params.row.message
             }
-          }, [h('div', { 'class': 'text-red' }, ['运行失败'])])
+          }, [
+            h('span', ['运行失败']),
+            ' ',
+            h(Icon, {
+              props: {
+                type: 'ios-alert-outline'
+              },
+              class: 'text-sm',
+              style: {
+                verticalAlign: 'text-top'
+              }
+            })])
         ])
       }
     }
@@ -61,7 +73,8 @@ export default [
   },
   {
     title: '设计者',
-    key: 'designer'
+    key: 'designer',
+    width: 100
   },
   {
     title: '创建时间',
@@ -81,6 +94,7 @@ export default [
   {
     title: '备注',
     key: 'remark'
+    // width: 100
   },
   {
     title: '操作',

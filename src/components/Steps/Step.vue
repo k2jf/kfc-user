@@ -5,7 +5,7 @@
     </div>
     <div :class="[prefixCls + '-head']">
       <div :class="[prefixCls + '-head-inner']">
-        <span v-if="!icon && currentStatus != 'finish' && currentStatus != 'error'">{{ stepNumber }}</span>
+        <span v-if="!icon && currentStatus !== 'finish' && currentStatus !== 'error'">{{ stepNumber }}</span>
         <span :class="iconClasses" v-else></span>
       </div>
     </div>

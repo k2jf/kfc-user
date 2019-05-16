@@ -83,33 +83,9 @@ export default {
 </script>
 
 <style lang="less">
- @font-face {
-    font-family: GBK1;
-    src: url(../../assets/fonts/GBK1.ttf);
-  }
-  @font-face {
-    font-family: GBK2;
-    src: url(../../assets/fonts/GBK2.ttf);
-  }
-  @font-face {
-    font-family: GBK3;
-    src: url(../../assets/fonts/GBK3.ttf);
-  }
-  @font-face {
-    font-family: HelveticaNeueLTPro-Lt;
-    src: url(../../assets/fonts/HelveticaNeueLTPro-Lt.otf);
-  }
-  @font-face {
-    font-family: HelveticaNeueLTPro-Md_0;
-    src: url(../../assets/fonts/HelveticaNeueLTPro-Md_0.otf);
-  }
   @font-face {
     font-family: HelveticaNeueLTPro-Roman;
     src: url(../../assets/fonts/HelveticaNeueLTPro-Roman.otf);
-  }
-  @font-face {
-    font-family: BergamoStd-Regular;
-    src: url(../../assets/fonts/BergamoStd-Regular.otf);
   }
 
 .ido-login {
@@ -117,9 +93,6 @@ export default {
   width: 100%;
   overflow: hidden;
   position: relative;
-  // background: url(../../assets/login_bg.jpg);
-  // background-size: cover;
-  // filter: blur(6px);
 }
 
 .logo {
@@ -139,7 +112,6 @@ export default {
   top: 0;
   background: url(../../assets/login_bg.jpg);
   background-size: cover;
-  // filter: blur(4px);
 }
 
 .header{
@@ -158,7 +130,7 @@ export default {
   h2 {
     font-size: 20px;
     color: #fff;
-    font-family: 'GBK3', 'GBK2', 'GBK1', sans-serif;
+    font-family: Helvetica, 'Hiragino Sans GB', 'Microsoft Yahei', '微软雅黑', Arial, sans-serif;
   }
 }
 

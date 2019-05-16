@@ -448,7 +448,7 @@ export default {
           towerFormValidate.workCase = false
         }
 
-        this.isOnline = res.body.isOnline
+        this.isOnline = res.body.loadDatasource === 1
         this.towerFormValidate = towerFormValidate
 
         if (res.body.towerInput.length > 0) {

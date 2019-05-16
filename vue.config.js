@@ -1,3 +1,5 @@
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
+
 module.exports = {
   css: {
     loaderOptions: {
@@ -17,14 +19,13 @@ module.exports = {
         loader: 'raw-loader'
       }
     })
-  }
-  // chainWebpack: config => {
-  //   const svgRule = config.module.rule('svg')
-
-  //   svgRule.uses.clear()
-  //   svgRule
-  //     .use('raw-loader')
-  //     .loader('raw-loader')
-  //     .end()
-  // }
+    if (process.env.NODE_ENV === 'production') {
+      config.plugins.push(
+        new BundleAnalyzerPlugin({
+          analyzerMode: 'static'
+        })
+      )
+    }
+  },
+  productionSourceMap: false
 }

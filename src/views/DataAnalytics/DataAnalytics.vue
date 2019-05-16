@@ -1,67 +1,70 @@
 <template>
   <div class="data-analysis h-full">
-    <div class="charts">
-      <Chart :options="weight2LoadOptions" autoresize />
-    </div>
-    <div class="charts">
-      <Chart :options="length2WeightOptions" autoresize />
-    </div>
-    <div class="charts relative">
-      <aside
-        class="absolute pin-r"
-        :style="{
-          height: opreator === 'Close' ? '90px': '24px',
-          top: opreator === 'Close' ? '-20px': '0px'
-        }">
-        <div class="xaxis axis flex" v-show="opreator === 'Close'">
-          <div class="flex-2">
-            xAxis
+    <Row style="height:100%;">
+      <ICol span="12" class="h-half overflow-hidden p-3">
+        <Chart :options="weight2LoadOptions" autoresize />
+      </ICol>
+      <ICol span="12" class="h-half overflow-hidden p-3">
+        <Chart :options="length2WeightOptions" autoresize />
+      </ICol>
+      <ICol span="12" class="h-half relative overflow-hidden p-3">
+        <aside
+          class="absolute pin-r mr-3"
+          :style="{
+            height: opreator === 'Close' ? '90px': '24px'
+          }">
+          <div class="xaxis axis flex" v-show="opreator === 'Close'">
+            <div class="flex-2">
+              xAxis
+            </div>
+            <div class="flex-3">
+              <Select
+                style="width:90%;"
+                size="small"
+                v-model="xAxis"
+                @on-change="handleChange($event, 'xAxis')">
+                <Option :value="item.name" v-for="(item, ind) in axies" :key="ind">
+                  {{ item.name }}
+                </Option>
+              </Select>
+            </div>
           </div>
-          <div class="flex-3">
-            <Select
-              style="width:90%;"
-              size="small"
-              v-model="xAxis"
-              @on-change="handleChange($event, 'xAxis')">
-              <Option :value="item.name" v-for="(item, ind) in axies" :key="ind">
-                {{ item.name }}
-              </Option>
-            </Select>
+          <div class="yaxis axis flex" v-show="opreator === 'Close'">
+            <div class="flex-2">
+              yAxis
+            </div>
+            <div class="flex-3">
+              <Select
+                style="width:90%;"
+                size="small"
+                v-model="yAxis"
+                @on-change="handleChange($event, 'yAxis')">
+                <Option :value="item.name" v-for="(item, ind) in axies" :key="ind">
+                  {{ item.name }}
+                </Option>
+              </Select>
+            </div>
           </div>
-        </div>
-        <div class="yaxis axis flex" v-show="opreator === 'Close'">
-          <div class="flex-2">
-            yAxis
+          <div class="btn" @click="opreator = opreator === 'Close' ? 'Open' : 'Close'">
+            {{ opreator }} Controls
           </div>
-          <div class="flex-3">
-            <Select
-              style="width:90%;"
-              size="small"
-              v-model="yAxis"
-              @on-change="handleChange($event, 'yAxis')">
-              <Option :value="item.name" v-for="(item, ind) in axies" :key="ind">
-                {{ item.name }}
-              </Option>
-            </Select>
-          </div>
-        </div>
-        <div class="btn" @click="opreator = opreator === 'Close' ? 'Open' : 'Close'">
-          {{ opreator }} Controls
-        </div>
-      </aside>
-      <Chart :options="axisOptions" autoresize />
-    </div>
+        </aside>
+        <Chart :options="axisOptions" autoresize />
+      </ICol>
+    </Row>
   </div>
 </template>
 <script>
 import { weight2LoadOptions, length2WeightOptions, axisOptions, getSeries, schema2 as axies } from '@/config/analytics'
-import { Select, Option } from 'iview'
+import { Select, Option, Row, Col } from 'iview'
 
 export default {
   name: 'DataAnalytics',
   components: {
     Select,
-    Option
+    Option,
+    Row,
+    ICol: Col
   },
   data () {
     return {
@@ -83,12 +86,8 @@ export default {
 }
 </script>
 <style lang="less" scoped>
-.charts {
-  height: 600px;
-  margin-bottom: 20px;
-
   aside {
-    // top: -20px;
+    // top: 0;
     width: 260px;
     // height: 90px;
     background: #1a1a1a;
@@ -131,7 +130,6 @@ export default {
       }
     }
   }
-}
 </style>
 <style lang="less">
 .data-analysis .ivu-select-small.ivu-select-single .ivu-select-selection {

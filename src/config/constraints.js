@@ -9,14 +9,14 @@ const stress = {
   windLoad: '',
   limitedValue: [
     {
-      name: 'P1',
-      operator: null,
-      value: null
+      name: 'mast',
+      operator: 'lt',
+      value: 1
     },
     {
-      name: 'P2',
-      operator: null,
-      value: null
+      name: 'pile',
+      operator: 'lt',
+      value: 1
     }
   ]
 }
@@ -33,23 +33,23 @@ const deflection = {
   limitedValue: [
     {
       name: 'D_mudline',
-      operator: null,
-      value: null
+      operator: 'lt',
+      value: 1
     },
     {
       name: 'D_pileTip',
-      operator: null,
-      value: null
+      operator: 'lt',
+      value: 1
     },
     {
       name: 'D_tilt',
-      operator: null,
-      value: null
+      operator: 'lt',
+      value: 1
     },
     {
       name: 'D_settlement',
-      operator: null,
-      value: null
+      operator: 'lt',
+      value: 1
     }
   ]
 }
@@ -66,13 +66,13 @@ const highPileDeflection = {
   limitedValue: [
     {
       name: 'D_tilt',
-      operator: null,
-      value: null
+      operator: 'lt',
+      value: 1
     },
     {
       name: 'D_settlement',
-      operator: null,
-      value: null
+      operator: 'lt',
+      value: 1
     }
   ]
 }
@@ -89,8 +89,8 @@ const compression = {
   limitedValue: [
     {
       name: 'allowable',
-      operator: null,
-      value: null
+      operator: 'gt',
+      value: -500
     }
   ]
 }
@@ -107,8 +107,8 @@ const tension = {
   limitedValue: [
     {
       name: 'allowable',
-      operator: null,
-      value: null
+      operator: 'lt',
+      value: 500
     }
   ]
 }
@@ -125,8 +125,13 @@ const mode = {
   limitedValue: [
     {
       name: 'frequency',
-      operator: null,
-      value: null
+      operator: 'lt',
+      value: 1.1
+    },
+    {
+      name: 'frequency',
+      operator: 'lt',
+      value: 1.1
     }
   ]
 }
@@ -142,9 +147,9 @@ const fatigue = {
   windLoad: '',
   limitedValue: [
     {
-      name: 'P1',
-      operator: null,
-      value: null
+      name: 'damage',
+      operator: 'lt',
+      value: 1
     }
   ]
 }

@@ -75,17 +75,27 @@ export default {
     ...mapState({
       // fileId: state => state.foundation.geometry.fileId,
       // fileName: state => state.foundation.geometry.fileName || templateName,
-      config: state => state.foundation.geometry.config || {}
+      config: state => state.foundation.geometry.config || {
+        codes: 'UC',
+        units: 'MN',
+        no_PS: '2',
+        pDelta: '',
+        no_PNS: '2',
+        lrfdPHI: 'C',
+        shearDef: 'SD',
+        plTheory: 'DC'
+      }
     })
   },
-  watch: {
-    config () {
-      this.setDefaultConfig()
-    }
-  },
+  // watch: {
+  //   config () {
+  //     console.log(1)
+  //     this.setDefaultConfig()
+  //   }
+  // },
   mounted () {
     this.action = baseUrl + `foundations/${this.$route.params.foundationId}/upload?fileKey=geometry`
-    this.setDefaultConfig()
+    // this.setDefaultConfig()
   },
   methods: {
     setDefaultConfig () {

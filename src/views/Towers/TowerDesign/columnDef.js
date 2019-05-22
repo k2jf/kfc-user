@@ -80,16 +80,9 @@ export default [
     title: '创建时间',
     key: 'createTime',
     render: (h, params) => {
-      return h('div', [
-        h(Tooltip, {
-          props: {
-            placement: 'top',
-            content: D(new Date(params.row.createTime)).format('YYYY-MM-DD HH:mm:ss')
-          }
-        }, [D(params.row.createTime).format('YYYY-MM-DD')])
-      ])
+      return h('div', [D(new Date(params.row.createTime)).format('YYYY-MM-DD HH:mm:ss')])
     },
-    width: 100
+    width: 160
   },
   {
     title: '备注',

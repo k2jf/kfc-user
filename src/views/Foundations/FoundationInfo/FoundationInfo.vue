@@ -257,11 +257,12 @@ export default {
         }
         if (constraints[i].checkedConfig) {
           Object.entries(constraints[i].checkedConfig).forEach(c => {
-            _config[c[0]] = c[1]
+            _config[c[0]] = c[1] ? c[1].toFixed(2) : ''
           })
         }
         _baseConfig.splice(index, 1, _config)
       }
+      console.log(_baseConfig)
       this.baseConfig = _baseConfig
     },
     cancel () {

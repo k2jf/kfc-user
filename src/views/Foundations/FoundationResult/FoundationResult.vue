@@ -31,7 +31,6 @@
 
 <script>
 import { Row, Col, Table } from 'iview'
-import body from './mock.js'
 
 export default {
   name: 'FoundationResult',
@@ -43,9 +42,11 @@ export default {
       piles: []
     }
   },
-  mounted () {
-    this.pickMaterial(body.material)
-    this.pickPile(body.Pile)
+  async mounted () {
+    const id = this.$route.params.foundationId
+    const res = await this.$get(`foundations/${id}/result`)
+    this.pickMaterial(res.body.material)
+    this.pickPile(res.body.Pile)
   },
   methods: {
     pickMaterial (data) {

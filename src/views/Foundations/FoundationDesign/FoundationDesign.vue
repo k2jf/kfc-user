@@ -68,20 +68,21 @@
               <a href="javascript:;" @click="submitTask(row.id)">提交</a> |
               <a href="javascript:;" @click="viewTask(row)">编辑</a> |
               <a href="javascript:;" @click="viewTable(row.id)">查看交互表</a> |
-              <a href="javascript:;">
-                <Dropdown>
+              <a href="javascript:;" :disabled="row.resultFiles.length === 0">
+                <Dropdown v-if="row.resultFiles.length > 0">
                   <a href="javascript:void(0)">
                     结果
                     <Icon type="ios-arrow-down"></Icon>
                   </a>
                   <DropdownMenu slot="list">
-                    <DropdownItem>驴打滚</DropdownItem>
-                    <DropdownItem>炸酱面</DropdownItem>
-                    <DropdownItem disabled>豆汁儿</DropdownItem>
-                    <DropdownItem>冰糖葫芦</DropdownItem>
-                    <DropdownItem divided>北京烤鸭</DropdownItem>
+                    <DropdownItem :name="item.fileId" v-for="item in row.resultFiles" :key="item.fileId">
+                      <a :href="baseUrl + 'foundations/stream?fileId=' + item.fileId" target="_blank">
+                        {{ item.fileName }}
+                      </a>
+                    </DropdownItem>
                   </DropdownMenu>
                 </Dropdown>
+                <span class="" v-else>结果</span>
               </a> |
               <a href="javascript:;" @click="deleteTask(row)">删除</a>
             </div>
@@ -106,6 +107,7 @@
 <script>
 import { Input, Button, Table, Page, Modal, Form, FormItem, Select, Option, Message, Dropdown, DropdownMenu, DropdownItem, Icon } from 'iview'
 import columns from './columnDef'
+import { baseUrl } from '@/config'
 
 export default {
   name: 'FoundationDesign',
@@ -129,6 +131,8 @@ export default {
       value: '',
       columns,
       data: [],
+      baseUrl,
+      resultList: [],
       pageInfo: {
         pageNum: 1,
         pageSize: 10

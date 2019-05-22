@@ -54,24 +54,17 @@
           </div>
         </div>
         <div v-else>
-          <div
-            class="px-4"
-            :class="{
-              'has-border': (row.multiple && ind < row.limitedValue.length - 1),
-              'multiple-row': row.multiple
-            }"
-            v-for="(item,ind) in row.limitedValue"
-            :key="ind">
+          <div class="px-4">
             <Row>
               <ICol span="4">
-                <Input style="width: 100%" />
+                <Input style="width: 100%" :value="(row.limitedValue)[0].value" @on-change="onInputChange($event.target.value, row, 0)" />
               </ICol>
               <ICol span="6" class="text-center">
                 <Select
                   style="width: 50px"
                   placeholder=""
-                  :value="item.operator"
-                  @on-change="onSelectChange($event, row, ind)">
+                  :value="(row.limitedValue)[0].operator"
+                  @on-change="onSelectChange($event, row, 0)">
                   <Option :value="exp.value" v-for="(exp, index) in expressions" :key="index">
                     {{ exp.label }}
                   </Option>
@@ -79,22 +72,22 @@
               </ICol>
               <ICol span="4">
                 <div class="item-name text-center">
-                  {{ dictionary[item.name] }}
+                  {{ dictionary[(row.limitedValue)[0].name] }}
                 </div>
               </ICol>
               <ICol span="6" class="text-center">
                 <Select
                   style="width: 50px"
                   placeholder=""
-                  :value="item.operator2"
-                  @on-change="onSelectChange($event, row, ind)">
+                  :value="(row.limitedValue)[1].operator"
+                  @on-change="onSelectChange($event, row, 1)">
                   <Option :value="exp.value" v-for="(exp, index) in expressions" :key="index">
                     {{ exp.label }}
                   </Option>
                 </Select>
               </ICol>
               <ICol span="4">
-                <Input style="width: 100%" />
+                <Input style="width: 100%" :value="(row.limitedValue)[1].value" @on-change="onInputChange($event.target.value, row, 1)" />
               </ICol>
             </Row>
           </div>
@@ -104,7 +97,7 @@
       <!-- 表达式 -->
       <!-- ========================================================= -->
       <template slot="expression" slot-scope="{ row }">
-        <div>
+        <div v-if="row.name !== 'mode'">
           <div
             class="px-4 expression-item"
             :class="{
@@ -121,36 +114,92 @@
             </span>
           </div>
         </div>
+        <div v-else>
+          <div class="px-4 expression-item single-row">
+            <span v-if="(row.limitedValue)[0].name && (row.limitedValue)[0].operator && (row.limitedValue)[0].value && (row.limitedValue)[1].operator && (row.limitedValue)[1].value">
+              {{ (row.limitedValue)[0].value }}
+              {{ dictionary[(row.limitedValue)[0].operator] }}
+              {{ dictionary[(row.limitedValue)[0].name] }}
+              {{ dictionary[(row.limitedValue)[1].operator] }}
+              {{ (row.limitedValue)[1].value }}
+            </span>
+          </div>
+        </div>
       </template>
       <!-- ========================================================= -->
       <!-- windLoad 风机载荷 -->
       <!-- ========================================================= -->
       <template slot="windLoad" slot-scope="{ row, index }">
-        <Input :value="row.windLoad" @on-change="onConfigChange($event.target.value, index, 'windLoad')" />
-      </template>
-      <!-- ========================================================= -->
-      <!-- combination 载荷组合系数 -->
-      <!-- ========================================================= -->
-      <template slot="combination" slot-scope="{ row, index }">
-        <Input :value="row.combination" @on-change="onConfigChange($event.target.value, index, 'combination')" />
-      </template>
-      <!-- ========================================================= -->
-      <!-- dead 自重 -->
-      <!-- ========================================================= -->
-      <template slot="dead" slot-scope="{ row, index }">
-        <Input :value="row.dead" @on-change="onConfigChange($event.target.value, index, 'dead')" />
+        <!-- <Input :value="row.windLoad" @on-change="onConfigChange($event.target.value, index, 'windLoad')" /> -->
+        <Select placeholder="" :value="row.windLoad" @on-change="onConfigChange($event, index, 'windLoad')">
+          <Option value="1.35">
+            1.35
+          </Option>
+          <Option value="1.50">
+            1.50
+          </Option>
+          <Option value="1.00">
+            1.00
+          </Option>
+        </Select>
       </template>
       <!-- ========================================================= -->
       <!-- waveLoad 波流载荷 -->
       <!-- ========================================================= -->
       <template slot="waveLoad" slot-scope="{ row, index }">
-        <Input :value="row.waveLoad" @on-change="onConfigChange($event.target.value, index, 'waveLoad')" />
+        <Select placeholder="" :value="row.waveLoad" @on-change="onConfigChange($event, index, 'waveLoad')">
+          <Option value="1.35">
+            1.35
+          </Option>
+          <Option value="1.50">
+            1.50
+          </Option>
+          <Option value="1.00">
+            1.00
+          </Option>
+        </Select>
+      </template>
+      <!-- ========================================================= -->
+      <!-- dead 自重 -->
+      <!-- ========================================================= -->
+      <template slot="dead" slot-scope="{ row, index }">
+        <Select placeholder="" :value="row.dead" @on-change="onConfigChange($event, index, 'dead')">
+          <Option value="1.00">
+            1.00
+          </Option>
+          <Option value="1.10">
+            1.10
+          </Option>
+          <Option value="0.90">
+            0.90
+          </Option>
+        </Select>
+      </template>
+      <!-- ========================================================= -->
+      <!-- combination 载荷组合系数 -->
+      <!-- ========================================================= -->
+      <template slot="combination" slot-scope="{ row, index }">
+        <Select placeholder="" :value="row.combination" @on-change="onConfigChange($event, index, 'combination')">
+          <Option value="0.70">
+            0.70
+          </Option>
+          <Option value="1.00">
+            1.00
+          </Option>
+        </Select>
       </template>
       <!-- ========================================================= -->
       <!-- members 结构重要性系数 -->
       <!-- ========================================================= -->
       <template slot="members" slot-scope="{ row, index }">
-        <Input :value="row.members" @on-change="onConfigChange($event.target.value, index, 'members')" />
+        <Select placeholder="" :value="row.members" @on-change="onConfigChange($event, index, 'members')">
+          <Option value="1.10">
+            1.10
+          </Option>
+          <Option value="1.00">
+            1.00
+          </Option>
+        </Select>
       </template>
       <!-- ========================================================= -->
     </Table>
@@ -178,23 +227,24 @@ const columns = [
   },
   {
     title: '表达式',
-    slot: 'expression'
+    slot: 'expression',
+    width: 120
   },
   {
     title: '风机载荷',
     slot: 'windLoad'
   },
   {
-    title: '载荷组合系数',
-    slot: 'combination'
+    title: '波流载荷',
+    slot: 'waveLoad'
   },
   {
     title: '自重',
     slot: 'dead'
   },
   {
-    title: '波流载荷',
-    slot: 'waveLoad'
+    title: '载荷组合系数',
+    slot: 'combination'
   },
   {
     title: '结构重要性系数',
@@ -264,8 +314,9 @@ export default {
       this.magicConfig = _magicConfig
     },
     onConfigChange (value, ind, key) {
+      console.log(...arguments)
       const row = this.magicConfig[ind]
-      const _row = Object.assign({}, row, { [key]: Number(value) })
+      const _row = Object.assign({}, row, { [key]: value })
       this.updateMagic(_row, ind)
     },
     onSelect (selection, row) {

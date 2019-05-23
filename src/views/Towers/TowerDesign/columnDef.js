@@ -73,7 +73,7 @@ export default [
   },
   {
     title: '设计者',
-    key: 'designer',
+    key: 'creator',
     width: 100
   },
   {

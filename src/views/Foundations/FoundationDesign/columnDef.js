@@ -73,6 +73,11 @@ export default [
     }
   },
   {
+    title: '设计者',
+    key: 'creator',
+    width: 100
+  },
+  {
     title: '创建时间',
     key: 'createTime',
     render: (h, params) => {

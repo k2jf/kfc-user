@@ -149,7 +149,6 @@ export default {
   },
   mounted () {
     this.init()
-    this.getTowerTaskList()
   },
   // beforeDestroy () {
   //   this.syncGeometry({ geometry: {} })
@@ -161,6 +160,7 @@ export default {
     async init () {
       if (this.$route.params.foundationId === 'create') return
       const res = await this.$get(`foundations/${this.$route.params.foundationId}`)
+      this.getTowerTaskList(res.body.projectId)
       this.basicFormValidate = {
         foundationForm: res.body.foundationForm,
         projectName: res.body.projectName,
@@ -204,9 +204,9 @@ export default {
         this.assembleBaseConfigs(res.body.constraints)
       }
     },
-    async getTowerTaskList () {
+    async getTowerTaskList (projectId) {
       const res = await this.$get('towerTasks', {
-        searchParams: { pageNum: 1, pageSize: 9999 }
+        searchParams: { pageNum: 1, pageSize: 9999, status: 2, projectId }
       })
       this.towerTaskList = res.body.items
     },

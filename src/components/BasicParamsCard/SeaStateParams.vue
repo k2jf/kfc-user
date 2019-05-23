@@ -33,36 +33,63 @@
     </ICol>
     <ICol span="4" :class="'wave' === errKey ? 'ivu-form-item-error' : ''">
       <span class="inline-block w-16 text-right">波浪类型：</span>
-      <Input style="width: 60px" :value="config.wave || ''" @on-change="onChange($event.target.value, 'wave')" />
+      <Select
+        style="width: 80px"
+        placeholder=""
+        :value="config.wave || ''"
+        @on-change="onChange($event, 'wave')">
+        <Option :value="item" v-for="item in waveTypes">
+          {{ item }}
+        </Option>
+      </Select>
     </ICol>
     <ICol span="4" :class="'degree' === errKey ? 'ivu-form-item-error' : ''">
       <span class="inline-block w-16 text-right">阶次：</span>
-      <Input style="width: 60px" :value="config.degree || ''" @on-change="onChange($event.target.value, 'degree')" />
+      <Select
+        style="width: 80px"
+        placeholder=""
+        :value="config.degree || ''"
+        @on-change="onChange($event, 'degree')">
+        <Option :value="item" v-for="item in orders">
+          {{ item }}
+        </Option>
+      </Select>
     </ICol>
     <ICol span="4" :class="'direction01' === errKey ? 'ivu-form-item-error' : ''">
       <span class="inline-block w-16 text-right">方向1/°：</span>
-      <Input style="width: 60px" :value="config.direction01 || ''" @on-change="onChange($event.target.value, 'direction01')" />
+      <Input
+        style="width: 60px"
+        :value="config.direction01 || ''"
+        @on-blur="onBlur($event.target.value, 'direction01')" />
     </ICol>
     <ICol span="5" :class="'direction02' === errKey ? 'ivu-form-item-error' : ''">
       <span class="inline-block w-24 text-right">方向2/°：</span>
-      <Input style="width: 60px" :value="config.direction02 || ''" @on-change="onChange($event.target.value, 'direction02')" />
+      <Input
+        style="width: 60px"
+        :value="config.direction02 || ''"
+        @on-blur="onBlur($event.target.value, 'direction02')" />
     </ICol>
     <ICol span="5" :class="'windSpeed' === errKey ? 'ivu-form-item-error' : ''">
       <span class="inline-block w-16 text-right">风速：</span>
-      <Input style="width: 60px" :value="config.windSpeed || ''" @on-change="onChange($event.target.value, 'windSpeed')" />
+      <Input
+        style="width: 60px"
+        :value="config.windSpeed || ''"
+        @on-blur="onBlur($event.target.value, 'windSpeed')" />
     </ICol>
     <ICol span="5" :class="'mudlineElevation' === errKey ? 'ivu-form-item-error' : ''">
       <span class="inline-block w-16 text-right">泥面高程：</span>
-      <Input style="width: 60px" :value="config.mudlineElevation || ''" @on-change="onChange($event.target.value, 'mudlineElevation')" />
+      <Input
+        style="width: 60px"
+        :value="config.mudlineElevation || ''"
+        @on-blur="onBlur($event.target.value, 'mudlineElevation')" />
     </ICol>
   </div>
 </template>
 
 <script>
-import { Input, Col, Upload, Button } from 'iview'
+import { Input, Col, Upload, Button, Select, Option } from 'iview'
 import { mapState } from 'vuex'
 import { baseUrl } from '@/config'
-import _ from 'lodash'
 
 import { mutationMap, seaStateMap } from './mapping'
 
@@ -72,13 +99,17 @@ export default {
     Input,
     ICol: Col,
     Upload,
-    Button
+    Button,
+    Select,
+    Option
   },
   data () {
     return {
       action: '',
       loadAction: '',
-      errKey: ''
+      errKey: '',
+      waveTypes: ['STRE', 'STRN', 'AIRY', 'AIRC', 'STOK', 'CNOI', 'SOLI', 'LINE', 'REPT'],
+      orders: [3, 4, 5, 6, 7, 8, 9, 10, 11]
     }
   },
   computed: {
@@ -106,20 +137,22 @@ export default {
       this.windSpeed = config.windSpeed
       this.mudlineElevation = config.mudlineElevation
     },
-    onChange: _.debounce(function onInputChange (value, key) {
-      let _value = value
+    onChange (value, key) {
+      console.log(...arguments)
+      const config = Object.assign({}, this.config, { [key]: value })
+      this.$store.commit(`foundation/${mutationMap['seaState']}`, { config })
+    },
+    onBlur (value, key) {
       this.errKey = ''
-      if (key !== 'wave') {
-        _value = Number(value)
-        if (isNaN(_value)) {
-          this.$Message.error(`${seaStateMap[key]}只能为数字`)
-          this.errKey = key
-          throw TypeError(`${seaStateMap[key]}只能为数字`)
-        }
+      let _value = Number(value)
+      if (isNaN(_value)) {
+        this.$Message.error(`${seaStateMap[key]}只能为数字`)
+        this.errKey = key
+        throw TypeError(`${seaStateMap[key]}只能为数字`)
       }
       const config = Object.assign({}, this.config, { [key]: _value })
       this.$store.commit(`foundation/${mutationMap['seaState']}`, { config })
-    }, 100),
+    },
     onUploadError (error, file) {
       console.error(error)
       this.$Message.error(file.message || '未知错误')

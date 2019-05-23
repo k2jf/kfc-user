@@ -78,7 +78,7 @@ export default {
       config: state => state.foundation.geometry.config || {
         codes: 'UC',
         units: 'MN',
-        no_PS: '2',
+        no_PS: '1',
         pDelta: '',
         no_PNS: '2',
         lrfdPHI: 'C',

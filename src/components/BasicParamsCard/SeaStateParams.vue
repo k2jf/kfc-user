@@ -25,7 +25,7 @@
         :action="loadAction"
         :show-upload-list="false"
         :on-error="onUploadError"
-        :on-success="onUploadSuccess">
+        :on-success="onLoadUploadSuccess">
         <Button size="small" icon="ios-cloud-upload-outline">
           上传文件
         </Button>
@@ -122,7 +122,7 @@ export default {
     }, 100),
     onUploadError (error, file) {
       console.error(error)
-      this.$Message.error(file.message)
+      this.$Message.error(file.message || '未知错误')
     },
     onUploadSuccess (res, file, fileList) {
       this.$Message.success('上传成功')
@@ -131,6 +131,24 @@ export default {
         fileName: res.body.fileName
       })
       this.$parent.$parent.getExcel(this.$parent.$parent.fileId)
+    },
+    async onLoadUploadSuccess (res, file, fileList) {
+      this.$Message.success('上传成功')
+      this.$store.commit(`foundation/${mutationMap['seaState']}`, {
+        fileId: res.body.fileId,
+        fileName: res.body.fileName
+      })
+      this.$parent.$parent.getExcel(this.$parent.$parent.fileId)
+      const tId = this.$store.state.foundation.towerId
+      console.log(tId)
+      const fId = this.$route.params.foundationId
+      if (tId > -1) {
+        try {
+          await this.$get(`foundations/checkLoad?fId=${fId}&tId=${tId}`)
+        } catch (error) {
+          console.error(error)
+        }
+      }
     }
   }
 }

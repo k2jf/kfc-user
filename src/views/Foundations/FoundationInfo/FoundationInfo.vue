@@ -25,7 +25,7 @@
           </div>
           <div class="w-1/2">
             <FormItem label="塔架设计任务名称：" prop="towerTaskId" class="w-9/10">
-              <Select placeholder="请选择塔架设计任务" v-model="basicFormValidate.towerTaskId">
+              <Select placeholder="请选择塔架设计任务" v-model="basicFormValidate.towerTaskId" @on-change="onTowerChange">
                 <Option :value="item.id" v-for="item in towerTaskList" :key="item.id">
                   {{ item.taskName }}
                 </Option>
@@ -157,7 +157,7 @@ export default {
   //   this.syncGeology({ geology: {} })
   // },
   methods: {
-    ...mapMutations('foundation', ['syncGeometry', 'syncSeaState', 'syncGeology']),
+    ...mapMutations('foundation', ['syncGeometry', 'syncSeaState', 'syncGeology', 'syncTowerId', 'syncTowerId']),
     async init () {
       if (this.$route.params.foundationId === 'create') return
       const res = await this.$get(`foundations/${this.$route.params.foundationId}`)
@@ -170,6 +170,11 @@ export default {
         baseUltimate: res.body.baseUltimate
       }
       this.constraintType = res.body.foundationForm
+
+      if (res.body.towerTaskId) {
+        this.syncTowerId({ towerId: res.body.towerTaskId })
+      }
+
       if (res.body.foundationForm === 1) {
         // 单桩
         this.baseConfig = [...singlePileConfig]
@@ -272,6 +277,18 @@ export default {
       this.$nextTick(() => {
         window.dispatchEvent(new Event('resize'))
       })
+    },
+    async onTowerChange (tId) {
+      const seaStateFileId = this.$store.state.foundation.seaState.fileId
+      this.syncTowerId({ towerId: tId })
+      if (seaStateFileId) {
+        const fId = this.$route.params.foundationId
+        try {
+          await this.$get(`foundations/checkLoad?fId=${fId}&tId=${tId}`)
+        } catch (error) {
+          console.error(error)
+        }
+      }
     }
   }
 }

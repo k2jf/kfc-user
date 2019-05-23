@@ -10,7 +10,8 @@ export default {
     },
     geology: {
       config: {}
-    }
+    },
+    towerId: -1
   },
   mutations: {
     syncGeometry (state, payload) {
@@ -21,6 +22,9 @@ export default {
     },
     syncGeology (state, payload) {
       state.geology = Object.assign({}, state.geology, payload)
+    },
+    syncTowerId (state, payload) {
+      state.towerId = payload.towerId
     }
   },
   actions: {

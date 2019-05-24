@@ -17,35 +17,35 @@
     </ICol>
     <ICol span="4">
       <span class="inline-block w-24 text-right">Units：</span>
-      <Input style="width: 50px" :value="config.units || ''" @on-change="onChange($event.target.value, 'units')" />
+      <Input style="width: 50px" :value="units || ''" @on-change="onChange($event.target.value, 'units')" />
     </ICol>
     <ICol span="4">
       <span class="inline-block w-24 text-right">P-Delta：</span>
-      <Input style="width: 50px" :value="config.pDelta || ''" @on-change="onChange($event.target.value, 'pDelta')" />
+      <Input style="width: 50px" :value="pDelta || ''" @on-change="onChange($event.target.value, 'pDelta')" />
     </ICol>
     <ICol span="4">
       <span class="inline-block w-24 text-right">ShearDef：</span>
-      <Input style="width: 50px" :value="config.shearDef || ''" @on-change="onChange($event.target.value, 'shearDef')" />
+      <Input style="width: 50px" :value="shearDef || ''" @on-change="onChange($event.target.value, 'shearDef')" />
     </ICol>
     <ICol span="4">
       <span class="inline-block w-24 text-right">No.Pns：</span>
-      <Input style="width: 50px" :value="config.no_PNS || ''" @on-change="onChange($event.target.value, 'no_PNS')" />
+      <Input style="width: 50px" :value="no_PNS || ''" @on-change="onChange($event.target.value, 'no_PNS')" />
     </ICol>
     <ICol span="3">
       <span class="inline-block w-16 text-right">No.PS：</span>
-      <Input style="width: 50px" :value="config.no_PS || ''" @on-change="onChange($event.target.value, 'no_PS')" />
+      <Input style="width: 50px" :value="no_PS || ''" @on-change="onChange($event.target.value, 'no_PS')" />
     </ICol>
     <ICol span="5">
       <span class="inline-block w-24 text-right">Codes：</span>
-      <Input style="width: 50px" :value="config.codes || ''" @on-change="onChange($event.target.value, 'codes')" />
+      <Input style="width: 50px" :value="codes || ''" @on-change="onChange($event.target.value, 'codes')" />
     </ICol>
     <ICol span="4">
       <span class="inline-block w-24 text-right">PL Theory：</span>
-      <Input style="width: 50px" :value="config.plTheory || ''" @on-change="onChange($event.target.value, 'plTheory')" />
+      <Input style="width: 50px" :value="plTheory || ''" @on-change="onChange($event.target.value, 'plTheory')" />
     </ICol>
     <ICol span="4">
       <span class="inline-block w-24 text-right">LRFD PHI：</span>
-      <Input style="width: 50px" :value="config.lrfdPHI || ''" @on-change="onChange($event.target.value, 'lrfdPHI')" />
+      <Input style="width: 50px" :value="lrfdPHI || ''" @on-change="onChange($event.target.value, 'lrfdPHI')" />
     </ICol>
   </div>
 </template>
@@ -68,34 +68,42 @@ export default {
   },
   data () {
     return {
-      action: ''
+      action: '',
+      codes: 'UC',
+      units: 'MN',
+      no_PS: '1',
+      pDelta: '',
+      no_PNS: '2',
+      lrfdPHI: 'C',
+      shearDef: 'SD',
+      plTheory: 'DC'
     }
   },
   computed: {
     ...mapState({
-      // fileId: state => state.foundation.geometry.fileId,
-      // fileName: state => state.foundation.geometry.fileName || templateName,
-      config: state => state.foundation.geometry.config || {
-        codes: 'UC',
-        units: 'MN',
-        no_PS: '1',
-        pDelta: '',
-        no_PNS: '2',
-        lrfdPHI: 'C',
-        shearDef: 'SD',
-        plTheory: 'DC'
-      }
+      config: state => state.foundation.geometry.config
     })
   },
-  // watch: {
-  //   config () {
-  //     console.log(1)
-  //     this.setDefaultConfig()
-  //   }
-  // },
+  watch: {
+    config (value) {
+      this.setDefaultConfig()
+    }
+  },
   mounted () {
     this.action = baseUrl + `foundations/${this.$route.params.foundationId}/upload?fileKey=geometry`
     // this.setDefaultConfig()
+    this.$store.commit('foundation/syncGeometry', {
+      config: {
+        codes: this.codes,
+        units: this.units,
+        no_PS: this.no_PS,
+        pDelta: this.pDelta,
+        no_PNS: this.no_PNS,
+        lrfdPHI: this.lrfdPHI,
+        shearDef: this.shearDef,
+        plTheory: this.plTheory
+      }
+    })
   },
   methods: {
     setDefaultConfig () {

@@ -84,7 +84,7 @@ export default {
         return state.foundation[this.basicType].fileName || templateNameMap[this.basicType]
       },
       config (state) {
-        return state.foundation[this.basicType].config
+        return state.foundation[this.basicType].config || {}
       }
     })
   },

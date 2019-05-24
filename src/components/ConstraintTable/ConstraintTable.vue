@@ -131,7 +131,11 @@
       <!-- ========================================================= -->
       <template slot="windLoad" slot-scope="{ row, index }">
         <!-- <Input :value="row.windLoad" @on-change="onConfigChange($event.target.value, index, 'windLoad')" /> -->
-        <Select placeholder="" :value="row.windLoad" @on-change="onConfigChange($event, index, 'windLoad')">
+        <Select
+          placeholder=""
+          :value="row.windLoad"
+          v-if="row.name !== 'fatigue'"
+          @on-change="onConfigChange($event, index, 'windLoad')">
           <Option value="1.35">
             1.35
           </Option>
@@ -147,7 +151,11 @@
       <!-- waveLoad 波流载荷 -->
       <!-- ========================================================= -->
       <template slot="waveLoad" slot-scope="{ row, index }">
-        <Select placeholder="" :value="row.waveLoad" @on-change="onConfigChange($event, index, 'waveLoad')">
+        <Select
+          placeholder=""
+          :value="row.waveLoad"
+          v-if="row.name !== 'fatigue'"
+          @on-change="onConfigChange($event, index, 'waveLoad')">
           <Option value="1.35">
             1.35
           </Option>
@@ -163,7 +171,11 @@
       <!-- dead 自重 -->
       <!-- ========================================================= -->
       <template slot="dead" slot-scope="{ row, index }">
-        <Select placeholder="" :value="row.dead" @on-change="onConfigChange($event, index, 'dead')">
+        <Select
+          placeholder=""
+          :value="row.dead"
+          v-if="row.name !== 'fatigue'"
+          @on-change="onConfigChange($event, index, 'dead')">
           <Option value="1.00">
             1.00
           </Option>
@@ -179,7 +191,11 @@
       <!-- combination 载荷组合系数 -->
       <!-- ========================================================= -->
       <template slot="combination" slot-scope="{ row, index }">
-        <Select placeholder="" :value="row.combination" @on-change="onConfigChange($event, index, 'combination')">
+        <Select
+          placeholder=""
+          :value="row.combination"
+          v-if="row.name !== 'fatigue'"
+          @on-change="onConfigChange($event, index, 'combination')">
           <Option value="0.70">
             0.70
           </Option>
@@ -192,7 +208,11 @@
       <!-- members 结构重要性系数 -->
       <!-- ========================================================= -->
       <template slot="members" slot-scope="{ row, index }">
-        <Select placeholder="" :value="row.members" @on-change="onConfigChange($event, index, 'members')">
+        <Select
+          placeholder=""
+          :value="row.members"
+          v-if="row.name !== 'fatigue'"
+          @on-change="onConfigChange($event, index, 'members')">
           <Option value="1.10">
             1.10
           </Option>

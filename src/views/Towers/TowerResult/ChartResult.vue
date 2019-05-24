@@ -80,8 +80,8 @@ export default {
     stepLineSeries () {
       const { towerCheck, optResult } = this.results
       if (!towerCheck || !optResult) return []
-      const _check = towerCheck.items.map(t => ([t[0], t[1]]))
-      const _opt = optResult.items.map(o => ([o[0], o[4]]))
+      const _check = towerCheck.items.map(t => ([t[1], t[0]]))
+      const _opt = optResult.items.map(o => ([o[4], o[0]]))
       return [
         {
           name: '校核',

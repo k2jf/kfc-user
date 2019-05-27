@@ -75,8 +75,8 @@ export default {
         xAxis: {
           ...options.xAxis,
           name: 'SRF',
-          min: 0,
-          max: 3
+          min: 0.5,
+          max: 2
         },
         yAxis: {
           ...options.yAxis,

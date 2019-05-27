@@ -384,7 +384,9 @@ export default {
         iterationParams: ['thickness']
       },
       conditionFormValidate: {
-
+        SRF_BCKlimit: 1,
+        SRF_ULSlimit: 1,
+        SRF_FLSlimit: 1
       },
       algorithmRuleValidate: {
 

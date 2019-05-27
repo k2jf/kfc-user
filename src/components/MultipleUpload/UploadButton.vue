@@ -140,6 +140,9 @@ export default {
       this.$emit('on-remove', file)
     },
     onSuccess (res, file, fileList) {
+      if (fileList.every(e => e.status === 'finished')) {
+        Message.success('上传完毕')
+      }
       const newFile = {
         ...file,
         fileId: res.body.fileId

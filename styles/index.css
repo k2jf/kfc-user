@@ -1,0 +1,61 @@
+.container {
+  height: 100%;
+}
+.container .ivu-card-body {
+  height: 100%;
+  padding: 0;
+}
+.left-pane .btn-add {
+  border-color: #2b85e4;
+  color: #2b85e4;
+}
+.left-pane {
+  padding: 10px;
+}
+.aside-list-panel {
+  height: calc(100vh - 186px);
+  border: 1px solid #dcdee2;
+  border-radius: 4px;
+  overflow: auto;
+}
+.c-pointer {
+  cursor: pointer;
+}
+.tab-pane {
+  padding: 0 20px 10px;
+}
+.auth-detail {
+  max-height: calc(100vh - 320px);
+  overflow: auto;
+}
+.aside-list-panel .ivu-cell-label {
+  font-size: 14px !important;
+  line-height: 36px;
+}
+.aside-list-panel .ivu-cell {
+  padding: 0 16px;
+}
+.aside-list-panel .ivu-cell-footer {
+  visibility: hidden;
+}
+.aside-list-panel .ivu-cell:hover .ivu-cell-footer {
+  visibility: visible;
+}
+.right-pane .ivu-tabs-nav-container {
+  padding: 20px 20px 14px;
+}
+.ivu-tabs-nav-wrap {
+  font-size: 16px;
+}
+.ivu-row {
+  line-height: 32px;
+}
+.margin-bottom {
+  margin-bottom: 10px;
+}
+.page-container {
+  float: right;
+}
+.ivu-page-options-sizer {
+  margin-right: 0;
+}

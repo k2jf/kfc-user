@@ -125,7 +125,7 @@ const mode = {
   limitedValue: [
     {
       name: 'frequency',
-      operator: 'lt',
+      operator: 'gt',
       value: 1.1
     },
     {

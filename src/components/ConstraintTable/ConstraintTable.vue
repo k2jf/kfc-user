@@ -65,8 +65,14 @@
                   placeholder=""
                   :value="(row.limitedValue)[0].operator"
                   @on-change="onSelectChange($event, row, 0)">
-                  <Option :value="exp.value" v-for="(exp, index) in expressions" :key="index">
+                  <!-- <Option :value="exp.value" v-for="(exp, index) in expressions" :key="index">
                     {{ exp.label }}
+                  </Option> -->
+                  <Option value="gt">
+                    &lt;
+                  </Option>
+                  <Option value="gte">
+                    &lt;=
                   </Option>
                 </Select>
               </ICol>
@@ -81,8 +87,14 @@
                   placeholder=""
                   :value="(row.limitedValue)[1].operator"
                   @on-change="onSelectChange($event, row, 1)">
-                  <Option :value="exp.value" v-for="(exp, index) in expressions" :key="index">
+                  <!-- <Option :value="exp.value" v-for="(exp, index) in expressions" :key="index">
                     {{ exp.label }}
+                  </Option> -->
+                  <Option value="lt">
+                    &lt;
+                  </Option>
+                  <Option value="lte">
+                    &lt;=
                   </Option>
                 </Select>
               </ICol>

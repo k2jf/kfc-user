@@ -34,6 +34,8 @@ import { BarChart, StepLineChart, LineChart } from '@/components/Charts'
 import { Row, Col } from 'iview'
 import { mapState } from 'vuex'
 
+const colors = ['red', '#333', 'green']
+
 export default {
   name: 'ChartResult',
   components: {
@@ -105,11 +107,11 @@ export default {
       const { towerCheck } = this.results
       if (!towerCheck) return []
       const { headers, items } = towerCheck
-      return [2, 3, 4].map(ind => ({
+      return [3, 2, 4].map((ind, idx) => ({
         name: headers[ind],
         type: 'line',
         data: items.filter(ele => ele[ind] <= 2).map(ele => [ele[ind], ele[0]]),
-        lineStyle: { width: 1 },
+        lineStyle: { width: 1, color: colors[idx] },
         symbolSize: 1,
         markLine: {
           symbol: 'none',
@@ -130,11 +132,11 @@ export default {
       const { optResult } = this.results
       if (!optResult) return []
       const { headers, items } = optResult
-      return [1, 2, 3].map(ind => ({
+      return [2, 1, 3].map((ind, idx) => ({
         name: headers[ind],
         type: 'line',
         data: items.filter(ele => ele[ind] <= 2).map(ele => [ele[ind], ele[0]]),
-        lineStyle: { width: 1 },
+        lineStyle: { width: 1, color: colors[idx] },
         symbolSize: 1,
         markLine: {
           symbol: 'none',

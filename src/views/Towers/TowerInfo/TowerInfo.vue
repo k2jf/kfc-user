@@ -93,13 +93,13 @@
             </FormItem>
           </div>
           <div class="w-1/2">
-            <FormItem label="塔架高度：" prop="towerHeight" class="w-9/10">
+            <FormItem label="塔架高度(m)：" prop="towerHeight" class="w-9/10">
               <Input disabled v-model="towerFormValidate.towerHeight" />
             </FormItem>
           </div>
           <div class="w-1/2">
             <FormItem
-              label="塔底直径（m）："
+              label="塔底直径(m)："
               prop="towerDiameter"
               class="w-9/10">
               <Input disabled v-model="towerFormValidate.towerDiameter" />
@@ -268,18 +268,18 @@
         ref="conditionFormValidate">
         <Row>
           <ICol span="6">
-            <FormItem label="SRF_BCKlimit >= " prop="SRF_BCKlimit" class="w-9/10">
-              <Input v-model="conditionFormValidate.SRF_BCKlimit" />
+            <FormItem label="ULS_SRF >= " prop="ULS_SRF" class="w-9/10">
+              <Input v-model="conditionFormValidate.ULS_SRF" />
             </FormItem>
           </ICol>
           <ICol span="6">
-            <FormItem label="SRF_ULSlimit >= " prop="SRF_ULSlimit" class="w-9/10">
-              <Input v-model="conditionFormValidate.SRF_ULSlimit" />
+            <FormItem label="BCK_SRF >= " prop="BCK_SRF" class="w-9/10">
+              <Input v-model="conditionFormValidate.BCK_SRF" />
             </FormItem>
           </ICol>
           <ICol span="6">
-            <FormItem label="SRF_FLSlimit >= " prop="SRF_FLSlimit" class="w-9/10">
-              <Input v-model="conditionFormValidate.SRF_FLSlimit" />
+            <FormItem label="FLS_SRF >= " prop="FLS_SRF" class="w-9/10">
+              <Input v-model="conditionFormValidate.FLS_SRF" />
             </FormItem>
           </ICol>
         </Row>
@@ -384,9 +384,9 @@ export default {
         iterationParams: ['thickness']
       },
       conditionFormValidate: {
-        SRF_BCKlimit: 1,
-        SRF_ULSlimit: 1,
-        SRF_FLSlimit: 1
+        BCK_SRF: 1,
+        ULS_SRF: 1,
+        FLS_SRF: 1
       },
       algorithmRuleValidate: {
 
@@ -680,16 +680,16 @@ export default {
               step: Number(this.data[0].config.algconfStep)
             }],
             constraints: [{
-              name: 'SRF_BCKlimit',
-              value: Number(this.conditionFormValidate.SRF_BCKlimit),
+              name: 'BCK_SRF',
+              value: Number(this.conditionFormValidate.BCK_SRF),
               operator: 'gte'
             }, {
-              name: 'SRF_ULSlimit',
-              value: Number(this.conditionFormValidate.SRF_ULSlimit),
+              name: 'ULS_SRF',
+              value: Number(this.conditionFormValidate.ULS_SRF),
               operator: 'gte'
             }, {
-              name: 'SRF_FLSlimit',
-              value: Number(this.conditionFormValidate.SRF_FLSlimit),
+              name: 'FLS_SRF',
+              value: Number(this.conditionFormValidate.FLS_SRF),
               operator: 'gte'
             }]
           }

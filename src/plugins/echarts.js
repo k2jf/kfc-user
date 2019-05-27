@@ -15,5 +15,6 @@ import 'echarts/lib/component/axis'
 import 'echarts/lib/component/graphic'
 import 'echarts/lib/component/visualMap'
 import 'echarts/lib/component/axisPointer'
+import 'echarts/lib/component/markLine'
 
 Vue.component('Chart', Echarts)

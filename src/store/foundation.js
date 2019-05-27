@@ -11,7 +11,9 @@ export default {
     geology: {
       config: {}
     },
-    towerId: -1
+    towerId: -1,
+    hasFatigue: false,
+    form: 1
   },
   mutations: {
     syncGeometry (state, payload) {
@@ -25,6 +27,12 @@ export default {
     },
     syncTowerId (state, payload) {
       state.towerId = payload.towerId
+    },
+    syncFatigue (state, payload) {
+      state.hasFatigue = payload.hasFatigue
+    },
+    syncForm (state, payload) {
+      state.form = payload
     }
   },
   actions: {

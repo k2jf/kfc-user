@@ -37,11 +37,6 @@
               <Input v-model="basicFormValidate.baseUltimate" />
             </FormItem>
           </div>
-          <div class="w-1/2">
-            <FormItem label="泥面高程(m)：" prop="mudlineElevation" class="w-9/10">
-              <Input v-model="basicFormValidate.mudlineElevation" />
-            </FormItem>
-          </div>
         </div>
         </From>
       </form>
@@ -180,6 +175,7 @@ export default {
         this.baseConfig = [...singlePileConfig]
       } else {
         this.baseConfig = [...highPileConfig]
+        this.store.commit('foundation/syncForm', 2)
       }
 
       if (res.body.geometry.length > 0) {
@@ -201,6 +197,9 @@ export default {
       }
 
       if (res.body.constraints) {
+        if (res.body.constraints.find(r => r.checked && r.name === 'fatigue')) {
+          this.$store.commit('foundation/syncFatigue', { hasFatigue: true })
+        }
         this.assembleBaseConfigs(res.body.constraints)
       }
     },

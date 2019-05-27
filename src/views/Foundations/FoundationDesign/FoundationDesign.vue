@@ -250,7 +250,7 @@ export default {
       this.getTaskList(this.pageInfo)
       this.timer = setInterval(() => {
         this.getTaskList(this.pageInfo)
-      }, 5000)
+      }, 15000)
     }
   }
 }

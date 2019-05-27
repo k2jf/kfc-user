@@ -41,7 +41,8 @@ export default [
           h(Tooltip, {
             props: {
               placement: 'top',
-              content: params.row.message
+              content: params.row.message,
+              maxWidth: 400
             }
           }, [
             h('span', ['运行失败']),
@@ -60,21 +61,21 @@ export default [
     }
   },
   {
-    title: '塔架高度',
+    title: '塔架高度(m)',
     key: 'towerHeight',
-    width: 90,
+    width: 120,
     className: 'ido-table-number'
   },
   {
-    title: '塔底直径',
+    title: '塔底直径(m)',
     key: 'bottomDiameter',
-    width: 90,
+    width: 120,
     className: 'ido-table-number'
   },
   {
     title: '设计者',
     key: 'creator',
-    width: 100
+    width: 90
   },
   {
     title: '创建时间',

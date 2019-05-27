@@ -7,6 +7,8 @@
 <script >
 import options from '@/config/echartConf'
 
+const colors = ['red', '#333', 'green']
+
 export default {
   name: 'SimpleChart',
   props: {
@@ -30,7 +32,8 @@ export default {
           type: 'line',
           data: data.items.filter(d => d[2] <= 2).map(e => [e[2], e[0]]),
           lineStyle: {
-            width: 1
+            width: 1,
+            color: colors[0]
           },
           symbolSize: 1,
           markLine: {
@@ -52,7 +55,8 @@ export default {
           type: 'line',
           data: data.items.filter(d => d[3] <= 2).map(e => [e[3], e[0]]),
           lineStyle: {
-            width: 1
+            width: 1,
+            color: colors[1]
           },
           symbolSize: 1
         },
@@ -61,7 +65,8 @@ export default {
           type: 'line',
           data: data.items.filter(d => d[4] <= 2).map(e => [e[4], e[0]]),
           lineStyle: {
-            width: 1
+            width: 1,
+            color: colors[2]
           },
           symbolSize: 1
         }

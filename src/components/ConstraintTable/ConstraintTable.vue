@@ -353,9 +353,15 @@ export default {
     },
     onSelect (selection, row) {
       this.handleSelect(row, true)
+      if (row.name === 'fatigue') {
+        this.$store.commit('foundation/syncFatigue', { hasFatigue: true })
+      }
     },
     onSelectCancel (selection, row) {
       this.handleSelect(row, false)
+      if (row.name === 'fatigue') {
+        this.$store.commit('foundation/syncFatigue', { hasFatigue: false })
+      }
     },
     handleSelect (row, checked) {
       const ind = this.magicConfig.findIndex(b => b.name === row.name)

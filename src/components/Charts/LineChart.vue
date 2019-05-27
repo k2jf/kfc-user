@@ -31,7 +31,9 @@ export default {
         },
         xAxis: {
           ...options.xAxis,
-          ...this.xAxis
+          ...this.xAxis,
+          min: 0.5,
+          max: 2
         },
         grid: {
           ...options.grid,

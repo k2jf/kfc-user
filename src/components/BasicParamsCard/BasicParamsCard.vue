@@ -103,6 +103,7 @@ export default {
       fileName: '',
       config: {}
     })
+    this.$store.commit('foundation/syncFatigue', { hasFatigue: false })
   },
   methods: {
     async getExcel (fileId) {

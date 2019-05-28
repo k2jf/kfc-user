@@ -107,7 +107,7 @@ export default {
       const { towerCheck } = this.results
       if (!towerCheck) return []
       const { headers, items } = towerCheck
-      return [3, 2, 4].map((ind, idx) => ({
+      return [2, 3, 4].map((ind, idx) => ({
         name: headers[ind],
         type: 'line',
         data: items.filter(ele => ele[ind] <= 2).map(ele => [ele[ind], ele[0]]),
@@ -132,7 +132,7 @@ export default {
       const { optResult } = this.results
       if (!optResult) return []
       const { headers, items } = optResult
-      return [2, 1, 3].map((ind, idx) => ({
+      return [1, 2, 3].map((ind, idx) => ({
         name: headers[ind],
         type: 'line',
         data: items.filter(ele => ele[ind] <= 2).map(ele => [ele[ind], ele[0]]),

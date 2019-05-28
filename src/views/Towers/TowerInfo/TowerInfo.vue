@@ -679,19 +679,22 @@ export default {
               upper: Number(this.data[0].config.algconfMax),
               step: Number(this.data[0].config.algconfStep)
             }],
-            constraints: [{
-              name: 'BCK_SRF',
-              value: Number(this.conditionFormValidate.BCK_SRF),
-              operator: 'gte'
-            }, {
-              name: 'ULS_SRF',
-              value: Number(this.conditionFormValidate.ULS_SRF),
-              operator: 'gte'
-            }, {
-              name: 'FLS_SRF',
-              value: Number(this.conditionFormValidate.FLS_SRF),
-              operator: 'gte'
-            }]
+            constraints: [
+              {
+                name: 'ULS_SRF',
+                value: Number(this.conditionFormValidate.ULS_SRF),
+                operator: 'gte'
+              },
+              {
+                name: 'BCK_SRF',
+                value: Number(this.conditionFormValidate.BCK_SRF),
+                operator: 'gte'
+              },
+              {
+                name: 'FLS_SRF',
+                value: Number(this.conditionFormValidate.FLS_SRF),
+                operator: 'gte'
+              }]
           }
         })
         if (res.code === 0) {

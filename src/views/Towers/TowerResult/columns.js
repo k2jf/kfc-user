@@ -37,12 +37,12 @@ export const adjustColumns = [
     className: 'ido-table-number'
   },
   {
-    title: 'BCK_SRF',
+    title: 'ULS_SRF',
     slot: 'limit',
     className: 'ido-table-number'
   },
   {
-    title: 'ULS_SRF',
+    title: 'BCK_SRF',
     slot: 'limit',
     className: 'ido-table-number'
   },

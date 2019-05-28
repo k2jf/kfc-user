@@ -51,7 +51,7 @@
       <Select
         style="width: 80px"
         placeholder=""
-        :value="config.wave || ''"
+        :value="wave || ''"
         @on-change="onChange($event, 'wave')">
         <Option :value="item" v-for="item in waveTypes">
           {{ item }}
@@ -63,7 +63,7 @@
       <Select
         style="width: 80px"
         placeholder=""
-        :value="config.degree || ''"
+        :value="degree || ''"
         @on-change="onChange($event, 'degree')">
         <Option :value="item" v-for="item in orders">
           {{ item }}
@@ -74,28 +74,28 @@
       <span class="inline-block w-16 text-right">方向1/°：</span>
       <Input
         style="width: 60px"
-        :value="config.direction01 || ''"
+        :value="direction01 || ''"
         @on-blur="onBlur($event.target.value, 'direction01')" />
     </ICol>
     <ICol span="4" :class="'direction02' === errKey ? 'ivu-form-item-error' : ''">
       <span class="inline-block w-24 text-right">方向2/°：</span>
       <Input
         style="width: 60px"
-        :value="config.direction02 || ''"
+        :value="direction02 || ''"
         @on-blur="onBlur($event.target.value, 'direction02')" />
     </ICol>
     <ICol span="4" :class="'windSpeed' === errKey ? 'ivu-form-item-error' : ''">
       <span class="inline-block w-16 text-right">风速：</span>
       <Input
         style="width: 60px"
-        :value="config.windSpeed || ''"
+        :value="windSpeed || ''"
         @on-blur="onBlur($event.target.value, 'windSpeed')" />
     </ICol>
     <ICol span="4" :class="'mudlineElevation' === errKey ? 'ivu-form-item-error' : ''">
       <span class="inline-block w-16 text-right">泥面高程：</span>
       <Input
         style="width: 60px"
-        :value="config.mudlineElevation || ''"
+        :value="mudlineElevation || ''"
         @on-blur="onBlur($event.target.value, 'mudlineElevation')" />
     </ICol>
   </div>
@@ -125,7 +125,13 @@ export default {
       markvoAction: '',
       errKey: '',
       waveTypes: ['STRE', 'STRN', 'AIRY', 'AIRC', 'STOK', 'CNOI', 'SOLI', 'LINE', 'REPT'],
-      orders: ['3', '4', '5', '6', '7', '8', '9', '10', '11']
+      orders: ['3', '4', '5', '6', '7', '8', '9', '10', '11'],
+      wave: 'STRE',
+      degree: '3',
+      direction01: '',
+      direction02: '',
+      windSpeed: '',
+      mudlineElevation: ''
     }
   },
   computed: {
@@ -144,7 +150,17 @@ export default {
     this.action = baseUrl + `foundations/${this.$route.params.foundationId}/upload?fileKey=seaStateBase`
     this.loadAction = baseUrl + `foundations/${this.$route.params.foundationId}/upload?fileKey=seaStateLoad`
     this.markvoAction = baseUrl + `foundations/${this.$route.params.foundationId}/upload?fileKey=markvo`
-    this.setDefaultConfig()
+    // this.setDefaultConfig()
+    this.$store.commit('foundation/syncSeaState', {
+      config: {
+        wave: this.wave,
+        degree: this.degree,
+        direction01: this.direction01,
+        direction02: this.direction02,
+        windSpeed: this.windSpeed,
+        mudlineElevation: this.mudlineElevation
+      }
+    })
   },
   methods: {
     setDefaultConfig () {

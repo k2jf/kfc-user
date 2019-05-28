@@ -1,6 +1,9 @@
 <template>
-  <div class="table-result h-full px-3 overflow-auto">
+  <div class="table-result h-full px-3 overflow-auto" ref="table-result">
     <div class="result">
+      <div class="h-8 text-right">
+        <a class="ido-link" href="javascript:void 0;" @click="copyFlange">复制表格</a>
+      </div>
       <Table
         border
         stripe
@@ -23,6 +26,9 @@
       </Row>
     </div>
     <div class="adjust">
+      <div class="h-8 text-right">
+        <a class="ido-link" href="javascript:void 0;" @click="copySRF">复制表格</a>
+      </div>
       <Table
         border
         stripe
@@ -55,7 +61,7 @@
 
 <script>
 import { columns, adjustColumns } from './columns.js'
-import { Table, Row, Col, Input, inputNumber, Button } from 'iview'
+import { Table, Row, Col, Input, inputNumber, Button, Message } from 'iview'
 import { mapState, mapGetters, mapActions } from 'vuex'
 
 export default {
@@ -158,6 +164,53 @@ export default {
     },
     cancel () {
       this.$router.push({ name: 'towers' })
+    },
+    copyFlange () {
+      const data = this.resultData.map(r => Object.values(r))
+      data[0].splice(0, 1, '优化前')
+      data[1].splice(0, 1, '优化后')
+      let html = ''
+      for (let i = 0; i < this.columns.length; i++) {
+        html += this.columns[i].title + '\t'
+      }
+      html += '\r\n'
+      for (let j = 0; j < data.length; j++) {
+        let row = ''
+        for (let k = 0; k < data[j].length; k++) {
+          row += data[j][k] + '\t'
+        }
+        html += row + '\r\n'
+      }
+      this.handleCopy(html)
+    },
+    copySRF () {
+      let html = ''
+      for (let i = 0; i < this.adjustColumns.length; i++) {
+        html += this.columns[i].title + '\t'
+      }
+      html += '\r\n'
+      for (let j = 0; j < this.adjustData.length; j++) {
+        let row = ''
+        row += this.adjustData[j]['height'] + '\t'
+        row += this.adjustData[j]['ULS_SRF'] + '\t'
+        row += this.adjustData[j]['BCK_SRF'] + '\t'
+        row += this.adjustData[j]['FLS_SRF'] + '\t'
+        row += this.adjustData[j]['thickness'] + '\t'
+        html += row + '\r\n'
+      }
+      this.handleCopy(html)
+    },
+    handleCopy (html) {
+      const textarea = document.createElement('textarea')
+      textarea.style.height = '10px'
+      textarea.style.width = '20px'
+      textarea.style.opacity = 0
+      textarea.value = html
+      this.$refs['table-result'].appendChild(textarea)
+      textarea.select()
+      document.execCommand('Copy')
+      Message.success('已经复制到剪贴板')
+      this.$refs['table-result'].removeChild(textarea)
     }
   }
 }

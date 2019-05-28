@@ -18,19 +18,14 @@
       <Row v-if="projects.length > 0">
         <ICol
           class="p-3 bt-4"
-          :xs="12"
-          :sm="8"
-          :md="8"
-          :lg="8"
-          :xl="6"
-          :xxl="6"
+          span="6"
           v-for="item in projects"
           :key="item.id">
           <Card class="w-full h-32 cursor-pointer" @click.native="linkToInfo(item.projectId)">
             <div>
               <div class="info" style="height: 5em;">
-                <div class="w-16 h-16 float-left border">
-                </div>
+                <!-- <div class="w-16 h-16 float-left border">
+                </div> -->
                 <div class="overflow-hidden pl-2">
                   <div class="text-sm">
                     {{ item.projectName }}

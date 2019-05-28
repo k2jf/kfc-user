@@ -67,7 +67,7 @@
             <div class="text-grey">
               <a href="javascript:;" :disabled="row.status === 1" @click="submitTask(row.id)">提交</a> |
               <a href="javascript:;" :disabled="row.status === 1" @click="viewTask(row)">编辑</a> |
-              <a href="javascript:;" @click="viewTable(row.id)">查看交互表</a> |
+              <a href="javascript:;" :disabled="!row.showResultList" @click="viewTable(row.id)">查看交互表</a> |
               <a href="javascript:;" :disabled="row.resultFiles.length === 0">
                 <Dropdown v-if="row.resultFiles.length > 0">
                   <a href="javascript:void(0)">
@@ -111,6 +111,7 @@
 import { Input, Button, Table, Page, Modal, Form, FormItem, Select, Option, Message, Dropdown, DropdownMenu, DropdownItem, Icon } from 'iview'
 import columns from './columnDef'
 import { baseUrl } from '@/config'
+import { mapState } from 'vuex'
 
 export default {
   name: 'FoundationDesign',
@@ -159,6 +160,9 @@ export default {
       }
     }
   },
+  computed: mapState({
+    userName: state => state.userName
+  }),
   mounted () {
     this.setListInterval()
   },
@@ -229,7 +233,8 @@ export default {
               json: {
                 projectId: this.formValidate.projectId,
                 loadDatasource: Number(this.formValidate.loadDatasource),
-                foundationForm: Number(this.formValidate.foundationForm)
+                foundationForm: Number(this.formValidate.foundationForm),
+                creator: this.userName
               }
             })
             this.visible = false
@@ -255,7 +260,7 @@ export default {
       this.getTaskList(this.pageInfo)
       this.timer = setInterval(() => {
         this.getTaskList(this.pageInfo)
-      }, 15000)
+      }, 5000)
     }
   }
 }

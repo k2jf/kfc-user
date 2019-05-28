@@ -104,6 +104,7 @@
 <script>
 import { Input, Button, Table, Page, Modal, Form, FormItem, Select, Option, Message } from 'iview'
 import columns from './columnDef'
+import { mapState } from 'vuex'
 
 export default {
   name: 'TowerDesign',
@@ -147,6 +148,9 @@ export default {
       }
     }
   },
+  computed: mapState({
+    userName: state => state.userName
+  }),
   mounted () {
     this.setListInterval()
   },
@@ -220,7 +224,8 @@ export default {
             const res = await this.$post('towerTasks', {
               json: {
                 projectId: this.formValidate.projectId,
-                loadDatasource: Number(this.formValidate.loadDatasource)
+                loadDatasource: Number(this.formValidate.loadDatasource),
+                creator: this.userName
               }
             })
             if (res.code === 0) {

@@ -34,16 +34,17 @@ export default [
           {
             'class': 'text-green pl-2'
           },
-          ['运行成功'])
+          ['成功'])
       case 3:
         return h('div', { 'class': 'text-red pl-2' }, [
           h(Tooltip, {
             props: {
               placement: 'top',
-              content: params.row.message
+              content: params.row.message,
+              maxWidth: 400
             }
           }, [
-            h('span', ['运行失败']),
+            h('span', ['失败']),
             ' ',
             h(Icon, {
               props: {
@@ -88,6 +89,6 @@ export default [
   {
     title: '操作',
     slot: 'operation',
-    width: 246
+    width: 256
   }
 ]

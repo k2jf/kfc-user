@@ -65,8 +65,8 @@
           :data="data">
           <template slot="operation" slot-scope="{ row }">
             <div class="text-grey">
-              <a href="javascript:;" @click="submitTask(row.id)">提交</a> |
-              <a href="javascript:;" @click="viewTask(row)">编辑</a> |
+              <a href="javascript:;" :disabled="row.status === 1" @click="submitTask(row.id)">提交</a> |
+              <a href="javascript:;" :disabled="row.status === 1" @click="viewTask(row)">编辑</a> |
               <a href="javascript:;" @click="viewTable(row.id)">查看交互表</a> |
               <a href="javascript:;" :disabled="row.resultFiles.length === 0">
                 <Dropdown v-if="row.resultFiles.length > 0">
@@ -77,12 +77,15 @@
                   <DropdownMenu slot="list">
                     <DropdownItem :name="item.fileId" v-for="item in row.resultFiles" :key="item.fileId">
                       <a :href="baseUrl + 'foundations/stream?fileId=' + item.fileId" target="_blank">
-                        {{ item.fileName }}
+                        {{ item.fileName.split('.')[0] }}_{{ item.checkName }}
                       </a>
                     </DropdownItem>
                   </DropdownMenu>
                 </Dropdown>
-                <span class="" v-else>结果</span>
+                <span class="" v-else>
+                  结果
+                  <Icon type="ios-arrow-down"></Icon>
+                </span>
               </a> |
               <a href="javascript:;" @click="deleteTask(row)">删除</a>
             </div>
@@ -170,8 +173,10 @@ export default {
       const res = await this.$get('foundations', {
         searchParams: { pageNum, pageSize }
       })
-      this.data = res.body.items
-      this.pageInfo = res.body.pageInfo
+      if (!this._.isEqual(this.data, res.body.items)) {
+        this.data = res.body.items
+        this.pageInfo = res.body.pageInfo
+      }
     },
     onPageChange (pageNum) {
       this.pageInfo = Object.assign(this.pageInfo, { pageNum })

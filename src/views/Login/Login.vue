@@ -39,7 +39,11 @@ const mapping = {
   'changxue':       '123',
   'zhouyiming':     '123',
   'zhengminyi':     '123',
-  'lixiaoyong':     '123'
+  'lixiaoyong':     '123',
+  'zhangxingang':   '123',
+  'lirongfu':       '123',
+  'xuxin':          '123',
+  'guoxiaohui':     '123'
 }
 /* eslint-enable */
 

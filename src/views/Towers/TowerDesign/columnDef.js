@@ -35,7 +35,7 @@ export default [
           {
             'class': 'text-green pl-2'
           },
-          ['运行成功'])
+          ['成功'])
       case 3:
         return h('div', { 'class': 'text-red pl-2' }, [
           h(Tooltip, {
@@ -45,7 +45,7 @@ export default [
               maxWidth: 400
             }
           }, [
-            h('span', ['运行失败']),
+            h('span', ['失败']),
             ' ',
             h(Icon, {
               props: {

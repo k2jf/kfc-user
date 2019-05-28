@@ -78,10 +78,10 @@
           :data="data">
           <template slot="operation" slot-scope="{ row }">
             <div class="text-grey">
-              <a href="javascript:;" @click="submitTask(row.id)">提交</a> |
+              <a href="javascript:;" :disabled="row.status === 1" @click="submitTask(row.id)">提交</a> |
               <a href="javascript:;" :disabled="row.status === 1" @click="viewTask(row)">编辑 | </a>
               <a href="javascript:;" :disabled="row.status !== 2" @click="viewResult(row.id)">结果</a> |
-              <a href="javascript:;" @click="deleteTask(row)">删除</a>
+              <a href="javascript:;" :disabled="row.status === 1" @click="deleteTask(row)">删除</a>
             </div>
           </template>
         </Table>
@@ -161,8 +161,10 @@ export default {
       const res = await this.$get('towerTasks', {
         searchParams: { pageNum, pageSize }
       })
-      this.data = res.body.items
-      this.pageInfo = res.body.pageInfo
+      if (!this._.isEqual(this.data, res.body.items)) {
+        this.data = res.body.items
+        this.pageInfo = res.body.pageInfo
+      }
     },
     onPageChange (pageNum) {
       this.pageInfo = Object.assign(this.pageInfo, { pageNum })
@@ -248,7 +250,7 @@ export default {
       this.getTaskList(this.pageInfo)
       this.timer = setInterval(() => {
         this.getTaskList(this.pageInfo)
-      }, 15000)
+      }, 5000)
     }
   }
 }

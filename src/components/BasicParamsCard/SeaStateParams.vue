@@ -125,9 +125,9 @@ export default {
       markvoAction: '',
       errKey: '',
       waveTypes: ['STRE', 'STRN', 'AIRY', 'AIRC', 'STOK', 'CNOI', 'SOLI', 'LINE', 'REPT'],
-      orders: ['3', '4', '5', '6', '7', '8', '9', '10', '11'],
+      orders: ['', '3', '4', '5', '6', '7', '8', '9', '10', '11'],
       wave: 'STRE',
-      degree: '3',
+      degree: '',
       direction01: '',
       direction02: '',
       windSpeed: '',
@@ -149,7 +149,7 @@ export default {
   mounted () {
     this.action = baseUrl + `foundations/${this.$route.params.foundationId}/upload?fileKey=seaStateBase`
     this.loadAction = baseUrl + `foundations/${this.$route.params.foundationId}/upload?fileKey=seaStateLoad`
-    this.markvoAction = baseUrl + `foundations/${this.$route.params.foundationId}/upload?fileKey=markvo`
+    this.markvoAction = baseUrl + `foundations/${this.$route.params.foundationId}/upload?fileKey=markov`
     // this.setDefaultConfig()
     this.$store.commit('foundation/syncSeaState', {
       config: {

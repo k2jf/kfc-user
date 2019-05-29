@@ -61,7 +61,7 @@
               </ICol>
               <ICol span="6" class="text-center">
                 <Select
-                  style="width: 50px"
+                  style="width: 50px;"
                   placeholder=""
                   :value="(row.limitedValue)[0].operator"
                   @on-change="onSelectChange($event, row, 0)">
@@ -130,7 +130,7 @@
           <div class="px-4 expression-item single-row">
             <span v-if="(row.limitedValue)[0].name && (row.limitedValue)[0].operator && (row.limitedValue)[0].value && (row.limitedValue)[1].operator && (row.limitedValue)[1].value">
               {{ (row.limitedValue)[0].value }}
-              {{ dictionary[(row.limitedValue)[0].operator] }}
+              {{ moodDictionary[(row.limitedValue)[0].operator] }}
               {{ dictionary[(row.limitedValue)[0].name] }}
               {{ dictionary[(row.limitedValue)[1].operator] }}
               {{ (row.limitedValue)[1].value }}
@@ -309,7 +309,11 @@ export default {
       columns,
       dictionary: baseDictionary,
       expressions,
-      magicConfig: [...this.baseConfig]
+      magicConfig: [...this.baseConfig],
+      moodDictionary: {
+        'gt': '<',
+        'gte': '<='
+      }
     }
   },
   watch: {
@@ -370,11 +374,16 @@ export default {
       this.updateMagic(_row, ind)
     },
     onSelectAll () {
+      console.log(this.magicConfig)
       const _magicConfig = [...this.magicConfig]
       _magicConfig.forEach(b => {
         b._checked = true
       })
+      console.log(_magicConfig)
+      this.$store.commit('foundation/syncFatigue', { hasFatigue: true })
       this.magicConfig = _magicConfig
+      this.$emit('on-select-all-change', _magicConfig)
+      // this.data = _magicConfig
     },
     onSelectNone () {
       const _magicConfig = [...this.magicConfig]
@@ -382,6 +391,8 @@ export default {
         b._checked = false
       })
       this.magicConfig = _magicConfig
+      this.$store.commit('foundation/syncFatigue', { hasFatigue: false })
+      this.$emit('on-select-all-change', _magicConfig)
     }
   }
 }

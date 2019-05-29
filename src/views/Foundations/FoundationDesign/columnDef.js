@@ -76,7 +76,7 @@ export default [
   {
     title: '设计者',
     key: 'creator',
-    width: 100
+    width: 120
   },
   {
     title: '创建时间',

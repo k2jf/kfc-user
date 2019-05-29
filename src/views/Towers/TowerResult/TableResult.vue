@@ -1,10 +1,11 @@
 <template>
   <div class="table-result h-full px-3 overflow-auto" ref="table-result">
     <div class="result">
-      <div class="h-8 text-right">
+      <div class="text-right" style="height: 24px">
         <a class="ido-link" href="javascript:void 0;" @click="copyFlange">复制表格</a>
       </div>
       <Table
+        size="small"
         border
         stripe
         :columns="columns"
@@ -14,7 +15,7 @@
         </template>
       </Table>
     </div>
-    <div class="py-2" style="line-height:32px;">
+    <div class="pt-6" style="line-height:32px;">
       <Row>
         <ICol span="4" v-for="(item, i) in constraints" :key="i">
           {{ item.name }} >= {{ item.value }}
@@ -26,13 +27,14 @@
       </Row>
     </div>
     <div class="adjust">
-      <div class="h-8 text-right">
+      <div class="text-right" style="height: 24px">
         <a class="ido-link" href="javascript:void 0;" @click="copySRF">复制表格</a>
       </div>
       <Table
+        size="small"
         border
         stripe
-        :height="500"
+        :height="320"
         :columns="adjustColumns"
         :data="adjustData">
         <template slot="limit" slot-scope="{row, column}">

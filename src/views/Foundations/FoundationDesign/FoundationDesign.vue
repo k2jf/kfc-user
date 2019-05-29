@@ -69,7 +69,7 @@
               <a href="javascript:;" :disabled="row.status === 1" @click="viewTask(row)">编辑</a> |
               <a href="javascript:;" :disabled="!row.showResultList" @click="viewTable(row.id)">查看交互表</a> |
               <a href="javascript:;" :disabled="row.resultFiles.length === 0">
-                <Dropdown v-if="row.resultFiles.length > 0">
+                <Dropdown transfer v-if="row.resultFiles.length > 0">
                   <a href="javascript:void(0)">
                     结果
                     <Icon type="ios-arrow-down"></Icon>

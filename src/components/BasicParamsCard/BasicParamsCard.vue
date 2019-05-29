@@ -14,7 +14,7 @@
         </Button>
       </ICol>
     </Row>
-    <Excel2Dat
+    <!-- <Excel2Dat
       :excelName="fileName"
       :datName="datName"
       :datContent="datContent"
@@ -22,7 +22,7 @@
       :sheetdata="sheetdata"
       :ws="originSheets"
       v-if="isSplit"
-      ref="excel2Dat" />
+      ref="excel2Dat" /> -->
     <ExcelWithDat
       :excelName="fileName"
       :datName="datName"
@@ -30,13 +30,12 @@
       :paramType="basicType"
       :sheetdata="sheetdata"
       :ws="originSheets"
-      v-else
       ref="excelWithDat" />
-    <div class="transform text-right mt-2">
+    <!-- <div class="transform text-right mt-2">
       <a href="javascript:void 0" class="ido-link" @click="isSplit = !isSplit">
         改变dat显示方式
       </a>
-    </div>
+    </div> -->
   </div>
 </template>
 

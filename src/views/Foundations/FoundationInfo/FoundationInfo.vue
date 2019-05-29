@@ -49,7 +49,8 @@
         <ConstraintTable
           :type="constraintType"
           :baseConfig="baseConfig"
-          ref="constraints" />
+          ref="constraints"
+          @on-select-all-change="onSelectAll" />
       </div>
     </Fiche>
     <Fiche title="参数信息" class="my-6">
@@ -175,7 +176,7 @@ export default {
         this.baseConfig = [...singlePileConfig]
       } else {
         this.baseConfig = [...highPileConfig]
-        this.store.commit('foundation/syncForm', 2)
+        this.$store.commit('foundation/syncForm', 2)
       }
 
       if (res.body.geometry.length > 0) {
@@ -276,6 +277,9 @@ export default {
       this.$nextTick(() => {
         window.dispatchEvent(new Event('resize'))
       })
+    },
+    onSelectAll (value) {
+      this.baseConfig = value
     },
     async onTowerChange (tId) {
       const seaStateFileId = this.$store.state.foundation.seaState.fileId

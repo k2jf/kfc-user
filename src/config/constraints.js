@@ -160,6 +160,7 @@ export const singlePileConfig = [
 export const highPileConfig = [
   stress,
   highPileDeflection,
+  compression,
   tension,
   mode
 ]

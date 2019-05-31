@@ -224,8 +224,4 @@ export default {
    color: rgba(255,255,255,0.6);
 }
 
-.ido-link {
-  color: #fff;
-  font-size: 14px;
-}
 </style>

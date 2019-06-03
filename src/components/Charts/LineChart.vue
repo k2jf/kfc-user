@@ -40,6 +40,10 @@ export default {
           right: 40,
           left: 30
         },
+        toolbox: {
+          ...options.toolbox,
+          orient: 'vertical'
+        },
         yAxis: {
           ...options.yAxis,
           ...this.yAxis

@@ -327,9 +327,9 @@ const data = [{
   unit: 'mm',
   mode: 'continuous',
   config: {
-    algconfMin: 1,
-    algconfMax: 2,
-    algconfStep: 0.5
+    algconfMin: 10,
+    algconfMax: 40,
+    algconfStep: 1
   }
 }]
 

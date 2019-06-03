@@ -50,6 +50,10 @@ export default {
           right: 90,
           left: 30
         },
+        toolbox: {
+          ...options.toolbox,
+          orient: 'vertical'
+        },
         series: this.series
       })
     }

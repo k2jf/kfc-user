@@ -27,13 +27,24 @@ export default {
     chartOptions () {
       return Object.assign({}, options, {
         legend: {
-          shwo: true,
-          data: ['塔架', '法兰1', '法兰2', '法兰3', '法兰4']
+          type: 'scroll',
+          itemWidth: 15,
+          itemHeight: 10,
+          data: this.series.map(s => s.name)
         },
         grid: {
           ...options.grid,
           right: 40,
-          left: 30
+          left: 30,
+          top: 60
+        },
+        toolbox: {
+          show: true,
+          top: 20,
+          orient: 'vertical',
+          feature: {
+            saveAsImage: { show: true }
+          }
         },
         xAxis: {
           ...this.xAxis,

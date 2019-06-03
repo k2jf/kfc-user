@@ -51,7 +51,7 @@ export default {
       min: 0,
       max: 3
     },
-    checkYAxis: { name: 'Height' }
+    checkYAxis: { name: 'Height(m)' }
   }),
   computed: {
     ...mapState({
@@ -64,10 +64,8 @@ export default {
         name: optWeight[ele].name,
         type: 'bar',
         stack: 'weight',
-        itemStyle: {
-          normal: {
-          },
-          emphasis: {
+        emphasis: {
+          itemStyle: {
             barBorderWidth: 1,
             shadowBlur: 10,
             shadowOffsetX: 0,
@@ -77,6 +75,7 @@ export default {
         },
         data: [0, 0, this.strip(checkedWeight[ele].data), this.strip(optWeight[ele].data)]
       }))
+      console.log(_series)
       return _series
     },
     stepLineSeries () {

@@ -117,7 +117,7 @@ const mode = {
   _checked: false,
   multiple: false,
   name: 'mode',
-  combination: '0.70',
+  combination: '1.00',
   dead: '1.00',
   members: '1.00',
   waveLoad: '1.00',
@@ -126,7 +126,7 @@ const mode = {
     {
       name: 'frequency',
       operator: 'gt',
-      value: 1.1
+      value: 1
     },
     {
       name: 'frequency',

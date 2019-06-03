@@ -149,6 +149,7 @@ export default {
     async createDat () {
       // await this.shouldUpdate()
       await this.updateExcel()
+      if (this.basicType === 'seaState') this.$parent.$parent.$parent.$parent.init()
       try {
         const res = await this.$put(`foundations/datFile?excelId=${this.fileId}`, {
           json: this.config
@@ -158,6 +159,7 @@ export default {
           fileName: this.fileName,
           config: this.config
         })
+        this.$store.commit('foundation/syncSave', true)
         this.datContent = res.body.datText
         if (!this.isSplit) {
           this.$refs.excelWithDat.modal = true

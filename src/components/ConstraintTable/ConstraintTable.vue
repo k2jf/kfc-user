@@ -57,7 +57,11 @@
           <div class="px-4">
             <Row>
               <ICol span="4">
-                <Input style="width: 100%" :value="(row.limitedValue)[0].value" @on-change="onInputChange($event.target.value, row, 0)" />
+                <Input
+                  style="width: 100%"
+                  :value="(row.limitedValue)[0].value"
+                  @on-blur="onInputBlur"
+                  @on-change="onInputChange($event.target.value, row, 0)" />
               </ICol>
               <ICol span="6" class="text-center">
                 <Select
@@ -99,7 +103,11 @@
                 </Select>
               </ICol>
               <ICol span="4">
-                <Input style="width: 100%" :value="(row.limitedValue)[1].value" @on-change="onInputChange($event.target.value, row, 1)" />
+                <Input
+                  style="width: 100%"
+                  :value="(row.limitedValue)[1].value"
+                  @on-blur="onInputBlur"
+                  @on-change="onInputChange($event.target.value, row, 1)" />
               </ICol>
             </Row>
           </div>
@@ -123,12 +131,17 @@
               {{ dictionary[item.name] }}
               {{ dictionary[item.operator] }}
               {{ item.value }}
+              <span v-if="row.name === 'deflection'">
+                {{ unitDic[item.name] }}
+              </span>
             </span>
           </div>
         </div>
         <div v-else>
           <div class="px-4 expression-item single-row">
-            <span v-if="(row.limitedValue)[0].name && (row.limitedValue)[0].operator && (row.limitedValue)[0].value && (row.limitedValue)[1].operator && (row.limitedValue)[1].value">
+            <span
+              :class="err ? 'text-red': ''"
+              v-if="(row.limitedValue)[0].name && (row.limitedValue)[0].operator && (row.limitedValue)[0].value && (row.limitedValue)[1].operator && (row.limitedValue)[1].value">
               {{ (row.limitedValue)[0].value }}
               {{ moodDictionary[(row.limitedValue)[0].operator] }}
               {{ dictionary[(row.limitedValue)[0].name] }}
@@ -313,6 +326,13 @@ export default {
       moodDictionary: {
         'gt': '<',
         'gte': '<='
+      },
+      err: false,
+      unitDic: {
+        D_mudline: 'cm',
+        D_pileTip: 'cm',
+        D_tilt: 'rad',
+        D_settlement: 'cm'
       }
     }
   },
@@ -334,6 +354,17 @@ export default {
     onInputChange (value, ...others) {
       // this.equip(...[Number(value), ...others, 'value'])
       this.equip(...[...arguments, 'value'])
+    },
+    onInputBlur () {
+      const mode = this.magicConfig.find(m => m.name === 'mode')
+      const first = mode.limitedValue[0]
+      const second = mode.limitedValue[1]
+      if (first.value > second.value) {
+        // this.$Message.error('模态范围不合理')
+        this.err = true
+      } else {
+        this.err = false
+      }
     },
     equip (value, row, ind, key) {
       // ind 是 limitedValue 里的下标，不是 row 的下标

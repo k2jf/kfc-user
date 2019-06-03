@@ -81,7 +81,7 @@
       </div>
     </Fiche>
     <div class="text-center mb-6">
-      <Button type="primary" @click="save">
+      <Button type="primary" :disabled="!canSave" @click="save">
         保存
       </Button>
       <Button class="ml-3" @click="cancel">
@@ -98,9 +98,9 @@ import ConstraintTable from '@/components/ConstraintTable'
 import BasicParamsCard, { SeaStateParams, GeologyParams, GeometryParams } from '@/components/BasicParamsCard'
 // import BasicParamsCard from '@/components/BasicParamsCard'
 
-import { mapMutations } from 'vuex'
+import { mapMutations, mapState } from 'vuex'
 
-import { singlePileConfig, highPileConfig } from '@/config'
+import { singlePileConfig, highPileConfig, baseDictionary, highDictionary } from '@/config'
 
 /**
  * 海况基础信息上传文件 fileKey: seaStateBase
@@ -139,6 +139,10 @@ export default {
     }
   },
   computed: {
+    ...mapState({
+      canSave: state => state.foundation.canSave,
+      form: state => state.foundation.form
+    }),
     slotClass (item, index) {
       return item.length > 1 && index < item.length - 1 ? 'has-border' : ''
     }
@@ -146,13 +150,11 @@ export default {
   mounted () {
     this.init()
   },
-  // beforeDestroy () {
-  //   this.syncGeometry({ geometry: {} })
-  //   this.syncSeaState({ seaState: {} })
-  //   this.syncGeology({ geology: {} })
-  // },
+  beforeDestroy () {
+    this.syncSave(false)
+  },
   methods: {
-    ...mapMutations('foundation', ['syncGeometry', 'syncSeaState', 'syncGeology', 'syncTowerId', 'syncTowerId']),
+    ...mapMutations('foundation', ['syncGeometry', 'syncSeaState', 'syncGeology', 'syncTowerId', 'syncTowerId', 'syncSave']),
     async init () {
       if (this.$route.params.foundationId === 'create') return
       const res = await this.$get(`foundations/${this.$route.params.foundationId}`)
@@ -212,6 +214,14 @@ export default {
     },
     async save () {
       const constraints = this.$refs.constraints.magicConfig.filter(m => m._checked).map(item => {
+        if (item.limitedValue.some(l => l.value === '')) {
+          let dictionary = baseDictionary
+          if (this.form === 2) {
+            dictionary = highDictionary
+          }
+          Message.error(dictionary[item.name] + '配置不允许为空')
+          throw new Error('配置不允许为空')
+        }
         return {
           checked: item._checked,
           name: item.name,

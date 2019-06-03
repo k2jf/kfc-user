@@ -13,7 +13,8 @@ export default {
     },
     towerId: -1,
     hasFatigue: false,
-    form: 1
+    form: 1,
+    canSave: false
   },
   mutations: {
     syncGeometry (state, payload) {
@@ -33,6 +34,9 @@ export default {
     },
     syncForm (state, payload) {
       state.form = payload
+    },
+    syncSave (state, payload) {
+      state.canSave = payload
     }
   },
   actions: {

@@ -212,9 +212,8 @@ export default {
       this.$parent.$parent.getExcel(this.$parent.$parent.fileId)
       this.$parent.$parent.$parent.$parent.$parent.$parent.updateMxy()
       const tId = this.$store.state.foundation.towerId
-      console.log(tId)
       const fId = this.$route.params.foundationId
-      if (tId > -1) {
+      if (tId > -1 && this.$store.state.foundation.towerId && this.$store.state.foundation.towerId > -1) {
         try {
           await this.$get(`foundations/checkLoad?fId=${fId}&tId=${tId}`)
         } catch (error) {

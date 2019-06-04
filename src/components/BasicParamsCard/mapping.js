@@ -1,6 +1,6 @@
 export const templateNameMap = {
   'geometry': 'Monopile.xlsx',
-  'seaState': 'SeaState.xlsx',
+  'seaState': 'SeaInp.xlsx',
   'geology': 'Geology.xlsx'
 }
 

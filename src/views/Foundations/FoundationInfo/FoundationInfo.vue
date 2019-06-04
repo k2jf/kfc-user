@@ -154,7 +154,7 @@ export default {
     this.syncSave(false)
   },
   methods: {
-    ...mapMutations('foundation', ['syncGeometry', 'syncSeaState', 'syncGeology', 'syncTowerId', 'syncTowerId', 'syncSave']),
+    ...mapMutations('foundation', ['syncGeometry', 'syncSeaState', 'syncGeology', 'syncTowerId', 'syncSave']),
     async init () {
       if (this.$route.params.foundationId === 'create') return
       const res = await this.$get(`foundations/${this.$route.params.foundationId}`)
@@ -209,6 +209,7 @@ export default {
     async updateMxy () {
       const res = await this.$get(`foundations/${this.$route.params.foundationId}`)
       this.basicFormValidate = {
+        ...this.basicFormValidate,
         baseUltimate: res.body.baseUltimate
       }
     },

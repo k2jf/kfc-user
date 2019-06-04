@@ -134,7 +134,7 @@
               <span v-if="row.name === 'deflection'">
                 {{ unitDic[item.name] }}
               </span>
-              <span v-if="row.name === 'compression'">
+              <span v-if="row.name === 'compression' || row.name === 'tension'">
                 {{ unitDic[item.name] }}
               </span>
             </span>
@@ -412,12 +412,10 @@ export default {
       this.updateMagic(_row, ind)
     },
     onSelectAll () {
-      console.log(this.magicConfig)
       const _magicConfig = [...this.magicConfig]
       _magicConfig.forEach(b => {
         b._checked = true
       })
-      console.log(_magicConfig)
       this.$store.commit('foundation/syncFatigue', { hasFatigue: true })
       this.magicConfig = _magicConfig
       this.$emit('on-select-all-change', _magicConfig)

@@ -81,7 +81,7 @@
       </div>
     </Fiche>
     <div class="text-center mb-6">
-      <Button type="primary" :disabled="!canSave" @click="save">
+      <Button type="primary" @click="save">
         保存
       </Button>
       <Button class="ml-3" @click="cancel">
@@ -267,7 +267,10 @@ export default {
       }
     },
     assembleBaseConfigs (constraints) {
-      const _baseConfig = [...this.baseConfig]
+      const _baseConfig = this.baseConfig.map(b => ({
+        ...b,
+        _checked: false
+      }))
       for (let i = 0; i < constraints.length; i++) {
         const index = _baseConfig.findIndex(b => b.name === constraints[i].name)
         const config = _baseConfig.find(b => b.name === constraints[i].name)

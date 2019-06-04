@@ -204,6 +204,7 @@ export default {
       this.$Message.success('上传成功')
     },
     async onLoadUploadSuccess (res, file, fileList) {
+      console.log(res)
       this.$Message.success('上传成功')
       this.$store.commit(`foundation/${mutationMap['seaState']}`, {
         fileId: res.body.fileId,

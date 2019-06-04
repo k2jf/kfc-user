@@ -5,9 +5,11 @@
       <img :src="src" alt="logo">
     </aside>
     <div class="header">
+      <aside>
+        <img :src="idoLogo" alt="">
+      </aside>
       <slot name="title">
         <h1 v-if="title">
-          <img :src="idoLogo" alt="">
           {{ title }}
         </h1>
         <h2 v-if="subTitle">
@@ -128,20 +130,27 @@ export default {
 .header{
   position: absolute;
   top: calc(40% - 35px);
-  left: calc(24% - 255px);
+  left: calc(24%);
   z-index: 2;
+
+  aside {
+    position: absolute;
+    left: -300px;
+    top: 0;
+    width: 300px;
+    height: 100px;
+    text-align: right;
+
+    img {
+      width: 80%;
+    }
+  }
 
   h1 {
     color: rgb(1,112,169) !important;
     font-family: 'HelveticaNeueLTPro-Roman.otf', sans-serif;
     font-size: 36px;
     font-weight: bold;
-
-    img {
-      width: 100px;
-      vertical-align: middle;
-      margin-top: -4px;
-    }
   }
 
   h2 {
@@ -153,7 +162,7 @@ export default {
 
 .login{
   position: absolute;
-  top: calc(40% - 75px);
+  top: calc(40% - 25px);
   left: 60%;
   height: 150px;
   width: 350px;

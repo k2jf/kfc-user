@@ -34,7 +34,7 @@
           </div>
           <div class="w-1/2">
             <FormItem label="基础极限载荷Mxy(kNm)：" prop="baseUltimate" class="w-9/10">
-              <Input v-model="basicFormValidate.baseUltimate" />
+              <Input disabled v-model="basicFormValidate.baseUltimate" />
             </FormItem>
           </div>
         </div>

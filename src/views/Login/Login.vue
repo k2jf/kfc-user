@@ -7,6 +7,7 @@
     <div class="header">
       <slot name="title">
         <h1 v-if="title">
+          <img :src="idoLogo" alt="">
           {{ title }}
         </h1>
         <h2 v-if="subTitle">
@@ -27,6 +28,7 @@
 <script>
 import { mapMutations } from 'vuex'
 import src from '@/assets/color_logo2.png'
+import idoLogo from '@/assets/ido_logo.svg'
 
 /* eslint-disable */
 const mapping = {
@@ -62,7 +64,8 @@ export default {
   data: () => ({
     user: '',
     password: '',
-    src
+    src,
+    idoLogo
   }),
   methods: {
     ...mapMutations(['setUserName']),
@@ -117,7 +120,9 @@ export default {
   left: 0;
   top: 0;
   background: url(../../assets/login_bg.jpg);
-  background-size: cover;
+  background-size: 124%;
+  background-position-y:-100px;
+  background-repeat: no-repeat;
 }
 
 .header{
@@ -127,10 +132,16 @@ export default {
   z-index: 2;
 
   h1 {
-    color: #5379fa !important;
+    color: rgb(1,112,169) !important;
     font-family: 'HelveticaNeueLTPro-Roman.otf', sans-serif;
-    font-size: 35px;
+    font-size: 36px;
     font-weight: bold;
+
+    img {
+      width: 100px;
+      vertical-align: middle;
+      margin-top: -4px;
+    }
   }
 
   h2 {
@@ -143,7 +154,7 @@ export default {
 .login{
   position: absolute;
   top: calc(40% - 75px);
-  left: 50%;
+  left: 60%;
   height: 150px;
   width: 350px;
   padding: 10px;

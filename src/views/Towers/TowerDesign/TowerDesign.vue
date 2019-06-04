@@ -19,9 +19,9 @@
         placeholder="请输入塔底直径"
         icon="ios-search"
         v-model="bottomDiameter" /> -->
-      <Button class="mx-3" type="primary" @click="filtrate">
+      <!-- <Button class="mx-3" type="primary" @click="filtrate">
         查询
-      </Button>
+      </Button> -->
       <Button type="primary" @click="createNewTask">
         新增任务
       </Button>

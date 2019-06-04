@@ -28,7 +28,7 @@
             v-for="(item,ind) in row.limitedValue"
             :key="ind">
             <Row>
-              <ICol span="8">
+              <ICol span="6">
                 <div class="item-name">
                   {{ dictionary[item.name] }}
                 </div>
@@ -146,10 +146,12 @@
               :class="err ? 'text-red': ''"
               v-if="(row.limitedValue)[0].name && (row.limitedValue)[0].operator && (row.limitedValue)[0].value && (row.limitedValue)[1].operator && (row.limitedValue)[1].value">
               {{ (row.limitedValue)[0].value }}
+              {{ unitDic[(row.limitedValue)[0].name] }}
               {{ moodDictionary[(row.limitedValue)[0].operator] }}
               {{ dictionary[(row.limitedValue)[0].name] }}
               {{ dictionary[(row.limitedValue)[1].operator] }}
               {{ (row.limitedValue)[1].value }}
+              {{ unitDic[(row.limitedValue)[1].name] }}
             </span>
           </div>
         </div>
@@ -271,12 +273,12 @@ const columns = [
   {
     title: '阈值配置',
     slot: 'config',
-    width: 300
+    width: 260
   },
   {
     title: '表达式',
     slot: 'expression',
-    width: 120
+    width: 200
   },
   {
     title: '风机载荷',
@@ -336,7 +338,8 @@ export default {
         D_pileTip: 'cm',
         D_tilt: 'rad',
         D_settlement: 'cm',
-        allowable: 'kN'
+        allowable: 'kN',
+        frequency: 'Hz'
       }
     }
   },

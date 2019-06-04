@@ -7,9 +7,9 @@
         placeholder="请输入项目名称"
         icon="ios-search"
         v-model="value" /> -->
-      <Button class="ml-3" type="primary">
+      <!-- <Button class="ml-3" type="primary">
         查询
-      </Button>
+      </Button> -->
       <Button class="ml-3" type="primary" @click="createNewTask">
         新增任务
       </Button>

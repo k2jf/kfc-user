@@ -134,6 +134,9 @@
               <span v-if="row.name === 'deflection'">
                 {{ unitDic[item.name] }}
               </span>
+              <span v-if="row.name === 'compression'">
+                {{ unitDic[item.name] }}
+              </span>
             </span>
           </div>
         </div>
@@ -332,7 +335,8 @@ export default {
         D_mudline: 'cm',
         D_pileTip: 'cm',
         D_tilt: 'rad',
-        D_settlement: 'cm'
+        D_settlement: 'cm',
+        allowable: 'kN'
       }
     }
   },

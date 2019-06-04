@@ -121,7 +121,7 @@ export default {
         const objData = {}
         for (var k = range.s.c; k <= range.e.c; k++) {
           const key = XLSX.utils.encode_col(k)
-          objData[key] = data[i][k] || ''
+          objData[key] = data[i][k] === 0 ? 0 : (data[i][k] || '')
         }
         formatSheetdata.push(objData)
       }

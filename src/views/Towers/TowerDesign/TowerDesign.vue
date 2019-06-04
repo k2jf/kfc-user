@@ -1,7 +1,7 @@
 <template>
   <div class="tower-design h-full p-3">
     <div class="h-12">
-      <span>项目名称：</span>
+      <!-- <span>项目名称：</span>
       <Input
         style="width: 180px;margin-right: 20px;"
         placeholder="请输入项目名称"
@@ -18,7 +18,7 @@
         style="width: 180px"
         placeholder="请输入塔底直径"
         icon="ios-search"
-        v-model="bottomDiameter" />
+        v-model="bottomDiameter" /> -->
       <Button class="mx-3" type="primary" @click="filtrate">
         查询
       </Button>

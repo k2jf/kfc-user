@@ -188,7 +188,7 @@ export default {
     copySRF () {
       let html = ''
       for (let i = 0; i < this.adjustColumns.length; i++) {
-        html += this.columns[i].title + '\t'
+        html += this.adjustColumns[i].title + '\t'
       }
       html += '\r\n'
       for (let j = 0; j < this.adjustData.length; j++) {

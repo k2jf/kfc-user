@@ -1,12 +1,12 @@
 <template>
   <div class="basic-design h-full p-3">
     <div class="h-12">
-      <span>项目名称：</span>
+      <!-- <span>项目名称：</span>
       <Input
         style="width: 180px;margin-right: 20px;"
         placeholder="请输入项目名称"
         icon="ios-search"
-        v-model="value" />
+        v-model="value" /> -->
       <Button class="ml-3" type="primary">
         查询
       </Button>

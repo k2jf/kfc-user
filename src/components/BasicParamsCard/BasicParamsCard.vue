@@ -149,7 +149,7 @@ export default {
     async createDat () {
       // await this.shouldUpdate()
       await this.updateExcel()
-      if (this.basicType === 'seaState') this.$parent.$parent.$parent.$parent.init()
+      if (this.basicType === 'seaState') this.$parent.$parent.$parent.$parent.updateMxy()
       try {
         const res = await this.$put(`foundations/datFile?excelId=${this.fileId}`, {
           json: this.config

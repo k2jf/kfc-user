@@ -210,7 +210,7 @@ export default {
         fileName: res.body.fileName
       })
       this.$parent.$parent.getExcel(this.$parent.$parent.fileId)
-      this.$parent.$parent.$parent.$parent.$parent.$parent.init()
+      this.$parent.$parent.$parent.$parent.$parent.$parent.updateMxy()
       const tId = this.$store.state.foundation.towerId
       console.log(tId)
       const fId = this.$route.params.foundationId

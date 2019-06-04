@@ -206,6 +206,12 @@ export default {
         this.assembleBaseConfigs(res.body.constraints)
       }
     },
+    async updateMxy () {
+      const res = await this.$get(`foundations/${this.$route.params.foundationId}`)
+      this.basicFormValidate = {
+        baseUltimate: res.body.baseUltimate
+      }
+    },
     async getTowerTaskList (projectId) {
       const res = await this.$get('towerTasks', {
         searchParams: { pageNum: 1, pageSize: 9999, status: 2, projectId }

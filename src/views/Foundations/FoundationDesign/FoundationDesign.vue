@@ -1,15 +1,15 @@
 <template>
   <div class="basic-design h-full p-3">
     <div class="h-12">
-      <!-- <span>项目名称：</span>
+      <span>项目名称：</span>
       <Input
         style="width: 180px;margin-right: 20px;"
         placeholder="请输入项目名称"
         icon="ios-search"
-        v-model="value" /> -->
-      <!-- <Button class="ml-3" type="primary">
+        v-model="value" />
+      <Button class="ml-3" type="primary" @click="filtrate">
         查询
-      </Button> -->
+      </Button>
       <Button class="ml-3" type="primary" @click="createNewTask">
         新增任务
       </Button>
@@ -261,6 +261,35 @@ export default {
       this.timer = setInterval(() => {
         this.getTaskList(this.pageInfo)
       }, 5000)
+    },
+    filtrate () {
+      const searchParams = {
+        projectName: this.value
+      }
+      this.setFiltrateListInterval(searchParams)
+    },
+    setFiltrateListInterval (searchParams) {
+      if (this.timer) {
+        clearInterval(this.timer)
+        this.timer = null
+      }
+      this.getTaskFiltrateList(searchParams)
+      this.timer = setInterval(() => {
+        this.getTaskFiltrateList(searchParams)
+      }, 5000)
+    },
+    async getTaskFiltrateList (searchParams) {
+      const res = await this.$get('foundations', {
+        searchParams: {
+          ...searchParams,
+          pageNum: 1,
+          pageSize: 10
+        }
+      })
+      if (!this._.isEqual(this.data, res.body.items)) {
+        this.data = res.body.items
+        this.pageInfo = res.body.pageInfo
+      }
     }
   }
 }

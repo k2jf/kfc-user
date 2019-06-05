@@ -1,7 +1,7 @@
 <template>
   <div class="tower-design h-full p-3">
     <div class="h-12">
-      <!-- <span>项目名称：</span>
+      <span>项目名称：</span>
       <Input
         style="width: 180px;margin-right: 20px;"
         placeholder="请输入项目名称"
@@ -18,10 +18,10 @@
         style="width: 180px"
         placeholder="请输入塔底直径"
         icon="ios-search"
-        v-model="bottomDiameter" /> -->
-      <!-- <Button class="mx-3" type="primary" @click="filtrate">
+        v-model="bottomDiameter" />
+      <Button class="mx-3" type="primary" @click="filtrate">
         查询
-      </Button> -->
+      </Button>
       <Button type="primary" @click="createNewTask">
         新增任务
       </Button>
@@ -245,7 +245,20 @@ export default {
       this.$refs.formValidate.resetFields()
     },
     filtrate () {
-      //
+      const searchParams = {}
+      const {
+        projectName,
+        towerHeight,
+        bottomDiameter
+      } = this
+      Object.entries({
+        projectName,
+        towerHeight,
+        bottomDiameter
+      }).forEach(item => {
+        if (item[1] !== '') searchParams[item[0]] = item[1]
+      })
+      this.setFiltrateListInterval(searchParams)
     },
     setListInterval () {
       if (this.timer) {
@@ -256,6 +269,29 @@ export default {
       this.timer = setInterval(() => {
         this.getTaskList(this.pageInfo)
       }, 5000)
+    },
+    setFiltrateListInterval (searchParams) {
+      if (this.timer) {
+        clearInterval(this.timer)
+        this.timer = null
+      }
+      this.getTaskFiltrateList(searchParams)
+      this.timer = setInterval(() => {
+        this.getTaskFiltrateList(searchParams)
+      }, 5000)
+    },
+    async getTaskFiltrateList (searchParams) {
+      const res = await this.$get('towerTasks', {
+        searchParams: {
+          ...searchParams,
+          pageNum: 1,
+          pageSize: 10
+        }
+      })
+      if (!this._.isEqual(this.data, res.body.items)) {
+        this.data = res.body.items
+        this.pageInfo = res.body.pageInfo
+      }
     }
   }
 }

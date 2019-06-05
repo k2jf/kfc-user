@@ -84,7 +84,7 @@ export default {
 <style lang="less" scoped>
 .charts {
   height: 600px;
-  margin-bottom: 40px;
+  margin-bottom: 300px;
   aside {
     // top: -20px;
     width: 260px;

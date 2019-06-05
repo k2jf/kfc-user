@@ -28,7 +28,7 @@
             v-for="(item,ind) in row.limitedValue"
             :key="ind">
             <Row>
-              <ICol span="6">
+              <ICol span="8">
                 <div class="item-name">
                   {{ dictionary[item.name] }}
                 </div>
@@ -273,7 +273,7 @@ const columns = [
   {
     title: '阈值配置',
     slot: 'config',
-    width: 260
+    width: 300
   },
   {
     title: '表达式',

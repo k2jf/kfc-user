@@ -175,9 +175,11 @@ export default {
 
       if (res.body.foundationForm === 1) {
         // 单桩
-        this.baseConfig = [...singlePileConfig]
+        // this.baseConfig = [...singlePileConfig]
+        this.baseConfig = JSON.parse(JSON.stringify(singlePileConfig))
       } else {
-        this.baseConfig = [...highPileConfig]
+        // this.baseConfig = [...highPileConfig]
+        this.baseConfig = JSON.parse(JSON.stringify(highPileConfig))
         this.$store.commit('foundation/syncForm', 2)
       }
 

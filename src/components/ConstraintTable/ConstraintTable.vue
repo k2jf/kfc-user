@@ -327,7 +327,7 @@ export default {
       columns,
       dictionary: baseDictionary,
       expressions,
-      magicConfig: [...this.baseConfig],
+      magicConfig: JSON.parse(JSON.stringify(this.baseConfig)),
       moodDictionary: {
         'gt': '<',
         'gte': '<='
@@ -345,7 +345,7 @@ export default {
   },
   watch: {
     baseConfig (_) {
-      this.magicConfig = [..._]
+      this.magicConfig = JSON.parse(JSON.stringify(_))
     },
     type (value) {
       this.dictionary = value === 1 ? baseDictionary : highDictionary

@@ -84,7 +84,8 @@ export default {
         return items.map(item => {
           const obj = {}
           item.forEach((e, i) => {
-            obj[headers[i]] = typeof e === 'number' ? e.toFixed(3) : e
+            console.log(this.title)
+            obj[headers[i]] = typeof e === 'number' ? this.formatNumber(e) : e
           })
           return obj
         })
@@ -110,6 +111,9 @@ export default {
   //   }
   // },
   methods: {
+    formatNumber (value) {
+      return value.toString().includes('.') ? value.toFixed(3) : value
+    },
     onClose () {
       this.$emit('change', false)
     },

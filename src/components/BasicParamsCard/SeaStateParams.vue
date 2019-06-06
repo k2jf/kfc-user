@@ -74,14 +74,14 @@
       <span class="inline-block w-16 text-right">方向1/°：</span>
       <Input
         style="width: 60px"
-        :value="direction01 || ''"
+        :value="direction01 ? direction01 : direction01 === 0 ? 0 : ''"
         @on-blur="onBlur($event.target.value, 'direction01')" />
     </ICol>
     <ICol span="4" :class="'direction02' === errKey ? 'ivu-form-item-error' : ''">
       <span class="inline-block w-24 text-right">方向2/°：</span>
       <Input
         style="width: 60px"
-        :value="direction02 || ''"
+        :value="direction02 ? direction02 : direction02 === 0 ? 0 : ''"
         @on-blur="onBlur($event.target.value, 'direction02')" />
     </ICol>
     <ICol span="4" :class="'windSpeed' === errKey ? 'ivu-form-item-error' : ''">

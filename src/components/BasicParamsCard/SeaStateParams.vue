@@ -92,7 +92,7 @@
         @on-blur="onBlur($event.target.value, 'windSpeed')" />
     </ICol>
     <ICol span="4" :class="'mudlineElevation' === errKey ? 'ivu-form-item-error' : ''">
-      <span class="inline-block w-24 text-right">泥面高程(m)：</span>
+      <span class="inline-block w-24 text-right">冲刷后泥面高程(m)：</span>
       <Input
         style="width: 60px"
         :value="mudlineElevation || ''"

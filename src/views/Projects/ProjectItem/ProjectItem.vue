@@ -150,12 +150,18 @@
         </Tabs>
       </div>
     </div>
+
+    <div class="border-grey-light border-solid border rounded p-6 mt-6">
+      流程图
+      <div id="flow"></div>
+    </div>
   </div>
 </template>
 
 <script>
 import { Tag, Row, Col, Poptip, Tabs, TabPane, Card } from 'iview'
 import Steps from '@/components/Steps'
+import g6 from '@antv/g6'
 
 export default {
   name: 'ProjectItem',
@@ -169,7 +175,46 @@ export default {
     Tabs,
     TabPane,
     Card
-  }
+  },
+  mounted () {
+    this.draw()
+  },
+  methods: {
+    draw () {
+      const data = {
+        nodes: [{
+          id: 'node1',
+          x: 100,
+          y: 200,
+          size: 100,
+          shape: 'rect'
+        }, {
+          id: 'node2',
+          x: 300,
+          y: 200
+        }, {
+          id: 'node3',
+          x: 300,
+          y: 400
+        }],
+        edges: [{
+          source: 'node1',
+          target: 'node2'
+        }, {
+          source: 'node1',
+          target: 'node3'
+        }]
+      }
 
+      const graph = new g6.Graph({
+        container: 'flow',
+        width: 500,
+        height: 500
+      })
+
+      graph.data(data)
+      graph.render()
+    }
+  }
 }
 </script>

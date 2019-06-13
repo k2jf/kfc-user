@@ -60,22 +60,28 @@ export default {
     barSeries () {
       const { optWeight, checkedWeight } = this.results
       if (!optWeight || !checkedWeight) return []
-      const _series = Object.keys(optWeight).map(ele => ({
-        name: optWeight[ele].name,
-        type: 'bar',
-        stack: 'weight',
-        emphasis: {
-          itemStyle: {
-            barBorderWidth: 1,
-            shadowBlur: 10,
-            shadowOffsetX: 0,
-            shadowOffsetY: 0,
-            shadowColor: 'rgba(0,0,0,0.5)'
-          }
-        },
-        data: [0, 0, this.strip(checkedWeight[ele].data), this.strip(optWeight[ele].data)]
-      }))
-      console.log(_series)
+      const _series = Object.keys(optWeight).map((ele, idx) => {
+        return {
+          name: optWeight[ele].name,
+          type: 'bar',
+          stack: 'weight',
+          emphasis: {
+            itemStyle: {
+              barBorderWidth: 1,
+              shadowBlur: 10,
+              shadowOffsetX: 0,
+              shadowOffsetY: 0,
+              shadowColor: 'rgba(0,0,0,0.5)'
+            }
+          },
+          data: [
+            0,
+            0,
+            idx > 1 && idx < optWeight.length - 1 ? this.strip(checkedWeight[ele].data) * 2 : this.strip(checkedWeight[ele].data),
+            idx > 1 && idx < optWeight.length - 1 ? this.strip(optWeight[ele].data) * 2 : this.strip(optWeight[ele].data)
+          ]
+        }
+      })
       return _series
     },
     stepLineSeries () {
@@ -112,6 +118,9 @@ export default {
         data: items.filter(ele => ele[ind] <= 2).map(ele => [ele[ind], ele[0]]),
         lineStyle: { width: 1, color: colors[idx] },
         symbolSize: 1,
+        itemStyle: {
+          color: colors[idx]
+        },
         markLine: {
           symbol: 'none',
           label: {
@@ -137,6 +146,9 @@ export default {
         data: items.filter(ele => ele[ind] <= 2).map(ele => [ele[ind], ele[0]]),
         lineStyle: { width: 1, color: colors[idx] },
         symbolSize: 1,
+        itemStyle: {
+          color: colors[idx]
+        },
         markLine: {
           symbol: 'none',
           label: {

@@ -138,7 +138,7 @@
           </div>
           <div class="w-1/2">
             <FormItem
-              label="塔底疲劳载荷Mxy(kNm)："
+              label="塔底疲劳载荷My(kNm)："
               prop="fatiguePalyload"
               class="w-9/10">
               <Input disabled v-model="towerFormValidate.fatiguePalyload" />
@@ -497,10 +497,11 @@ export default {
         const data = await this.$ky.get(`towerTasks/stream?fileId=${this.file.fileId}`).arrayBuffer()
         this.originData = data
         var workbook = XLSX.read(data, { type: 'array' })
+        console.log(workbook)
         const sheets = {}
         for (let wsname in workbook.Sheets) {
           const ws = workbook.Sheets[wsname]
-          const data = XLSX.utils.sheet_to_json(ws, { header: 1 })
+          const data = XLSX.utils.sheet_to_json(ws, { header: 1, raw: false })
           sheets[wsname] = data
         }
 

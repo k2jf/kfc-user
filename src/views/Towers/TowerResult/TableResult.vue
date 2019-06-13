@@ -8,7 +8,7 @@
         size="small"
         border
         stripe
-        :columns="columns"
+        :columns="compareColumns"
         :data="resultData">
         <template slot="title" slot-scope="{ index }">
           {{ index === 0 ? '优化前' : '优化后' }}
@@ -88,11 +88,52 @@ export default {
       optWeight: state => state.tower.optWeight,
       adjustOptResult: state => state.tower.adjustOptResult
     }),
+    compareColumns () {
+      const { checkedWeight } = this.results
+      if (this.optWeight.length === 0 || !checkedWeight) return []
+      const columns = this.optWeight.map((weight, i) => {
+        const hasFlange = weight.name.includes('flange')
+        let title = '塔架主体重量（kg）'
+        if (hasFlange) {
+          const index = weight.name.split('flange')[1]
+          if (i > 1 && i < this.optWeight.length - 1) {
+            title = `法兰${index}重量（kg/对）`
+          } else {
+            title = `法兰${index}重量（kg）`
+          }
+        }
+        return {
+          title,
+          key: weight.name,
+          className: 'ido-table-number'
+        }
+      })
+      return [{
+        title: ' ',
+        slot: 'title'
+      }, ...columns]
+    },
     ...mapGetters('tower', ['constraints']),
     resultData () {
       const { checkedWeight } = this.results
       if (this.optWeight.length === 0 || !checkedWeight) return []
-      return [this.arr2Obj(checkedWeight), this.arr2Obj(this.optWeight)]
+      const _checkedWeight = checkedWeight.map((c, i) => {
+        if (i > 1 && i < checkedWeight.length - 1) {
+          return Object.assign({}, c, {
+            data: c.data * 2
+          })
+        }
+        return c
+      })
+      const _optWeight = this.optWeight.map((c, i) => {
+        if (i > 1 && i < this.optWeight.length - 1) {
+          return Object.assign({}, c, {
+            data: c.data * 2
+          })
+        }
+        return c
+      })
+      return [this.arr2Obj(_checkedWeight), this.arr2Obj(_optWeight)]
     },
     adjustData () {
       const optResult = { ...this.adjustOptResult }
@@ -148,8 +189,9 @@ export default {
       const items = [...optResult.items]
       items[index][4] = value
       let thicknessList = items.filter(item => item[0] !== 0).map(item => item[4])
+      let flsSrf = items.map(item => item[3])
       try {
-        await this.getAdjustOptResult({ towerId: this.$route.params.taskId, thicknessList })
+        await this.getAdjustOptResult({ towerId: this.$route.params.taskId, thicknessList, flsSrf, index })
       } catch (error) {
         // If failed, set data to previous status
         this.getResults({ towerId: this.$route.params.taskId })
@@ -172,8 +214,8 @@ export default {
       data[0].splice(0, 1, '优化前')
       data[1].splice(0, 1, '优化后')
       let html = ''
-      for (let i = 0; i < this.columns.length; i++) {
-        html += this.columns[i].title + '\t'
+      for (let i = 0; i < this.compareColumns.length; i++) {
+        html += this.compareColumns[i].title + '\t'
       }
       html += '\r\n'
       for (let j = 0; j < data.length; j++) {

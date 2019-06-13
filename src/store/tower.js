@@ -40,9 +40,17 @@ export default {
     getAdjustOptResult ({ commit }, payload) {
       return new Promise(async (resolve, reject) => {
         commit('syncLoading', { loading: true }, { root: true })
-        const { towerId, thicknessList } = payload
+        const { towerId, thicknessList, flsSrf, index } = payload
         try {
-          const res = await _fetch(`towerTasks/${towerId}/codeAdjust`, { method: 'post', json: { thicknessList }, silent: true })
+          const res = await _fetch(`towerTasks/${towerId}/codeAdjust`, {
+            method: 'post',
+            json: {
+              index,
+              flsSrf,
+              thicknessList
+            },
+            silent: true
+          })
           commit('syncAdjustOptResult', { adjustOptResult: res.body.optResult })
           commit('syncOptWeight', { optWeight: res.body.optWeight })
           commit('syncLoading', { loading: false }, { root: true })

@@ -84,7 +84,6 @@ export default {
         return items.map(item => {
           const obj = {}
           item.forEach((e, i) => {
-            console.log(this.title)
             obj[headers[i]] = typeof e === 'number' ? this.formatNumber(e) : e
           })
           return obj
@@ -94,10 +93,22 @@ export default {
     },
     columns () {
       const headers = this.data.headers || []
-      return headers.map(h => ({
-        title: h,
-        key: h,
-        width: h === 'Flange ULS' && 152
+      return headers.map(header => ({
+        title: header,
+        key: header,
+        width: header === 'Flange ULS' && 152,
+        render: (h, params) => {
+          const text = params.row[header]
+          let tClass = ''
+          if (text.toString().toUpperCase() === 'YES') {
+            tClass = 'text-green'
+          } else if (text.toString().toUpperCase() === 'NO') {
+            tClass = 'text-red'
+          }
+          return h('div', {
+            'class': tClass
+          }, [text])
+        }
       }))
     }
   },

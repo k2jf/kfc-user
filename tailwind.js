@@ -189,7 +189,16 @@ module.exports = {
   |
   */
 
+  // todo 字体需要配置
   fonts: {
+    'mono': [
+      'Courier New',
+      'Menlo',
+      'Monaco',
+      'Consolas',
+      'Liberation Mono',
+      'monospace'
+    ],
     'sans': [
       'system-ui',
       'BlinkMacSystemFont',
@@ -215,14 +224,6 @@ module.exports = {
       'Liberation Serif',
       'Georgia',
       'serif'
-    ],
-    'mono': [
-      'Menlo',
-      'Monaco',
-      'Consolas',
-      'Liberation Mono',
-      'Courier New',
-      'monospace'
     ]
   },
 

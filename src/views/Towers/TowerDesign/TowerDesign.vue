@@ -81,6 +81,7 @@
               <a href="javascript:;" :disabled="row.status === 1" @click="submitTask(row.id)">提交</a> |
               <a href="javascript:;" :disabled="row.status === 1" @click="viewTask(row)">编辑 | </a>
               <a href="javascript:;" :disabled="row.status !== 2" @click="viewResult(row.id)">结果</a> |
+              <a href="javascript:;" @click="copyTask(row.id)">复制</a> |
               <a href="javascript:;" :disabled="row.status === 1" @click="deleteTask(row)">删除</a>
             </div>
           </template>
@@ -200,6 +201,9 @@ export default {
     },
     viewResult (id) {
       this.$router.push({ name: 'tower-result', params: { taskId: id } })
+    },
+    async copyTask (id) {
+      console.log(id)
     },
     async deleteTask (row) {
       Modal.confirm({

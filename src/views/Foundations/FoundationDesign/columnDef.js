@@ -74,6 +74,27 @@ export default [
     }
   },
   {
+    title: '桩径(m)',
+    key: 'pileDiameter'
+    // width: 80
+  },
+  {
+    title: '天然泥面高程(m)',
+    key: 'mudlineElevation'
+  },
+  {
+    title: '设计阶段',
+    render: (h, params) => {
+      let text = ''
+      if (params.row.designPhase === 'B') {
+        text = '投标'
+      } else if (params.row.designPhase === 'D') {
+        text = '中标'
+      }
+      return h('span', [text])
+    }
+  },
+  {
     title: '设计者',
     key: 'creator',
     width: 120
@@ -89,6 +110,6 @@ export default [
   {
     title: '操作',
     slot: 'operation',
-    width: 256
+    width: 276
   }
 ]

@@ -10,7 +10,16 @@
           <div class="w-1/2">
             <FormItem label="项目名称：" prop="projectName" class="w-9/10">
               {{ basicFormValidate.projectName }}
-              <!-- <Input v-model="basicFormValidate.projectName" /> -->
+            </FormItem>
+          </div>
+          <div class="w-1/2">
+            <FormItem label="任务类型：" prop="integratedDesign" class="w-9/10">
+              {{ basicFormValidate.integratedDesign }}
+            </FormItem>
+          </div>
+          <div class="w-1/2">
+            <FormItem label="设计阶段" prop="designPhase" class="w-9/10">
+              {{ basicFormValidate.designPhase }}
             </FormItem>
           </div>
           <div class="w-1/2">
@@ -21,6 +30,11 @@
           <div class="w-1/2">
             <FormItem label="基础类型：" class="w-9/10">
               {{ basicFormValidate.foundationForm === 1 ? '单桩' : '高桩' }}
+            </FormItem>
+          </div>
+          <div class="w-1/2">
+            <FormItem label="天然泥面高程(m)：" class="w-9/10" prop="mudlineElevation">
+              {{ basicFormValidate.mudlineElevation }}
             </FormItem>
           </div>
           <div class="w-1/2">
@@ -35,6 +49,11 @@
           <div class="w-1/2">
             <FormItem label="基础极限载荷Mxy(kNm)：" prop="baseUltimate" class="w-9/10">
               <Input disabled v-model="basicFormValidate.baseUltimate" />
+            </FormItem>
+          </div>
+          <div class="w-1/2">
+            <FormItem label="桩径(m)：" prop="pileDiameter" class="w-9/10">
+              <Input disabled v-model="basicFormValidate.pileDiameter" />
             </FormItem>
           </div>
         </div>
@@ -67,6 +86,13 @@
             <BasicParamsCard basicType="seaState">
               <template v-slot:params>
                 <SeaStateParams />
+              </template>
+            </BasicParamsCard>
+          </TabPane>
+          <TabPane label="地质参数">
+            <BasicParamsCard basicType="geology">
+              <template v-slot:params>
+                <GeologyParams />
               </template>
             </BasicParamsCard>
           </TabPane>
@@ -165,7 +191,9 @@ export default {
         taskName: res.body.taskName,
         towerTaskId: res.body.towerTaskId,
         mudlineElevation: res.body.mudlineElevation,
-        baseUltimate: res.body.baseUltimate
+        baseUltimate: res.body.baseUltimate,
+        integratedDesign: ['分布迭代', '极限强度', '疲劳损伤'][res.body.integratedDesign],
+        designPhase: { 'B': '投标', 'D': '中标' }[res.body.designPhase]
       }
       this.constraintType = res.body.foundationForm
 

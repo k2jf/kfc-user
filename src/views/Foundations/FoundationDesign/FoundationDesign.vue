@@ -6,7 +6,24 @@
         style="width: 180px;margin-right: 20px;"
         placeholder="请输入项目名称"
         icon="ios-search"
-        v-model="value" />
+        v-model="projectName" />
+      桩径(m)：
+      <Input style="width: 60px;margin-right: 8px;" v-model="startPileDiameter" />
+      ~
+      <Input style="width: 60px;margin-left: 8px;margin-right: 20px;" v-model="endPileDiameter" />
+      基础形式：
+      <Select
+        placeholder="请选择基础类型"
+        clearable
+        style="width:160px;"
+        v-model="foundationForm">
+        <Option value="1">
+          单桩
+        </Option>
+        <Option value="2">
+          高桩
+        </Option>
+      </Select>
       <Button class="ml-3" type="primary" @click="filtrate">
         查询
       </Button>
@@ -15,6 +32,8 @@
       </Button>
       <Modal
         title="新增基础设计任务"
+        :closable="false"
+        :mask-closable="false"
         v-model="visible">
         <Form
           :style="{paddingRight: '20px'}"
@@ -73,11 +92,13 @@
             <Upload
               :action="action"
               :show-upload-list="false"
+              :before-upload="beforeUpload"
               :on-error="onUploadError"
               :on-success="onUploadSuccess">
               <Button icon="ios-cloud-upload-outline">
                 上传文件
               </Button>
+              <span>{{ sacsinFile.name }}</span>
             </Upload>
           </FormItem>
           <FormItem label="校核类型：" prop="checkType" v-if="formValidate.integratedDesign !== '0'">
@@ -111,7 +132,7 @@
       </Modal>
     </div>
     <div class="h-calc-12">
-      <div class="ido-table h-calc-16">
+      <div class="ido-table h-calc-16 overflow-auto">
         <Table
           class="ido-table"
           border
@@ -142,6 +163,7 @@
                   <Icon type="ios-arrow-down"></Icon>
                 </span>
               </a> |
+              <a href="javascript:;" @click="copyTask(row.id)">复制</a> |
               <a href="javascript:;" @click="deleteTask(row)">删除</a>
             </div>
           </template>
@@ -188,8 +210,12 @@ export default {
   },
   data () {
     return {
-      value: '',
+      projectName: '',
       action: '',
+      startPileDiameter: '',
+      endPileDiameter: '',
+      foundationForm: '',
+      sacsinFile: {},
       columns,
       data: [],
       baseUrl,
@@ -241,8 +267,8 @@ export default {
     userName: state => state.userName
   }),
   mounted () {
-    this.setListInterval()
-    // this.action =
+    this.setListInterval(this.pageInfo)
+    this.action = `${baseUrl}foundations/${this.$route.params.foundationId}/upload?fileKey=sacsin`
   },
   beforeDestroy () {
     if (this.timer) {
@@ -251,9 +277,9 @@ export default {
     }
   },
   methods: {
-    async getTaskList ({ pageNum, pageSize }) {
+    async getTaskList (searchParams) {
       const res = await this.$get('foundations', {
-        searchParams: { pageNum, pageSize }
+        searchParams
       })
       if (!this._.isEqual(this.data, res.body.items)) {
         this.data = res.body.items
@@ -262,16 +288,27 @@ export default {
     },
     onPageChange (pageNum) {
       this.pageInfo = Object.assign(this.pageInfo, { pageNum })
-      this.setListInterval()
+      const searchParams = this.getFiltrate()
+      this.setListInterval({
+        ...this.pageInfo,
+        ...searchParams
+      })
     },
     onPageSizeChange (pageSize) {
       this.pageInfo = Object.assign(this.pageInfo, { pageSize })
-      this.setListInterval()
+      const searchParams = this.getFiltrate()
+      this.setListInterval({
+        ...this.pageInfo,
+        ...searchParams
+      })
     },
     async createNewTask () {
       const res = await this.$get('projects')
       this.projects = res.body.items
       this.visible = true
+    },
+    async copyTask (id) {
+      console.log(id)
     },
     async deleteTask (row) {
       Modal.confirm({
@@ -280,11 +317,19 @@ export default {
         onOk: async () => {
           await this.$delete('foundations/' + row.id)
           Message.success('删除成功')
-          this.getTaskList(this.pageInfo)
+          const searchParams = this.getFiltrate()
+          this.setListInterval({
+            ...this.pageInfo,
+            ...searchParams
+          })
         }
       })
     },
     viewTask (row) {
+      if (row.integratedDesign > 0) {
+        alert('一体化设计')
+        return false
+      }
       this.$router.push({ name: 'foundation-design', params: { foundationId: row.id } })
     },
     viewTable (id) {
@@ -298,7 +343,11 @@ export default {
       } else {
         Message.success('提交成功')
         setTimeout(() => {
-          this.setListInterval()
+          const searchParams = this.getFiltrate()
+          this.setListInterval({
+            ...this.pageInfo,
+            ...searchParams
+          })
         }, 500)
       }
     },
@@ -316,13 +365,13 @@ export default {
           try {
             const res = await this.$post('foundations', {
               json: {
-                projectId: this.formValidate.projectId,
+                projectId: Number(this.formValidate.projectId),
                 loadDatasource: Number(this.formValidate.loadDatasource),
                 foundationForm: Number(this.formValidate.foundationForm),
                 creator: this.userName,
                 integratedDesign: 0,
                 designPhase: this.formValidate.designPhase,
-                mudlineElevation: this.formValidate.mudlineElevation
+                mudlineElevation: Number(this.formValidate.mudlineElevation)
               }
             })
             this.visible = false
@@ -342,19 +391,26 @@ export default {
       this.$refs.formValidate.validate(async (valid) => {
         if (valid) {
           try {
-            await this.$post('foundations', {
+            const res = await this.$post('foundations', {
               json: {
-                projectId: this.formValidate.projectId,
+                projectId: Number(this.formValidate.projectId),
                 creator: this.userName,
                 designPhase: this.formValidate.designPhase,
                 integratedDesign: Number(this.formValidate.checkType),
-                topElevation: this.formValidate.checkType === '2' && this.formValidate.topElevation,
-                yieldStrength: this.formValidate.checkType === '1' && this.formValidate.yieldStrength
+                topElevation: this.formValidate.checkType === '2' ? this.formValidate.topElevation : undefined,
+                yieldStrength: this.formValidate.checkType === '1' ? this.formValidate.yieldStrength : undefined
               }
             })
             this.visible = false
             this.loading = false
+            this.manualUpload(res.body.id)
+            const searchParams = this.getFiltrate()
+            this.setListInterval({
+              ...this.pageInfo,
+              ...searchParams
+            })
           } catch (error) {
+            this.sacsinFile = {}
             console.error(error)
             this.loading = false
           }
@@ -364,55 +420,67 @@ export default {
         }
       })
     },
+    async manualUpload (id) {
+      var formdata = new FormData()
+      formdata.append('file', this.sacsinFile, this.sacsinFile.name)
+      await this.$post(`foundations/${id}/upload?fileKey=sacsin`, {
+        headers: null,
+        body: formdata
+      })
+      this.sacsinFile = {}
+      this.$Message.success('sacsin文件上传成功 ')
+    },
     onCancel () {
       this.visible = false
       this.loading = false
       this.$refs.formValidate.resetFields()
     },
-    setListInterval () {
+    setListInterval (searchParams) {
       if (this.timer) {
         clearInterval(this.timer)
         this.timer = null
       }
-      this.getTaskList(this.pageInfo)
+      this.getTaskList(searchParams)
       this.timer = setInterval(() => {
-        this.getTaskList(this.pageInfo)
+        this.getTaskList(searchParams)
       }, 5000)
     },
     filtrate () {
-      const searchParams = {
-        projectName: this.value
-      }
-      this.setFiltrateListInterval(searchParams)
-    },
-    setFiltrateListInterval (searchParams) {
-      if (this.timer) {
-        clearInterval(this.timer)
-        this.timer = null
-      }
-      this.getTaskFiltrateList(searchParams)
-      this.timer = setInterval(() => {
-        this.getTaskFiltrateList(searchParams)
-      }, 5000)
-    },
-    async getTaskFiltrateList (searchParams) {
-      const res = await this.$get('foundations', {
-        searchParams: {
-          ...searchParams,
-          pageNum: 1,
-          pageSize: 10
-        }
+      const searchParams = this.getFiltrate()
+      this.setListInterval({
+        ...this.pageInfo,
+        ...searchParams
       })
-      if (!this._.isEqual(this.data, res.body.items)) {
-        this.data = res.body.items
-        this.pageInfo = res.body.pageInfo
-      }
+    },
+    beforeUpload (file) {
+      console.log(file)
+      this.sacsinFile = file
+      return false
     },
     onUploadError () {
 
     },
-    onUploadSuccess () {
-
+    onUploadSuccess (res, file) {
+      Message.success('上传成功')
+      // this.fileName = file.name
+    },
+    getFiltrate () {
+      const searchParams = {}
+      const searchArr = ['projectName', 'startPileDiameter', 'endPileDiameter', 'foundationForm']
+      if ((this.startPileDiameter && !this.endPileDiameter) || (!this.startPileDiameter && this.endPileDiameter)) {
+        this.$Message.error('桩径需要输入一个范围')
+        throw new Error('桩径必须成对出现')
+      }
+      if (this.startPileDiameter && this.endPileDiameter && Number(this.startPileDiameter) > Number(this.endPileDiameter)) {
+        this.$Message.error(' 桩径第一个值不能大于第二个值')
+        throw new Error('桩径必须成对出现')
+      }
+      searchArr.forEach(item => {
+        if (this[item]) {
+          searchParams[item] = this[item]
+        }
+      })
+      return searchParams
     }
   }
 }

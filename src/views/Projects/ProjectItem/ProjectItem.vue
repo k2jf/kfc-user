@@ -151,7 +151,7 @@
       </div>
     </div>
 
-    <div class="border-grey-light border-solid border rounded p-6 mt-6">
+    <div class="border-grey-light border-solid border rounded p-6 mt-6" ref="flow">
       流程图
       <div id="flow"></div>
     </div>
@@ -162,6 +162,7 @@
 import { Tag, Row, Col, Poptip, Tabs, TabPane, Card } from 'iview'
 import Steps from '@/components/Steps'
 import g6 from '@antv/g6'
+import { firstData, secondData, thirdData } from './dataPick'
 
 export default {
   name: 'ProjectItem',
@@ -177,42 +178,26 @@ export default {
     Card
   },
   mounted () {
-    this.draw()
+    this.$nextTick(() => {
+      this.draw()
+    })
   },
   methods: {
     draw () {
-      const data = {
-        nodes: [{
-          id: 'node1',
-          x: 100,
-          y: 200,
-          size: 100,
-          shape: 'rect'
-        }, {
-          id: 'node2',
-          x: 300,
-          y: 200
-        }, {
-          id: 'node3',
-          x: 300,
-          y: 400
-        }],
-        edges: [{
-          source: 'node1',
-          target: 'node2'
-        }, {
-          source: 'node1',
-          target: 'node3'
-        }]
-      }
+      const width = this.$refs.flow.offsetWidth - 100
+      const height = this.$refs.flow.offsetHeight
+      console.log(width, height)
 
       const graph = new g6.Graph({
         container: 'flow',
-        width: 500,
-        height: 500
+        width,
+        height: 800
       })
 
-      graph.data(data)
+      graph.data({
+        nodes: firstData.nodes.concat(secondData.nodes).concat(thirdData.nodes),
+        edges: firstData.edges.concat(secondData.edges).concat(thirdData.edges)
+      })
       graph.render()
     }
   }

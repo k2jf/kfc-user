@@ -113,6 +113,22 @@ export default [
               breadName: '基础任务结果'
             },
             component: () => import(/* webpackChunkName: "Foundations" */ '@/views/Foundations/FoundationResult')
+          },
+          {
+            path: 'integrated-design/:foundationId',
+            name: 'integrated-design',
+            meta: {
+              breadName: '编辑基础任务'
+            },
+            component: () => import(/* webpackChunkName: "Foundations" */ '@/views/Foundations/IntegratedDesignInfo')
+          },
+          {
+            path: 'integrated-result/:foundationId',
+            name: 'integrated-result',
+            meta: {
+              breadName: '基础任务结果'
+            },
+            component: () => import(/* webpackChunkName: "Foundations" */ '@/views/Foundations/IntegratedDesignResult')
           }
         ]
       },

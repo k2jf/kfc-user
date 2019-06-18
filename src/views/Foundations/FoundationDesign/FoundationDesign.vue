@@ -88,7 +88,7 @@
               </Option>
             </Select>
           </FormItem>
-          <FormItem label="sacs.in文件：" prop="sacs" v-if="formValidate.integratedDesign !== '0'">
+          <!-- <FormItem label="sacs.in文件：" prop="sacs" v-if="formValidate.integratedDesign !== '0'">
             <Upload
               :action="action"
               :show-upload-list="false"
@@ -100,7 +100,7 @@
               </Button>
               <span>{{ sacsinFile.name }}</span>
             </Upload>
-          </FormItem>
+          </FormItem> -->
           <FormItem label="校核类型：" prop="checkType" v-if="formValidate.integratedDesign !== '0'">
             <Select placeholder="请选择校核类型：" v-model="formValidate.checkType">
               <Option value="1">
@@ -143,7 +143,7 @@
             <div class="text-grey">
               <a href="javascript:;" :disabled="row.status === 1" @click="submitTask(row.id)">提交</a> |
               <a href="javascript:;" :disabled="row.status === 1" @click="viewTask(row)">编辑</a> |
-              <a href="javascript:;" :disabled="!row.showResultList" @click="viewTable(row.id)">结果</a> |
+              <a href="javascript:;" :disabled="!row.showResultList" @click="viewTable(row)">结果</a> |
               <a href="javascript:;" :disabled="row.resultFiles.length === 0">
                 <Dropdown transfer v-if="row.resultFiles.length > 0">
                   <a href="javascript:void(0)">
@@ -200,7 +200,6 @@ export default {
     Icon,
     Modal,
     Form,
-    Upload,
     FormItem,
     Select,
     Option,
@@ -228,7 +227,7 @@ export default {
       loading: false,
       visible: false,
       formValidate: {
-        projectId: 0,
+        projectId: '0',
         integratedDesign: '0',
         designPhase: 'B',
         loadDatasource: '0',
@@ -237,7 +236,7 @@ export default {
       },
       ruleValidate: {
         projectId: [
-          { required: true, message: '项目不能为空', trigger: 'change' }
+          { required: true, message: '项目不能为空', trigger: 'blur' }
         ],
         integratedDesign: [
           { required: true, message: '任务类型不能为空', trigger: 'blur' }
@@ -246,19 +245,19 @@ export default {
           { required: true, message: '设计阶段不能为空', trigger: 'blur' }
         ],
         loadDatasource: [
-          { required: true, message: '载荷数据来源不能为空', trigger: 'change' }
+          { required: true, message: '载荷数据来源不能为空', trigger: 'blur' }
         ],
         foundationForm: [
-          { required: true, message: '基础类型不能为空', trigger: 'change' }
+          { required: true, message: '基础类型不能为空', trigger: 'blur' }
         ],
         mudlineElevation: [
-          { required: true, message: '高程不能为空', trigger: 'change' }
+          { required: true, message: '高程不能为空', trigger: 'blur' }
         ],
         topElevation: [
-          { required: true, message: '高程不能为空', trigger: 'change' }
+          { required: true, message: '高程不能为空', trigger: 'blur' }
         ],
         checkType: [
-          { required: true, message: '高程不能为空', trigger: 'change' }
+          { required: true, message: '校核类型不能为空', trigger: 'blur' }
         ]
       }
     }
@@ -326,14 +325,12 @@ export default {
       })
     },
     viewTask (row) {
-      if (row.integratedDesign > 0) {
-        alert('一体化设计')
-        return false
-      }
-      this.$router.push({ name: 'foundation-design', params: { foundationId: row.id } })
+      let name = row.integratedDesign > 0 ? 'integrated-design' : 'foundation-design'
+      this.$router.push({ name, params: { foundationId: row.id } })
     },
-    viewTable (id) {
-      this.$router.push({ name: 'foundation-result', params: { foundationId: id } })
+    viewTable (row) {
+      let name = row.integratedDesign > 0 ? 'integrated-result' : 'foundation-result'
+      this.$router.push({ name, params: { foundationId: row.id } })
     },
     async submitTask (id) {
       const res = await this.$put(`foundations/${id}/codeSubmit`, { silent: true })
@@ -403,14 +400,8 @@ export default {
             })
             this.visible = false
             this.loading = false
-            this.manualUpload(res.body.id)
-            const searchParams = this.getFiltrate()
-            this.setListInterval({
-              ...this.pageInfo,
-              ...searchParams
-            })
+            this.$router.push({ name: 'integrated-design', params: { foundationId: res.body.id } })
           } catch (error) {
-            this.sacsinFile = {}
             console.error(error)
             this.loading = false
           }
@@ -434,6 +425,14 @@ export default {
       this.visible = false
       this.loading = false
       this.$refs.formValidate.resetFields()
+      this.formValidate = {
+        projectId: '0',
+        integratedDesign: '0',
+        designPhase: 'B',
+        loadDatasource: '0',
+        foundationForm: '1',
+        checkType: '1'
+      }
     },
     setListInterval (searchParams) {
       if (this.timer) {

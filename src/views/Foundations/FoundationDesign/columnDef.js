@@ -62,8 +62,14 @@ export default [
   {
     title: '校核类型',
     render: (h, params) => {
-      const constraints = params.row.constraints || []
-      const display = constraints.filter(c => c.checked).map(c => baseDictionary[c.name]).join('，')
+      const { integratedDesign } = params.row
+      let display = ''
+      if (integratedDesign === 0) {
+        const constraints = params.row.constraints || []
+        display = constraints.filter(c => c.checked).map(c => baseDictionary[c.name]).join('，')
+      } else {
+        display = ['', '极限强度', '疲劳损伤'][integratedDesign]
+      }
       return h('div', [display])
     }
   },

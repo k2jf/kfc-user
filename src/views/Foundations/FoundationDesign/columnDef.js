@@ -13,7 +13,7 @@ export default [
   },
   {
     title: '状态',
-    width: 112,
+    width: 132,
     render: (h, params) => {
       const { status } = params.row
       switch (status) {
@@ -45,6 +45,27 @@ export default [
             }
           }, [
             h('span', ['失败']),
+            ' ',
+            h(Icon, {
+              props: {
+                type: 'ios-alert-outline'
+              },
+              class: 'text-sm',
+              style: {
+                verticalAlign: 'text-top'
+              }
+            })])
+        ])
+      case 4:
+        return h('div', { 'class': 'text-orange pl-2' }, [
+          h(Tooltip, {
+            props: {
+              placement: 'top',
+              content: params.row.message,
+              maxWidth: 400
+            }
+          }, [
+            h('span', ['校核未通过']),
             ' ',
             h(Icon, {
               props: {

@@ -1,10 +1,7 @@
 <template>
   <div class="foundation-result h-full p-3">
-    <div class="h-8 font-bold text-sm">
+    <div class="font-bold text-sm py-3">
       校核结果
-      <a href="javascript:void(0)" class="float-right underline ido-link font-normal text-xs" @click="exportCsv">
-        导出为CSV
-      </a>
     </div>
     <Table
       border

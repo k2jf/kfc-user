@@ -141,10 +141,10 @@ export default {
       },
       ruleValidate: {
         projectId: [
-          { required: true, trigger: 'change', message: '不能为空' }
+          { required: true, trigger: 'blur', message: '不能为空' }
         ],
         loadDatasource: [
-          { required: true, trigger: 'change', message: '不能为空' }
+          { required: true, trigger: 'blur', message: '不能为空' }
         ]
       }
     }
@@ -162,9 +162,9 @@ export default {
     }
   },
   methods: {
-    async getTaskList ({ pageNum, pageSize }) {
+    async getTaskList (searchParams) {
       const res = await this.$get('towerTasks', {
-        searchParams: { pageNum, pageSize }
+        searchParams
       })
       if (!this._.isEqual(this.data, res.body.items)) {
         this.data = res.body.items
@@ -173,11 +173,19 @@ export default {
     },
     onPageChange (pageNum) {
       this.pageInfo = Object.assign(this.pageInfo, { pageNum })
-      this.setListInterval()
+      const searchParams = this.getFiltrate()
+      this.setListInterval({
+        ...this.pageInfo,
+        ...searchParams
+      })
     },
     onPageSizeChange (pageSize) {
       this.pageInfo = Object.assign(this.pageInfo, { pageSize })
-      this.setListInterval()
+      const searchParams = this.getFiltrate()
+      this.setListInterval({
+        ...this.pageInfo,
+        ...searchParams
+      })
     },
     onChange (value) {
       this.isOnline = value === '1'
@@ -195,7 +203,11 @@ export default {
       } else {
         Message.success('提交成功')
         setTimeout(() => {
-          this.setListInterval()
+          const searchParams = this.getFiltrate()
+          this.setListInterval({
+            ...this.pageInfo,
+            ...searchParams
+          })
         }, 500)
       }
     },
@@ -203,7 +215,17 @@ export default {
       this.$router.push({ name: 'tower-result', params: { taskId: id } })
     },
     async copyTask (id) {
-      console.log(id)
+      try {
+        await this.$post(`towerTasks/${id}/copy`)
+        this.$Message.success('复制成功')
+        const searchParams = this.getFiltrate()
+        this.setListInterval({
+          ...this.pageInfo,
+          ...searchParams
+        })
+      } catch (error) {
+
+      }
     },
     async deleteTask (row) {
       Modal.confirm({
@@ -212,8 +234,11 @@ export default {
         onOk: async () => {
           await this.$delete('towerTasks/' + row.id)
           Message.success('删除成功')
-          // this.getTaskList(this.pageInfo)
-          this.setListInterval()
+          const searchParams = this.getFiltrate()
+          this.setListInterval({
+            ...this.pageInfo,
+            ...searchParams
+          })
         }
       })
     },
@@ -247,55 +272,37 @@ export default {
     },
     onCancel () {
       this.$refs.formValidate.resetFields()
+      this.formValidate = {
+        projectId: 0,
+        loadDatasource: ''
+      }
     },
-    filtrate () {
+    getFiltrate () {
       const searchParams = {}
-      const {
-        projectName,
-        towerHeight,
-        bottomDiameter
-      } = this
-      Object.entries({
-        projectName,
-        towerHeight,
-        bottomDiameter
-      }).forEach(item => {
-        if (item[1] !== '') searchParams[item[0]] = item[1]
-      })
-      this.setFiltrateListInterval(searchParams)
-    },
-    setListInterval () {
-      if (this.timer) {
-        clearInterval(this.timer)
-        this.timer = null
-      }
-      this.getTaskList(this.pageInfo)
-      this.timer = setInterval(() => {
-        this.getTaskList(this.pageInfo)
-      }, 5000)
-    },
-    setFiltrateListInterval (searchParams) {
-      if (this.timer) {
-        clearInterval(this.timer)
-        this.timer = null
-      }
-      this.getTaskFiltrateList(searchParams)
-      this.timer = setInterval(() => {
-        this.getTaskFiltrateList(searchParams)
-      }, 5000)
-    },
-    async getTaskFiltrateList (searchParams) {
-      const res = await this.$get('towerTasks', {
-        searchParams: {
-          ...searchParams,
-          pageNum: 1,
-          pageSize: 10
+      const searchArr = ['projectName', 'towerHeight', 'bottomDiameter']
+      searchArr.forEach(item => {
+        if (this[item]) {
+          searchParams[item] = this[item]
         }
       })
-      if (!this._.isEqual(this.data, res.body.items)) {
-        this.data = res.body.items
-        this.pageInfo = res.body.pageInfo
+      return searchParams
+    },
+    filtrate () {
+      const searchParams = this.getFiltrate()
+      this.setListInterval({
+        ...this.pageInfo,
+        ...searchParams
+      })
+    },
+    setListInterval (searchParams) {
+      if (this.timer) {
+        clearInterval(this.timer)
+        this.timer = null
       }
+      this.getTaskList(searchParams)
+      this.timer = setInterval(() => {
+        this.getTaskList(searchParams)
+      }, 5000)
     }
   }
 }

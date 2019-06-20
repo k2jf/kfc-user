@@ -185,6 +185,7 @@ export default {
       if (this.$route.params.foundationId === 'create') return
       const res = await this.$get(`foundations/${this.$route.params.foundationId}`)
       this.getTowerTaskList(res.body.projectId)
+      this.integratedDesignId = res.body.integratedDesign
       this.basicFormValidate = {
         foundationForm: res.body.foundationForm,
         projectName: res.body.projectName,
@@ -282,6 +283,7 @@ export default {
           json: {
             constraints,
             // geomConfig,
+            integratedDesign: this.integratedDesignId,
             mudlineElevation: this.basicFormValidate.mudlineElevation,
             towerTaskId: this.basicFormValidate.towerTaskId,
             baseUltimate: this.basicFormValidate.baseUltimate

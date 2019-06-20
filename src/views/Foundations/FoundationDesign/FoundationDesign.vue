@@ -307,7 +307,17 @@ export default {
       this.visible = true
     },
     async copyTask (id) {
-      console.log(id)
+      try {
+        await this.$post(`foundations/${id}/copy`)
+        this.$Message.success('复制成功')
+        const searchParams = this.getFiltrate()
+        this.setListInterval({
+          ...this.pageInfo,
+          ...searchParams
+        })
+      } catch (error) {
+
+      }
     },
     async deleteTask (row) {
       Modal.confirm({

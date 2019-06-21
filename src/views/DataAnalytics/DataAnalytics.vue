@@ -1,7 +1,7 @@
 <template>
   <div class="data-analysis h-full">
     <div class="charts">
-      <Chart :options="weight2LoadOptions" autoresize />
+      <Chart :options="pic1Options" :initOptions="initOptions" autoresize />
     </div>
     <div class="charts">
       <Chart :options="length2WeightOptions" autoresize />
@@ -64,6 +64,10 @@ export default {
   },
   data () {
     return {
+      initOptions: {
+        renderer: 'canvas'
+      },
+      pic1Series: [],
       weight2LoadOptions,
       length2WeightOptions,
       axisOptions: { ...axisOptions },
@@ -73,7 +77,30 @@ export default {
       yAxis: 't/MW'
     }
   },
+  computed: {
+    pic1Options () {
+      return Object.assign({}, weight2LoadOptions, {
+        series: this.pic1Series
+      })
+    }
+  },
+  mounted () {
+    this.getPic1()
+    // this.getPic2()
+    // this.getPic3()
+  },
   methods: {
+    async getPic1 () {
+      const res = await this.$get('data/pic1')
+      this.pic1Series = res.body.items.map(ele => ({
+        name: ele.name,
+        type: 'scatter',
+        data: ele.data,
+        symbolSize: function (dataItem) {
+          return dataItem[2] * 2
+        }
+      }))
+    },
     handleChange (value, key) {
       this.axisOptions[key].name = value
       this.axisOptions.series[0].data = getSeries(this.xAxis, this.yAxis)

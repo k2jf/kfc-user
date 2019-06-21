@@ -7,7 +7,7 @@ g6.registerEdge('kk', {
     const endPoint = cfg.endPoint
     const shape = group.addShape('path', {
       attrs: {
-        stroke: '#1e86e0',
+        stroke: '#d9d9d9',
         path: [
           ['M', startPoint.x + 35, startPoint.y + 20],
           ['L', startPoint.x + 35, startPoint.y + 60],
@@ -24,59 +24,65 @@ g6.registerEdge('kk', {
 })
 
 function generateData (flow, uuid, num) {
-  const parentNodes = flow.map(node => ({
+  const activeIndex = flow.findIndex(f => f.active)
+  const parentNodes = flow.map((node, idx) => ({
     id: uuid + node.id,
     x: node.id * 90 + 30,
     y: 200 * num,
     label: node.label,
     active: node.active,
     shape: node.shape,
-    color: node.color,
+    color: idx > activeIndex ? '#d9d9d9' : node.color,
     size: node.size,
     style: {
       fill: node.active ? node.color : '#fff'
     },
     labelCfg: {
       style: {
-        fill: node.active ? '#fff' : node.color,
+        fill: idx > activeIndex ? '#d9d9d9' : node.active ? '#fff' : node.color,
         fontSize: 11,
         fontWeight: 'bold'
       }
     }
   }))
 
-  const childNodes = flow.filter(f => f.node).map(node => {
+  const childNodes = flow.filter(f => f.node).map((node, idx) => {
     return {
       id: uuid + '-child' + node.id,
       x: node.id * 90 + 30,
       y: 200 * num - 70,
+      color: idx > activeIndex ? '#d9d9d9' : '#333',
       label: node.node.label,
       shape: node.node.shape,
       size: [60, 40],
       labelCfg: {
         style: {
           fontWeight: 'bold',
-          fontSize: 11
+          fontSize: 11,
+          fill: idx > activeIndex ? '#d9d9d9' : '#333'
         }
       }
     }
   })
 
-  const parentEdges = flow.map(node => {
+  const parentEdges = flow.map((node, idx) => {
     return {
       source: uuid + node.id,
       target: uuid + (node.id + 1),
       style: {
         endArrow: true,
-        stroke: node.color
+        stroke: idx > activeIndex ? '#d9d9d9' : node.color
       }
     }
   })
 
-  const childEdgs = flow.filter(f => f.node).map(node => {
+  const childEdgs = flow.filter(f => f.node).map((node, idx) => {
     return {
       source: uuid + node.id,
-      target: uuid + '-child' + node.id
+      target: uuid + '-child' + node.id,
+      style: {
+        stroke: idx > activeIndex ? '#d9d9d9' : '#333'
+      }
     }
   })
 

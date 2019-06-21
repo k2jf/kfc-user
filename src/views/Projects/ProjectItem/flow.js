@@ -75,6 +75,7 @@ export const second = [
     id: 3,
     label: '塔架主体设计\nLOOP1',
     shape: 'rect',
+    active: true,
     color: '#1e86e0',
     size: [70, 40],
     node: {

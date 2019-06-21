@@ -191,7 +191,28 @@ export default {
       const graph = new g6.Graph({
         container: 'flow',
         width,
-        height: 800
+        height: 800,
+        modes: {
+          default: [{
+            type: 'tooltip',
+            formatText (model) {
+              let display = ''
+              if (model.active) {
+                display = (
+                  `
+                  <div class="ido-canvas-tooltip">
+                    <div>负责人：xxx</div>
+                    <div>开始时间：2019-06-12<div>
+                    <div>工作进度：延误<div>
+                    <div>预计完成时间：2019-07-12<div>
+                  </div>
+                  `
+                )
+              }
+              return display
+            }
+          }]
+        }
       })
 
       graph.data({
@@ -203,3 +224,18 @@ export default {
   }
 }
 </script>
+<style lang="less">
+.g6-tooltip {
+  // padding: 10px 6px;
+  color: #fff;
+  background-color: rgba(70,76,91,.9);
+  // border: 1px solid #e2e2e2;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.ido-canvas-tooltip {
+  padding: 10px;
+}
+</style>

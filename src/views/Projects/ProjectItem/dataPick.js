@@ -29,13 +29,18 @@ function generateData (flow, uuid, num) {
     x: node.id * 90 + 30,
     y: 200 * num,
     label: node.label,
+    active: node.active,
     shape: node.shape,
     color: node.color,
     size: node.size,
+    style: {
+      fill: node.active ? node.color : '#fff'
+    },
     labelCfg: {
       style: {
-        fill: node.color,
-        fontSize: 11
+        fill: node.active ? '#fff' : node.color,
+        fontSize: 11,
+        fontWeight: 'bold'
       }
     }
   }))

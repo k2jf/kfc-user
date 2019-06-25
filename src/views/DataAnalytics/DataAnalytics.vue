@@ -1,7 +1,7 @@
 <template>
   <div class="data-analysis h-full">
     <div class="charts">
-      <Chart :options="pic1Options" :initOptions="initOptions" autoresize />
+      <Chart :options="weight2LoadOptions" :initOptions="initOptions" autoresize />
     </div>
     <div class="charts">
       <Chart :options="length2WeightOptions" autoresize />

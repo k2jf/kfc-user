@@ -96,13 +96,13 @@
               </template>
             </BasicParamsCard>
           </TabPane>
-          <TabPane label="地质参数">
+          <!-- <TabPane label="地质参数">
             <BasicParamsCard basicType="geology">
               <template v-slot:params>
                 <GeologyParams />
               </template>
             </BasicParamsCard>
-          </TabPane>
+          </TabPane> -->
         </Tabs>
       </div>
     </Fiche>

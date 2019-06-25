@@ -2,7 +2,7 @@
   <div class="basic-params-card">
     <Row>
       <slot name="params"></slot>
-      <ICol span="8">
+      <ICol span="7">
         <Button
           type="info"
           class="mx-8"

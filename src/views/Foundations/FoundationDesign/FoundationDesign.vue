@@ -24,7 +24,7 @@
           高桩
         </Option>
       </Select>
-      <Button class="ml-3" type="primary" @click="filtrate">
+      <Button class="mx-3" type="primary" @click="filtrate">
         查询
       </Button>
       <Button class="ml-3" type="primary" @click="createNewTask">
@@ -163,7 +163,7 @@
                   <Icon type="ios-arrow-down"></Icon>
                 </span>
               </a> |
-              <a href="javascript:;" @click="copyTask(row.id)">复制</a> |
+              <!-- <a href="javascript:;" @click="copyTask(row.id)">复制</a> | -->
               <a href="javascript:;" @click="deleteTask(row)">删除</a>
             </div>
           </template>

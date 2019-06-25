@@ -178,9 +178,9 @@ export default {
     Card
   },
   mounted () {
-    this.$nextTick(() => {
-      this.draw()
-    })
+    // this.$nextTick(() => {
+    //   this.draw()
+    // })
   },
   methods: {
     draw () {

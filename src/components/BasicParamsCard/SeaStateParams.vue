@@ -78,7 +78,7 @@
         @on-blur="onBlur($event.target.value, 'direction01')" />
     </ICol>
     <ICol span="4" :class="'direction02' === errKey ? 'ivu-form-item-error' : ''">
-      <span class="inline-block w-24 text-right">方向2/°：</span>
+      <span class="inline-block w-2416 text-right">方向2/°：</span>
       <Input
         style="width: 60px"
         :value="direction02 ? direction02 : direction02 === 0 ? 0 : ''"
@@ -91,8 +91,8 @@
         :value="windSpeed || ''"
         @on-blur="onBlur($event.target.value, 'windSpeed')" />
     </ICol>
-    <ICol span="4" :class="'mudlineElevation' === errKey ? 'ivu-form-item-error' : ''">
-      <span class="inline-block w-24 text-right">冲刷后泥面高程(m)：</span>
+    <ICol span="5" :class="'mudlineElevation' === errKey ? 'ivu-form-item-error' : ''">
+      <span class="inline-block w-24 text-right" style="width:8rem;">冲刷后泥面高程(m)：</span>
       <Input
         style="width: 60px"
         :value="mudlineElevation || ''"

@@ -41,12 +41,25 @@ export default {
     UserEdit,
     UserList
   },
+  props: {
+    isReloadUserList: {
+      type: Boolean,
+      required: false
+    }
+  },
   data () {
     return {
       isShowUserModal: false,
       fuzzyName: '',
       userList: null,
       currentUser: null
+    }
+  },
+  watch: {
+    isReloadUserList: {
+      handler (curVal, oldVal) {
+        this.getUserList()
+      }
     }
   },
   mounted () {

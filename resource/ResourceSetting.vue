@@ -3,6 +3,8 @@
   <Modal
     title="资源设置"
     width="600"
+    :maskClosable="false"
+    :loading="isLoading"
     v-model="isShowModal"
     @on-ok="onClickOk"
     @on-cancel="onClickCancel"
@@ -79,6 +81,7 @@ export default {
   data () {
     return {
       isShowModal: this.isShowSettingModal,
+      isLoading: true,
       disableList: ['是', '否'],
       resource: {
         isDisabled: [],
@@ -103,7 +106,7 @@ export default {
     }
   },
   methods: {
-    // 是否生效单选，都不选则不批量修改生效状态
+    // 是否启用单选，都不选则不批量修改生效状态
     onDisableChange (status) {
       if (!status.length) return
       this.resource.isDisabled = [status.pop()]
@@ -117,9 +120,12 @@ export default {
       let configParams = {}
       let url = `${api.authorizes}/${this.currentUser.id}/permissions?resourceIds=${resourceIds}&action=config`
 
-      if (disabled === null && !valiableTime[0] && !operations) {
+      if (disabled === null && !(valiableTime || [])[0] && !operations) {
         this.$Message.warning('请修改配置！')
-        this.$emit('on-close')
+        this.isLoading = false
+        this.$nextTick(() => {
+          this.isLoading = true
+        })
         return
       }
 
@@ -140,8 +146,11 @@ export default {
       this.$axios.put(url, configParams).then(res => {
         this.$Message.success('修改成功！')
         this.$emit('on-submit')
-      }).catch(() => {
-        this.$emit('on-close')
+      }).finally(() => {
+        this.isLoading = false
+        this.$nextTick(() => {
+          this.isLoading = true
+        })
       })
     },
     onClickCancel () {

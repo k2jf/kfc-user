@@ -10,6 +10,9 @@
         v-model="resourceData.typeId"
         @on-change="onTypeChange"
       >
+        <Option :value="-1">
+          全部资源
+        </Option>
         <Option
           :value="item.id"
           v-for="item in resourceTypeList"
@@ -115,7 +118,7 @@ export default {
       resourceData: {
         loading: false,
         fuzzyName: '',
-        typeId: 0,
+        typeId: -1,
         data: [],
         selections: [],
         columns: [
@@ -159,6 +162,7 @@ export default {
                     }
                   }
                 })
+                // h('span', this.getTimeStatus(params.row.valiableTime))
               ])
             }
           },
@@ -222,6 +226,11 @@ export default {
     },
     getOperations () {
       let typeId = this.resourceData.typeId
+      if (typeId < 0) {
+        let operations = []
+        this.resourceTypeList.forEach(item => operations.push(...item.operations))
+        return operations
+      }
       let typeInfo = this.resourceTypeList.find(item => item.id === typeId)
       if (!this.resourceTypeList.length || !typeInfo) return []
       return typeInfo ? typeInfo.operations : []
@@ -241,6 +250,7 @@ export default {
     this.$axios.get(`${api.restyps}`).then(res => {
       this.resourceTypeList = res.data.body.restyps
     })
+    this.getResourceData()
   },
   methods: {
     // 搜索资源
@@ -284,6 +294,10 @@ export default {
 
       url = fuzzyName ? `${url}&fuzzyResName=${fuzzyName}` : url
 
+      if (typeId < 0) {
+        url = `${api.authorizes}/${id}/permissions`
+      }
+
       this.$axios.get(url).then(res => {
         res.data.body.permissions.forEach(item => {
           item.disabled = item.disabled === undefined ? false : item.disabled
@@ -325,6 +339,7 @@ export default {
     // 批量编辑权限后刷新页面
     onReloadList () {
       this.isShowSettingModal = false
+      this.resourceData.selections = []
       this.getResourceData()
     },
     getTimeStatus (valiableTime) {

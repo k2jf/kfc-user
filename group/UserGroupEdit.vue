@@ -3,6 +3,8 @@
   <Modal
     title="添加已有用户组"
     width="700"
+    :maskClosable="false"
+    :loading="isLoading"
     v-model="isShowModal"
     @on-ok="onClickOk"
     @on-cancel="onClickCancel"
@@ -50,6 +52,7 @@ export default {
   data () {
     return {
       isShowModal: this.isShowGroupModal,
+      isLoading: true,
       group: {
         titles: ['未选用户组', '已选用户组'],
         data: [],
@@ -74,13 +77,24 @@ export default {
   methods: {
     // 添加用户组
     onClickOk () {
+      if (!this.group.selectKeys.length) {
+        this.$Message.warning('请选择用户组！')
+        this.isLoading = false
+        this.$nextTick(() => {
+          this.isLoading = true
+        })
+        return
+      }
       let usrgrpIds = this.group.selectKeys.join(',')
 
-      this.$axios.put(`${api.users}/${this.currentUser.id}/usrgrps/`, { usrgrpIds }).then(res => {
+      this.$axios.put(`${api.users}/${this.currentUser.id}/usrgrps`, { usrgrpIds }).then(res => {
         this.$Message.success('添加成功！')
         this.$emit('on-submit')
-      }).catch(() => {
-        this.$emit('on-close')
+      }).finally(() => {
+        this.isLoading = false
+        this.$nextTick(() => {
+          this.isLoading = true
+        })
       })
     },
     onClickCancel () {

@@ -3,7 +3,8 @@
     <Form
       :model="user"
       :label-width="80"
-      :rules="rules">
+      :rules="rules"
+      ref="formValidate">
       <FormItem prop="name" label="用户名:">
         <Input placeholder="请输入用户名" v-model="user.name" />
       </FormItem>
@@ -22,6 +23,12 @@
       <FormItem>
         <Button type="primary" @click="onSaveClick">
           保存
+        </Button>
+        <Button
+          type="primary"
+          style="margin-left: 20px;"
+          @click="onUpdatePassword">
+          重置密码
         </Button>
       </FormItem>
     </Form>
@@ -90,12 +97,23 @@ export default {
         })
     },
     onSaveClick () {
-      let { email, name } = this.user
+      this.$refs.formValidate.validate((valid) => {
+        if (!valid) {
+          return
+        }
+        let { email, name } = this.user
 
-      this.$axios.put(`${api.users}/${this.currentUser.id}`, { email, name })
+        this.$axios.put(`${api.users}/${this.currentUser.id}`, { email, name })
+          .then(() => {
+            this.$emit('on-modify-user', this.user)
+            this.$Message.success('修改成功！')
+          })
+      })
+    },
+    onUpdatePassword () {
+      this.$axios.get(`${api.users}/${this.currentUser.id}?action=resetPwd`)
         .then(() => {
-          this.$emit('on-modify-user', this.user)
-          this.$Message.success('修改成功！')
+          this.$Message.success('密码已成功重置为当前用户名！')
         })
     }
   }

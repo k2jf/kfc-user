@@ -2,7 +2,7 @@
   <Card class="container">
     <Split v-model="split">
       <div slot="left">
-        <UserList @on-user-change="getCurrentUser" />
+        <UserList :isReloadUserList="isReloadUserList" @on-user-change="getCurrentUser" />
       </div>
       <div slot="right">
         <Tabs
@@ -15,7 +15,7 @@
             <UserDetail
               :currentUser="currentUser"
               v-if="currentUser"
-              @on-modify-user="getCurrentUser" />
+              @on-modify-user="onModifyUser" />
           </TabPane>
           <TabPane
             label="用户组"
@@ -59,12 +59,17 @@ export default {
     return {
       split: 0.2,
       currentTab: 'user',
-      currentUser: null
+      currentUser: null,
+      isReloadUserList: false
     }
   },
   methods: {
     getCurrentUser (currentUser) {
       this.currentUser = currentUser
+    },
+    onModifyUser (currentUser) {
+      this.currentUser = currentUser
+      this.isReloadUserList = !this.isReloadUserList
     }
   }
 }

@@ -1,6 +1,8 @@
 <template>
   <Modal
     title="创建用户"
+    :maskClosable="false"
+    :loading="isLoading"
     v-model="isShowModal"
     @on-ok="onClickOk"
     @on-cancel="onClickCancel">
@@ -64,8 +66,29 @@ export default {
     }
   },
   data () {
+    const validatePassword = (rule, value, callback) => {
+      let confirmPassword = this.user.confirmPassword
+      if (!value) {
+        callback(new Error('密码不能为空'))
+      }
+      if (confirmPassword && value !== confirmPassword) {
+        callback(new Error('确认密码和密码不一致'))
+      }
+      callback()
+    }
+    const validateConfirmPassword = (rule, value, callback) => {
+      let password = this.user.password
+      if (!value) {
+        callback(new Error('确认密码不能为空'))
+      }
+      if (password && value !== password) {
+        callback(new Error('确认密码和密码不一致'))
+      }
+      callback()
+    }
     return {
       isShowModal: this.isShowUserModal,
+      isLoading: true,
       user: {
         name: '',
         email: '',
@@ -75,16 +98,16 @@ export default {
       },
       rules: {
         name: [
-          { required: true, type: 'string', message: '用户名不能为空', trigger: 'change' }
+          { required: true, type: 'string', message: '用户名不能为空', trigger: 'blur' }
         ],
         email: [
-          { required: true, type: 'string', message: '邮箱不能为空', trigger: 'change' }
+          { required: true, type: 'email', message: '邮箱格式不对', trigger: 'blur' }
         ],
         password: [
-          { required: true, type: 'string', message: '密码不能为空', trigger: 'change' }
+          { required: true, type: 'string', validator: validatePassword, trigger: 'blur' }
         ],
         confirmPassword: [
-          { required: true, type: 'string', message: '确认密码不能为空', trigger: 'change' }
+          { required: true, type: 'string', validator: validateConfirmPassword, trigger: 'blur' }
         ]
       },
       userGroups: []
@@ -108,7 +131,10 @@ export default {
     onClickOk () {
       this.$refs.formValidate.validate((valid) => {
         if (!valid) {
-          this.$emit('on-close')
+          this.isLoading = false
+          this.$nextTick(() => {
+            this.isLoading = true
+          })
           return
         }
 
@@ -124,8 +150,11 @@ export default {
           .then(() => {
             this.$Message.success('新建成功！')
             this.$emit('on-submit')
-          }).catch(() => {
-            this.$emit('on-close')
+          }).finally(() => {
+            this.isLoading = false
+            this.$nextTick(() => {
+              this.isLoading = true
+            })
           })
       })
     },

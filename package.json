@@ -29,6 +29,8 @@
     "handsontable": "^7.0.2",
     "iview": "^3.2.2",
     "ky": "^0.9.0",
+    "lodash": "^4.17.11",
+    "tailwindcss": "^0.7.4",
     "vue": "^2.6.6",
     "vue-echarts": "^4.0.1",
     "vue-router": "^3.0.1",
@@ -51,11 +53,9 @@
     "less": "^3.9.0",
     "less-loader": "^4.1.0",
     "lint-staged": "^8.1.4",
-    "lodash": "^4.17.11",
     "node-sass": "^4.9.0",
     "raw-loader": "^2.0.0",
     "sass-loader": "^7.1.0",
-    "tailwindcss": "^0.7.4",
     "vue-template-compiler": "^2.5.21",
     "webpack-bundle-analyzer": "^3.3.2"
   }

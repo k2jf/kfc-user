@@ -212,19 +212,19 @@ export default {
         this.$store.commit('foundation/syncForm', 2)
       }
 
-      if (res.body.geometry.length > 0) {
+      if (res.body.geometry && res.body.geometry.length > 0) {
         this.syncGeometry({
           ...res.body.geometry[0]
         })
       }
 
-      if (res.body.seaState.length > 0) {
+      if (res.body.seaState && res.body.seaState.length > 0) {
         this.syncSeaState({
           ...res.body.seaState[0]
         })
       }
 
-      if (res.body.geology.length > 0) {
+      if (res.body.geology && res.body.geology.length > 0) {
         this.syncGeology({
           ...res.body.geology[0]
         })

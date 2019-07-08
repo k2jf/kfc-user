@@ -167,7 +167,7 @@
                 :type="btnChecks[0] ? 'info' : 'default'"
                 :loading="checkLoading[0]"
                 @click="handleCheck('tower')">
-                塔架校核
+                主体校核
               </Button>
               <Button
                 class="ml-3"
@@ -501,7 +501,8 @@ export default {
         const sheets = {}
         for (let wsname in workbook.Sheets) {
           const ws = workbook.Sheets[wsname]
-          const data = XLSX.utils.sheet_to_json(ws, { header: 1, raw: false })
+          // const data = XLSX.utils.sheet_to_json(ws, { header: 1, raw: false })
+          const data = XLSX.utils.sheet_to_json(ws, { header: 1 })
           sheets[wsname] = data
         }
 

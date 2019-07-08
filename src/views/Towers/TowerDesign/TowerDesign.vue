@@ -81,7 +81,7 @@
               <a href="javascript:;" :disabled="row.status === 1" @click="submitTask(row.id)">提交</a> |
               <a href="javascript:;" :disabled="row.status === 1" @click="viewTask(row)">编辑 | </a>
               <a href="javascript:;" :disabled="row.status !== 2" @click="viewResult(row.id)">结果</a> |
-              <!-- <a href="javascript:;" @click="copyTask(row.id)">复制</a> | -->
+              <a href="javascript:;" @click="copyTask(row.id)">复制</a> |
               <a href="javascript:;" :disabled="row.status === 1" @click="deleteTask(row)">删除</a>
             </div>
           </template>
@@ -105,7 +105,7 @@
 <script>
 import { Input, Button, Table, Page, Modal, Form, FormItem, Select, Option, Message } from 'iview'
 import columns from './columnDef'
-import { mapState } from 'vuex'
+import { mapState, mapMutations } from 'vuex'
 
 export default {
   name: 'TowerDesign',
@@ -152,8 +152,27 @@ export default {
   computed: mapState({
     userName: state => state.userName
   }),
+  beforeRouteEnter (to, from, next) {
+    next(vm => {
+      if (vm.$route.query.total) {
+        vm.pageInfo = {
+          pageNum: Number(vm.$route.query.pageNum),
+          pageSize: Number(vm.$route.query.pageSize),
+          total: Number(vm.$route.query.total)
+        }
+      }
+    })
+  },
   mounted () {
-    this.setListInterval()
+    Object.entries(this.$route.query).forEach(item => {
+      this[item[0]] = item[1]
+    })
+    const searchParams = this.$route.query
+    this.setListInterval({
+      ...this.pageInfo,
+      ...searchParams
+    })
+    // this.setListInterval()
   },
   beforeDestroy () {
     if (this.timer) {
@@ -162,13 +181,18 @@ export default {
     }
   },
   methods: {
+    ...mapMutations(['syncLoading']),
     async getTaskList (searchParams) {
       const res = await this.$get('towerTasks', {
         searchParams
       })
       if (!this._.isEqual(this.data, res.body.items)) {
         this.data = res.body.items
-        this.pageInfo = res.body.pageInfo
+        this.pageInfo = {
+          pageNum: res.body.pageInfo.pageNum,
+          pageSize: res.body.pageInfo.pageSize,
+          total: res.body.pageInfo.total
+        }
       }
     },
     onPageChange (pageNum) {
@@ -178,6 +202,10 @@ export default {
         ...this.pageInfo,
         ...searchParams
       })
+      this.$router.replace({ query: {
+        ...searchParams,
+        ...this.pageInfo
+      } })
     },
     onPageSizeChange (pageSize) {
       this.pageInfo = Object.assign(this.pageInfo, { pageSize })
@@ -186,6 +214,10 @@ export default {
         ...this.pageInfo,
         ...searchParams
       })
+      this.$router.replace({ query: {
+        ...searchParams,
+        ...this.pageInfo
+      } })
     },
     onChange (value) {
       this.isOnline = value === '1'
@@ -216,15 +248,19 @@ export default {
     },
     async copyTask (id) {
       try {
-        await this.$post(`towerTasks/${id}/copy`)
+        this.syncLoading({ loading: true })
+        const res = await this.$post(`towerTasks/${id}/copy`)
+        this.syncLoading({ loading: false })
         this.$Message.success('复制成功')
-        const searchParams = this.getFiltrate()
-        this.setListInterval({
-          ...this.pageInfo,
-          ...searchParams
-        })
-      } catch (error) {
+        this.$router.push({ name: 'tower-design', params: { taskId: res.body.id } })
 
+        // const searchParams = this.getFiltrate()
+        // this.setListInterval({
+        //   ...this.pageInfo,
+        //   ...searchParams
+        // })
+      } catch (error) {
+        this.syncLoading({ loading: false })
       }
     },
     async deleteTask (row) {
@@ -282,7 +318,7 @@ export default {
       const searchArr = ['projectName', 'towerHeight', 'bottomDiameter']
       searchArr.forEach(item => {
         if (this[item]) {
-          searchParams[item] = this[item]
+          searchParams[item] = this[item].trim()
         }
       })
       return searchParams
@@ -293,6 +329,7 @@ export default {
         ...this.pageInfo,
         ...searchParams
       })
+      this.$router.replace({ query: searchParams })
     },
     setListInterval (searchParams) {
       if (this.timer) {

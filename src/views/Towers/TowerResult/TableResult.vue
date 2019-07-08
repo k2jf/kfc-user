@@ -99,7 +99,7 @@ export default {
           if (i > 1 && i < this.optWeight.length - 1) {
             title = `法兰${index}重量（kg/对）`
           } else {
-            title = `法兰${index}重量（kg）`
+            title = `法兰${index}重量（kg/个）`
           }
         }
         return {

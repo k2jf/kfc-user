@@ -1,29 +1,30 @@
 <template>
-  <div class="project-item p-3">
+  <div class="project-item p-3 relative h-full">
+    <Spin fix size="large" v-if="loading" />
     <div class="border-grey-light border-solid border rounded p-6">
       <div class="h-10 font-bold text-sm" style="line-height: 2.5rem">
-        协鑫江苏如东H1-2（200MW）
-        <Tag color="warning" style="transform:scale(.8)">
+        {{ projectName }}
+        <!-- <Tag color="warning" style="transform:scale(.8)">
           黄色预警
-        </Tag>
+        </Tag> -->
       </div>
       <Row class="p-3 pl-0">
         <ICol span="8">
-          负责人：Mr.zhang
+          负责人：{{ assignee }}
         </ICol>
         <ICol span="8">
-          业主名称：Mr.zhang
+          业主：{{ owner.join('，') }}
         </ICol>
         <ICol span="8">
-          当前进度：初步方案
+          当前进度：{{ progress }}
         </ICol>
       </Row>
       <Row class="p-3 pl-0">
         <ICol span="8">
-          创建时间：2019-02-01
+          创建时间：{{ created }}
         </ICol>
         <ICol span="8">
-          计划完成时间：2019-03-10
+          计划完成时间：{{ planFinished }}
         </ICol>
         <ICol span="8">
           过期时间：10天
@@ -159,10 +160,12 @@
 </template>
 
 <script>
-import { Tag, Row, Col, Poptip, Tabs, TabPane, Card } from 'iview'
+import { Tag, Row, Col, Poptip, Tabs, TabPane, Card, Spin } from 'iview'
 import Steps from '@/components/Steps'
 import g6 from '@antv/g6'
+import { jiraUrl } from '@/config'
 import { firstData, secondData, thirdData } from './dataPick'
+import D from 'dayjs'
 
 export default {
   name: 'ProjectItem',
@@ -175,14 +178,41 @@ export default {
     Poptip,
     Tabs,
     TabPane,
-    Card
+    Card,
+    Spin
+  },
+  data () {
+    return {
+      projectName: '',
+      assignee: '',
+      owner: [],
+      created: '',
+      planFinished: '',
+      progress: 0,
+      loading: true
+    }
   },
   mounted () {
-    // this.$nextTick(() => {
-    //   this.draw()
-    // })
+    this.getProjectInfo()
+    this.$nextTick(() => {
+      this.draw()
+    })
   },
   methods: {
+    async getProjectInfo () {
+      const { projectId } = this.$route.params
+      const res = await this.$ky(`issue/${projectId}`, {
+        prefixUrl: jiraUrl
+      }).json()
+      this.projectName = res.fields.summary
+      this.assignee = res.fields.assignee.displayName
+      this.owner = res.fields.customfield_10801
+      this.created = D(res.fields.created).format('YYYY-MM-DD hh:mm:ss')
+      this.progress = res.fields.progress.progress
+      this.planFinished = res.fields.customfield_11013
+      console.log(D(this.created).valueOf())
+      this.loading = false
+    },
     draw () {
       const width = this.$refs.flow.offsetWidth - 100
       const height = this.$refs.flow.offsetHeight

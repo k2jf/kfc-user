@@ -1,11 +1,13 @@
 <template>
   <div class="basic-params-card">
+    <!-- <div> -->
+    <!-- </div> -->
     <Row>
       <slot name="params"></slot>
-      <ICol span="7">
+      <ICol span="4">
         <Button
-          type="info"
-          class="mx-8"
+          type="primary"
+          class="mr-3"
           @click="createDat">
           生成模型
         </Button>

@@ -11,6 +11,9 @@ export default {
     geology: {
       config: {}
     },
+    capacity: {
+
+    },
     towerId: -1,
     hasFatigue: false,
     form: 1,
@@ -37,6 +40,9 @@ export default {
     },
     syncSave (state, payload) {
       state.canSave = payload
+    },
+    syncCapacity (state, payload) {
+      state.capacity = payload.capacity
     }
   },
   actions: {

@@ -8,7 +8,7 @@ export const first = [
   },
   {
     id: 1,
-    label: 'PDR(PEI+\nPDR)检查',
+    label: 'POR(PEI+\nPDB)检查',
     shape: 'rect',
     color: '#1e86e0',
     size: [60, 40],

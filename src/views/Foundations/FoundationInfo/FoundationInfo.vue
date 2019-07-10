@@ -96,13 +96,9 @@
               </template>
             </BasicParamsCard>
           </TabPane>
-          <!-- <TabPane label="地质参数">
-            <BasicParamsCard basicType="geology">
-              <template v-slot:params>
-                <GeologyParams />
-              </template>
-            </BasicParamsCard>
-          </TabPane> -->
+          <TabPane label="承载力校核">
+            <Capacity />
+          </TabPane>
         </Tabs>
       </div>
     </Fiche>
@@ -121,6 +117,7 @@
 import { Button, Input, Form, FormItem, Select, Option, Tabs, TabPane, Message } from 'iview'
 import Fiche from '@/components/Fiche'
 import ConstraintTable from '@/components/ConstraintTable'
+import Capacity from '@/components/Capacity'
 import BasicParamsCard, { SeaStateParams, GeologyParams, GeometryParams } from '@/components/BasicParamsCard'
 // import BasicParamsCard from '@/components/BasicParamsCard'
 
@@ -149,7 +146,8 @@ export default {
     BasicParamsCard,
     GeometryParams,
     SeaStateParams,
-    GeologyParams
+    GeologyParams,
+    Capacity
   },
   data () {
     return {
@@ -180,7 +178,7 @@ export default {
     this.syncSave(false)
   },
   methods: {
-    ...mapMutations('foundation', ['syncGeometry', 'syncSeaState', 'syncGeology', 'syncTowerId', 'syncSave']),
+    ...mapMutations('foundation', ['syncGeometry', 'syncSeaState', 'syncGeology', 'syncCapacity', 'syncTowerId', 'syncSave']),
     async init () {
       if (this.$route.params.foundationId === 'create') return
       const res = await this.$get(`foundations/${this.$route.params.foundationId}`)
@@ -228,6 +226,10 @@ export default {
         this.syncGeology({
           ...res.body.geology[0]
         })
+      }
+
+      if (res.body.bearingCapacity && res.body.bearingCapacity.length > 0) {
+        this.syncCapacity({ capacity: res.body.bearingCapacity[0] })
       }
 
       if (res.body.constraints) {
@@ -344,6 +346,23 @@ export default {
           console.error(error)
         }
       }
+    },
+    syncCapacityConfig (values) {
+      const keys = Object.keys(values)
+      const magicConfig = JSON.parse(JSON.stringify(this.$refs.constraints.magicConfig))
+      for (let i = 0, len = keys.length; i < len; i++) {
+        const idx = magicConfig.findIndex(m => m.name === keys[i])
+        if (idx > -1) {
+          magicConfig[idx] = {
+            ...magicConfig[idx],
+            limitedValue: [{
+              ...magicConfig[idx].limitedValue[0],
+              value: values[keys[i]]
+            }]
+          }
+        }
+      }
+      this.baseConfig = JSON.parse(JSON.stringify(magicConfig))
     }
   }
 }

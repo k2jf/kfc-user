@@ -195,7 +195,7 @@ export default {
   mounted () {
     this.getProjectInfo()
     this.$nextTick(() => {
-      this.draw()
+      // this.draw()
     })
   },
   methods: {

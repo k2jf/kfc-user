@@ -60,7 +60,7 @@ export default {
     },
     subTitle: {
       type: String,
-      default: '海上风机支撑结构一体化设计平台'
+      default: '海上风机支撑结构整体化设计平台'
     }
   },
   data: () => ({

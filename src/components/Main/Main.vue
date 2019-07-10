@@ -40,7 +40,7 @@
             type="md-menu"
             size="24"
             @click.native="collapsedSider" />
-          <span class="text-2xl">iDO 海上风机支撑结构一体化设计平台</span>
+          <span class="text-2xl">iDO 海上风机支撑结构整体化设计平台</span>
           <aside class="float-right mr-6">
             <Avatar class="alita" :src="alita" v-if="['kk', 'kangkai'].includes(userName)"></Avatar>
             <Avatar icon="ios-person" v-else></Avatar>
@@ -84,7 +84,7 @@ const navList = [
   { id: 1, name: '载荷门户', link: 'http://internal-gw-zhy-loadportal-prod-front-474455559.cn-northwest-1.elb.amazonaws.com.cn/#/', icon: 'ios-search' },
   { id: 2, name: '塔架设计', to: 'towers', icon: 'md-build' },
   { id: 3, name: '基础设计', to: 'foundations', icon: 'md-document' },
-  { id: 4, name: '数据分析', to: 'analytics', icon: 'md-analytics' },
+  { id: 4, name: '数据分析', to: 'analytics', icon: 'md-analytics' }
   // { id: 5, name: '数据管理', to: 'data-management', icon: 'md-podium' },
   // { id: 5, name: '用户管理', to: 'users', icon: 'md-contact' }
 ]

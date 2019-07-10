@@ -70,15 +70,16 @@
         </Option>
       </Select>
     </ICol>
-    <ICol span="4" :class="'direction01' === errKey ? 'ivu-form-item-error' : ''">
-      <span class="inline-block w-16 text-right">方向1/°：</span>
+    <ICol span="5" :class="'direction01' === errKey ? 'ivu-form-item-error' : ''">
+      <span class="inline-block w-24 text-right">方向1/°：</span>
       <Input
         style="width: 60px"
         :value="direction01 ? direction01 : direction01 === 0 ? 0 : ''"
         @on-blur="onBlur($event.target.value, 'direction01')" />
     </ICol>
-    <ICol span="4" :class="'direction02' === errKey ? 'ivu-form-item-error' : ''">
-      <span class="inline-block w-2416 text-right">方向2/°：</span>
+    <ICol span="5" :class="'direction02' === errKey ? 'ivu-form-item-error' : ''">
+      <span class="inline-block w-16 text-right" v-if="hasFatigue && form === 1">方向2/°：</span>
+      <span class="inline-block w-24 text-right" v-else>方向2/°：</span>
       <Input
         style="width: 60px"
         :value="direction02 ? direction02 : direction02 === 0 ? 0 : ''"

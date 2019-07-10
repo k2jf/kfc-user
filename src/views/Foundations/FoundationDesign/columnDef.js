@@ -5,38 +5,43 @@ import { baseDictionary } from '@/config'
 export default [
   {
     title: '任务名称',
-    key: 'taskName'
+    key: 'taskName',
+    className: 'ido-less-padding',
+    minWidth: 80
   },
   {
     title: '项目名称',
-    key: 'projectName'
+    key: 'projectName',
+    className: 'ido-less-padding',
+    minWidth: 80
   },
   {
     title: '状态',
-    width: 132,
+    width: 92,
+    className: 'ido-less-padding',
     render: (h, params) => {
       const { status } = params.row
       switch (status) {
       case 0:
         return h('div',
           {
-            'class': 'pl-2'
+            'class': ''
           },
           ['已创建'])
       case 1:
         return h('div',
           {
-            'class': 'text-blue pl-2'
+            'class': 'text-blue'
           },
           ['运行中'])
       case 2:
         return h('div',
           {
-            'class': 'text-green pl-2'
+            'class': 'text-green'
           },
           ['成功'])
       case 3:
-        return h('div', { 'class': 'text-red pl-2' }, [
+        return h('div', { 'class': 'text-red' }, [
           h(Tooltip, {
             props: {
               placement: 'top',
@@ -57,7 +62,7 @@ export default [
             })])
         ])
       case 4:
-        return h('div', { 'class': 'text-orange pl-2' }, [
+        return h('div', { 'class': 'text-orange' }, [
           h(Tooltip, {
             props: {
               placement: 'top',
@@ -82,6 +87,8 @@ export default [
   },
   {
     title: '校核类型',
+    minWidth: 80,
+    className: 'ido-less-padding',
     render: (h, params) => {
       const { integratedDesign } = params.row
       let display = ''
@@ -96,21 +103,26 @@ export default [
   },
   {
     title: '基础形式',
+    width: 60,
+    className: 'ido-less-padding',
     render: (h, params) => {
       return h('div', [params.row.foundationForm === 1 ? '单桩' : '高桩'])
     }
   },
   {
     title: '桩径(m)',
+    className: 'ido-less-padding',
     key: 'pileDiameter'
     // width: 80
   },
   {
     title: '天然泥面高程(m)',
+    className: 'ido-less-padding',
     key: 'mudlineElevation'
   },
   {
     title: '设计阶段',
+    className: 'ido-less-padding',
     render: (h, params) => {
       let text = ''
       if (params.row.designPhase === 'B') {
@@ -123,20 +135,23 @@ export default [
   },
   {
     title: '设计者',
+    className: 'ido-less-padding',
     key: 'creator',
-    width: 120
+    width: 100
   },
   {
     title: '创建时间',
+    className: 'ido-less-padding',
     key: 'createTime',
     render: (h, params) => {
       return h('div', [D(new Date(params.row.createTime)).format('YYYY-MM-DD HH:mm:ss')])
     },
-    width: 160
+    width: 132
   },
   {
     title: '操作',
+    className: 'ido-less-padding',
     slot: 'operation',
-    width: 276
+    width: 246
   }
 ]

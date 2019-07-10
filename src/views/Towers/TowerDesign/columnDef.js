@@ -4,13 +4,13 @@ import D from 'dayjs'
 export default [
   {
     title: '任务名称',
-    key: 'taskName'
-    // width: 240
+    key: 'taskName',
+    minWidth: 80
   },
   {
     title: '项目名称',
-    key: 'projectName'
-    // width: 240
+    key: 'projectName',
+    minWidth: 80
   },
   {
     title: '状态',
@@ -63,19 +63,19 @@ export default [
   {
     title: '塔架高度(m)',
     key: 'towerHeight',
-    width: 120,
+    width: 80,
     className: 'ido-table-number'
   },
   {
     title: '塔底直径(m)',
     key: 'bottomDiameter',
-    width: 120,
+    width: 80,
     className: 'ido-table-number'
   },
   {
     title: '设计者',
     key: 'creator',
-    width: 120
+    width: 100
   },
   {
     title: '创建时间',

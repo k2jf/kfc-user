@@ -41,7 +41,7 @@ export default {
     })
     /* eslint-disable */
     // custom styles
-    // cDg.style.width = '100%'
+    cDg.style.width = '100%'
     cDg.style.height = '100%'
     cDg.style.cellFont = '12px sans-serif'
     cDg.style.activeCellFont = '12px sans-serif'

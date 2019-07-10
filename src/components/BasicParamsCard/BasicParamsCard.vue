@@ -228,8 +228,8 @@ export default {
         })
         if (res.code === 0) {
           this.$store.commit(`foundation/${mutationMap[this.basicType]}`, {
-            fileId: this.fileId,
-            fileName: this.fileName
+            fileId: res.body.fileId,
+            fileName: res.body.fileName
           })
           resolve()
         } else {

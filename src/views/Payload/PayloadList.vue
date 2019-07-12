@@ -138,8 +138,16 @@ export default {
     editLoad (loadId) {
       this.$router.push({ name: 'edit-load', params: { loadId } })
     },
-    deleteLoad () {
-
+    deleteLoad (loadId) {
+      Modal.confirm({
+        title: '删除',
+        content: '删除操作不可回退，确定删除？',
+        onOk: async () => {
+          await this.$delete('loads/' + loadId)
+          this.$Message.success('删除成功')
+          this.getPayloadList()
+        }
+      })
     }
   }
 }

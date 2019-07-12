@@ -13,6 +13,11 @@
             </FormItem>
           </div>
           <div class="w-1/2">
+            <FormItem label="项目名称：" prop="projectName" class="w-9/10">
+              {{ loadFormValidate.projectName }}
+            </FormItem>
+          </div>
+          <div class="w-1/2">
             <FormItem label="基础型式：" prop="foundationForm" class="w-9/10">
               <Select placeholder="请选择基础型式" v-model="loadFormValidate.foundationForm">
                 <Option value="1">
@@ -34,7 +39,7 @@
               <Input v-model="loadFormValidate.designer" />
             </FormItem>
           </div>
-          <div class="w-full">
+          <div class="w-1/2">
             <FormItem label="上传载荷文件：" class="w-9/10" prop="file">
               <Upload
                 class="inline-block"
@@ -118,7 +123,8 @@ export default {
         towerBottomD: '',
         designer: '',
         file: null,
-        remark: ''
+        remark: '',
+        projectName: ''
       },
       loadRuleValidate: {
         foundationForm: [
@@ -151,6 +157,7 @@ export default {
           towerBottomD: res.body.towerBottomD,
           designer: res.body.designer,
           remark: res.body.remark,
+          projectName: res.body.projectName,
           file: res.body.fileName
         }
       } catch (error) {

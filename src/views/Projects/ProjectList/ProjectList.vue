@@ -17,35 +17,24 @@
     <div class="h-calc-16">
       <Row v-if="projects.length > 0">
         <ICol
-          class="p-3 bt-4"
+          class="p-2 bt-4"
           span="6"
           v-for="item in projects"
           :key="item.id">
-          <Card class="w-full h-32 cursor-pointer" @click.native="linkToInfo(item.projectId)">
-            <div>
-              <div class="info" style="height: 5em;">
-                <!-- <div class="w-16 h-16 float-left border">
-                </div> -->
-                <div class="overflow-hidden pl-2">
-                  <div class="text-sm">
-                    {{ item.projectName }}
-                  </div>
-                  <div class="text-xs text-grey-dark">
-                    负责人：{{ item.riskOwner }}
-                  </div>
-                  <div class="text-xs text-grey-dark">
-                    项目截止日期：{{ D(item.endTime).format('YYYY-MM-DD') }}
-                  </div>
-                </div>
+          <Card class="w-full cursor-pointer" @click.native="linkToInfo(item.projectId)">
+            <div class="overflow-hidden pl-2">
+              <div class="text-sm py-1 text-overflow" :title="item.projectName">
+                {{ item.projectName }}
               </div>
-              <Divider style="margin:6px 0;" />
-              <div class="status h-6">
-                <Icon class="text-red" type="md-close-circle" v-if="item.status === '驳回'" />
-                <span class="text-xs" v-if="item.status === '驳回'">&ensp;驳回</span>
-                <Icon class="text-green" type="md-checkmark-circle" v-if="item.status === '通过'" />
-                <span class="text-xs" v-if="item.status === '通过'">&ensp;通过</span>
-              &ensp;
-                <span class="text-xs text-grey">{{ item.date }}</span>
+              <div class="status py-1 text-grey-dark text-xs">
+                状态：
+                <Tag><span class="text-xs">{{ item.status }}</span></Tag>
+              </div>
+              <div class="text-xs py-1 text-grey-dark">
+                负责人：{{ item.riskOwner }}
+              </div>
+              <div class="text-xs py-1 text-grey-dark">
+                项目截止日期：{{ D(item.endTime).format('YYYY-MM-DD') }}
               </div>
             </div>
           </Card>
@@ -54,17 +43,12 @@
       <div v-else>
         暂无项目
       </div>
-      <!-- <div
-        class="w-full sm:w-1/2 md:w-1/2 lg:w-1/3 xl:w-1/3 mb-4 p-3"
-        v-for="item in projects"
-        :key="item.id">
-      </div> -->
     </div>
   </div>
 </template>
 
 <script>
-import { RadioGroup, Radio, Input, Card, Divider, Icon, Row, Col } from 'iview'
+import { RadioGroup, Radio, Input, Card, Divider, Row, Col, Tag } from 'iview'
 import D from 'dayjs'
 
 export default {
@@ -74,10 +58,10 @@ export default {
     Radio,
     Input,
     Card,
-    Divider,
-    Icon,
+    // Divider,
     Row,
-    ICol: Col
+    ICol: Col,
+    Tag
   },
   data () {
     return {
@@ -102,3 +86,11 @@ export default {
   }
 }
 </script>
+<style lang="less" scoped>
+.text-overflow {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 100%;
+}
+</style>

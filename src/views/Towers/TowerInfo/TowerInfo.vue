@@ -49,7 +49,7 @@
               {{ towerFormValidate.fatigueBackTaskId }}
             </FormItem>
           </div>
-          <Divider style="margin-top:0;" />
+          <!-- <Divider style="margin-top:0;" /> -->
           <!-- Section 2 Params Excel -->
           <div class="w-full">
             <FormItem label="塔架设计参数表：" prop="towerInput" class="w-9/10">
@@ -118,7 +118,7 @@
               <Input disabled v-model="towerFormValidate.limitPayload" />
             </FormItem>
           </div>
-          <Divider style="margin-top:0;" />
+          <!-- <Divider style="margin-top:0;" /> -->
           <!-- Section 3 Markov -->
           <div class="w-1/2">
             <FormItem label="马尔科夫矩阵：" prop="markov" class="w-9/10">
@@ -309,8 +309,7 @@ import {
   Option,
   Switch,
   Icon,
-  Message,
-  Divider } from 'iview'
+  Message } from 'iview'
 
 import Fiche from '@/components/Fiche'
 import Excel from '@/components/Excel'
@@ -353,7 +352,7 @@ export default {
     Excel,
     UploadButton,
     Table,
-    Divider,
+    // Divider,
     VisualModal
   },
   data () {

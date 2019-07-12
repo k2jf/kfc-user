@@ -16,6 +16,14 @@ export default [
     component: Main,
     children: [
       {
+        path: '/payloads',
+        name: 'payloads',
+        meta: {
+          breadName: '载荷版本管理'
+        },
+        component: () => import(/* webpackChunkName: "Payload" */ '@/views/Payload')
+      },
+      {
         path: '/projects',
         // name: 'projects',
         meta: {

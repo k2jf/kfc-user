@@ -201,8 +201,8 @@ export default {
         json: body
       })
       this.$parent.$parent.$parent.$parent.syncCapacityConfig({
-        compression: res.body.compressionBcValue,
-        tension: res.body.tensionBcValue
+        compression: res.body.compressionBcValue.toFixed(2),
+        tension: res.body.tensionBcValue.toFixed(2)
       })
     }
   }

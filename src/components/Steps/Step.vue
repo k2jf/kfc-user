@@ -10,7 +10,7 @@
       </div>
     </div>
     <div :class="[prefixCls + '-main']">
-      <div :class="[prefixCls + '-title']">
+      <div :class="[prefixCls + '-title']" :style="{ display: block ? 'block' : 'inline-block' }">
         <slot name="title">
         </slot>
       </div>
@@ -47,6 +47,10 @@ export default {
     },
     icon: {
       type: String
+    },
+    block: {
+      type: Boolean,
+      default: false
     }
   },
   data () {

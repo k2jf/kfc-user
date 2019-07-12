@@ -4,6 +4,7 @@
 </template>
 <script>
 import XLSX from 'xlsx'
+import canvasDatagrid from 'canvas-datagrid'
 // import mixins from '@/mixins/towerExcel.js'
 // import canvasDatagrid from 'canvas-datagrid'
 
@@ -35,6 +36,53 @@ export default {
     }
   },
   mounted () {
+    const width = this.gridStyle.width.slice(0, -2)
+    const isPayload = ['Ultimate', 'Buckling', 'Fatigue'].includes(this.name)
+    const cDg = canvasDatagrid({
+      parentNode: this.$refs[this.name],
+      data: this.transformData(this.sheetdata),
+      editable: !isPayload,
+      allowSorting: false,
+      allowFreezingColumns: true,
+      allowColumnReordering: false,
+      showColumnHeaders: false,
+      allowColumnResizeFromCell: true,
+      showRowHeaders: false,
+      selectionMode: 'none'
+    })
+
+    /* eslint-disable */
+    // custom styles
+    cDg.style.width = '100%'
+    cDg.style.height = '100%'
+    cDg.style.cellWidth = Math.floor(width / 10 + 6) || 80
+    cDg.style.cellFont = '12px sans-serif'
+    cDg.style.activeCellFont = '12px sans-serif'
+    cDg.style.editCellFontSize = '14px'
+    cDg.style.rowHeaderCellFont = '12px sans-serif'
+    cDg.style.columnHeaderCellFont = '12px sans-serif'
+
+    if (isPayload) {
+      cDg.style.cellColor = '#555'
+      cDg.style.cellHoverColor = '#555'
+      cDg.style.activeCellColor = '#555'
+      cDg.style.cellSelectedColor = '#555'
+      cDg.style.activeCellHoverColor = '#555'
+      cDg.style.activeCellSelectedColor = '#555'
+
+      cDg.style.cellBackgroundColor = 'rgb(232, 232, 232)'
+      cDg.style.cellHoverBackgroundColor = '#rgb(232, 232, 232)'
+      cDg.style.activeCellBackgroundColor = '#rgb(232, 232, 232)'
+      cDg.style.cellSelectedBackgroundColor = '#rgb(232, 232, 232)'
+      cDg.style.activeCellHoverBackgroundColor = '#rgb(232, 232, 232)'
+      cDg.style.activeCellSelectedBackgroundColor = '#rgb(232, 232, 232)'
+    }
+
+    /* eslint-enable */
+
+    this.dataGrid = cDg
+
+    this.dataGrid.addEventListener('rendercellgrid', this.rendertext)
     this.dataGrid.addEventListener('beforesortcolumn', this.preventDefault)
     this.dataGrid.addEventListener('contextmenu', this.preventDefault)
     this.dataGrid.addEventListener('beforeendedit', this.endedit)
@@ -43,6 +91,7 @@ export default {
     document.addEventListener('click', this.scrollFunc, false)
   },
   beforeDestroy () {
+    this.dataGrid.removeEventListener('rendercellgrid', this.rendertext)
     this.dataGrid.removeEventListener('beforesortcolumn', this.preventDefault)
     this.dataGrid.removeEventListener('contextmenu', this.preventDefault)
     this.dataGrid.removeEventListener('beforeendedit', this.endedit)
@@ -51,6 +100,13 @@ export default {
     document.removeEventListener('mousewheel', this.scrollFunc, false)
   },
   methods: {
+    rendertext (e) {
+      // if (typeof e.cell.value === 'number') {
+      //   e.cell.value = Number(e.cell.value.toPrecision(8))
+      //   e.value = Number(e.cell.value.toPrecision(8))
+      console.log(e.cell.value)
+      // }
+    },
     preventDefault (e) {
       e.preventDefault()
     },
@@ -121,7 +177,18 @@ export default {
         const objData = {}
         for (var k = range.s.c; k <= range.e.c; k++) {
           const key = XLSX.utils.encode_col(k)
-          objData[key] = data[i][k] === 0 ? 0 : (data[i][k] || '')
+          let value
+          if (typeof data[i][k] === 'number') {
+            if (data[i][k] === 0) {
+              value = 0
+            } else {
+              value = Number(data[i][k].toPrecision(8))
+            }
+          } else {
+            value = data[i][k] || ''
+          }
+
+          objData[key] = value
         }
         formatSheetdata.push(objData)
       }

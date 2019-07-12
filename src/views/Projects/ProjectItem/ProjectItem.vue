@@ -1,7 +1,7 @@
 <template>
   <div class="project-item p-3 relative h-full">
     <Spin fix size="large" v-if="loading" />
-    <div class="border-grey-light border-solid border rounded p-6">
+    <div class="border-grey-light border-solid border rounded p-3">
       <div class="h-10 font-bold text-sm" style="line-height: 2.5rem">
         {{ projectName }}
         <!-- <Tag color="warning" style="transform:scale(.8)">
@@ -16,11 +16,11 @@
           业主：{{ owner.join('，') }}
         </ICol>
         <ICol span="8">
-          当前进度：{{ progress }}
+          创建时间：{{ created }}
         </ICol>
       </Row>
       <Row class="p-3 pl-0">
-        <ICol span="8">
+        <!-- <ICol span="8">
           创建时间：{{ created }}
         </ICol>
         <ICol span="8">
@@ -28,23 +28,26 @@
         </ICol>
         <ICol span="8">
           过期时间：10天
+        </ICol> -->
+        <ICol span="24">
+          <span class="overflow-hidden">描述：</span>
+          <pre class="description">{{ description }}</pre>
         </ICol>
       </Row>
     </div>
 
-    <div class="border-grey-light border-solid border rounded p-6 mt-6" v-if="false">
+    <div class="border-grey-light border-solid border rounded p-3 mt-3">
       <div class="h-10 font-bold text-sm mb-4" style="line-height: 2.5rem">
         处理进度
       </div>
-      <Steps :current="1">
-        <Step
-          content="Mr.zhang 2019-02-0">
-          <div slot="title">
+      <Steps :current="current">
+        <Step content="" v-for="(item, idx) in taskStatus" :key="item.id">
+          <div v-if="idx <= current" slot="title">
             <Poptip
               transfer
               trigger="hover"
               content="content">
-              创建项目
+              {{ item.name }}
               <div slot="content">
                 <div class="font-bold text-sm">
                   负责人：小龙女
@@ -57,104 +60,64 @@
               </div>
             </Poptip>
           </div>
-        </Step>
-        <Step content="小龙女">
-          <div slot="title">
-            <Poptip
-              transfer
-              trigger="hover"
-              content="content">
-              初步方案
-              <div slot="content">
-                <div class="font-bold text-sm">
-                  负责人：小龙女
-                </div>
-                <div>
-                  <p>计划完成时间：2019-03-03</p>
-                  <p>滞后时间：12小时</p>
-                  <p>耗时：xx</p>
-                </div>
-              </div>
-            </Poptip>
-          </div>
-        </Step>
-        <Step content="杨过">
-          <div slot="title">
-            <Poptip
-              transfer
-              trigger="hover"
-              content="content">
-              塔架主体设计
-              <div slot="content">
-                <div class="font-bold text-sm">
-                  杨过
-                </div>
-                <div>
-                  <p>计划完成时间：2019-03-03</p>
-                  <p>滞后时间：12小时</p>
-                  <p>耗时：xx</p>
-                </div>
-              </div>
-            </Poptip>
-          </div>
-        </Step>
-        <Step>
-          <div slot="title">
-            <Poptip
-              transfer
-              trigger="hover"
-              content="content">
-              完成
-              <div slot="content">
-                <div class="font-bold text-sm">
-                  负责人：小龙女
-                </div>
-                <div>
-                  <p>计划完成时间：2019-03-03</p>
-                  <p>滞后时间：12小时</p>
-                  <p>耗时：xx</p>
-                </div>
-              </div>
-            </Poptip>
+          <div v-else slot="title">
+            {{ item.name }}
           </div>
         </Step>
       </Steps>
     </div>
 
-    <div class="border-grey-light border-solid border rounded p-6 mt-6" v-if="false">
+    <div class="border-grey-light border-solid border rounded p-3 mt-3 mb-3">
       <div class="h-10 font-bold text-sm mb-4" style="line-height: 2.5rem">
-        人员分配
+        子任务
       </div>
       <div>
-        <Tabs value="name1">
-          <TabPane label="立项阶段" name="name1">
-            <Row>
-              <ICol class="p-6" span="12">
-                <Card>
-                  <div class="h-10 font-bold text-sm mb-4" style="line-height: 2.5rem">
-                    创建项目
+        <Tabs v-if="subtasks.length >0">
+          <TabPane :label="item.key" v-for="item in subtasks" :key="item.id">
+            <SubTask :taskId="item.id" />
+            <!-- <div class="subtask">
+              <div class="pb-2 text-sm font-bold">
+                当前轮次：xx
+              </div>
+              <div class="pb-4 text-sm font-bold">
+                处理进度
+              </div>
+              <Steps :current="(subTaskStatus.findIndex(s => s.id === item.fields.status.id))">
+                <Step
+                  content=""
+                  block
+                  v-for="status in subTaskStatus"
+                  :key="status.id">
+                  <div slot="title">
+                    <Poptip
+                      transfer
+                      trigger="hover"
+                      content="content">
+                      <span class="text-xs">{{ status.name }}</span>
+                      <div slot="content">
+                        <div class="font-bold text-sm">
+                          负责人：小龙女
+                        </div>
+                        <div>
+                          <p>计划完成时间：2019-03-03</p>
+                          <p>滞后时间：12小时</p>
+                          <p>耗时：xx</p>
+                        </div>
+                      </div>
+                    </Poptip>
                   </div>
-                  <Avatar src="https://i.loli.net/2017/08/21/599a521472424.jpg" />
-                  <Avatar src="https://i.loli.net/2017/08/21/599a521472424.jpg" />
-                  <Avatar src="https://i.loli.net/2017/08/21/599a521472424.jpg" />
-                  <Avatar src="https://i.loli.net/2017/08/21/599a521472424.jpg" />
-                </Card>
-              </ICol>
-            </Row>
-          </TabPane>
-          <TabPane label="B01" name="name2">
-            标签二的内容
-          </TabPane>
-          <TabPane label="B02" name="name3">
-            标签三的内容
+                </Step>
+              </steps>
+              <div class="h-10 font-bold text-sm mb-4" style="line-height: 2.5rem">
+                人员分配
+              </div>
+            </div> -->
           </TabPane>
         </Tabs>
+        <div v-else>
+          无
+        </div>
       </div>
-    </div>
-
-    <div class="border-grey-light border-solid border rounded p-6 mt-6" ref="flow">
-      流程图
-      <div id="flow"></div>
     </div>
   </div>
 </template>
@@ -166,6 +129,8 @@ import g6 from '@antv/g6'
 import { jiraUrl } from '@/config'
 import { firstData, secondData, thirdData } from './dataPick'
 import D from 'dayjs'
+import { taskStatus, subTaskStatus } from './status'
+import SubTask from './SubTask'
 
 export default {
   name: 'ProjectItem',
@@ -179,7 +144,8 @@ export default {
     Tabs,
     TabPane,
     Card,
-    Spin
+    Spin,
+    SubTask
   },
   data () {
     return {
@@ -189,7 +155,13 @@ export default {
       created: '',
       planFinished: '',
       progress: 0,
-      loading: true
+      loading: true,
+      taskStatus,
+      subTaskStatus,
+      current: 0,
+      subCurrent: 0,
+      subtasks: [],
+      description: ''
     }
   },
   mounted () {
@@ -201,17 +173,29 @@ export default {
   methods: {
     async getProjectInfo () {
       const { projectId } = this.$route.params
-      const res = await this.$ky(`issue/${projectId}`, {
-        prefixUrl: jiraUrl
-      }).json()
-      this.projectName = res.fields.summary
-      this.assignee = res.fields.assignee.displayName
-      this.owner = res.fields.customfield_10801
-      this.created = D(res.fields.created).format('YYYY-MM-DD hh:mm:ss')
-      this.progress = res.fields.progress.progress
-      this.planFinished = res.fields.customfield_11013
-      console.log(D(this.created).valueOf())
-      this.loading = false
+      try {
+        let res = await this.$ky(`issue/${projectId}`, {
+          prefixUrl: jiraUrl,
+          timeout: 10000
+        })
+        if (res.ok) {
+          res = await res.json()
+          this.projectName = res.fields.summary
+          this.description = res.fields.description
+          this.assignee = res.fields.assignee.displayName
+          this.owner = res.fields.customfield_10801
+          this.created = D(res.fields.created).format('YYYY-MM-DD hh:mm:ss')
+          this.current = this.taskStatus.findIndex(t => t.id === res.fields.status.id) || 0
+          this.planFinished = res.fields.customfield_11013
+          this.loading = false
+          this.subtasks = res.fields.subtasks
+        } else {
+          throw new Error('网络或服务器异常')
+        }
+      } catch (error) {
+        this.$Message.error(error.message)
+        this.loading = false
+      }
     },
     draw () {
       const width = this.$refs.flow.offsetWidth - 100
@@ -267,5 +251,9 @@ export default {
 
 .ido-canvas-tooltip {
   padding: 10px;
+}
+.description {
+  width: calc(100% - 46px);
+  float: right;
 }
 </style>

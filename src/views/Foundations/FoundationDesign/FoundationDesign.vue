@@ -5,7 +5,6 @@
       <Input
         style="width: 180px;margin-right: 20px;"
         placeholder="请输入项目名称"
-        icon="ios-search"
         v-model="projectName" />
       桩径(m)：
       <Input style="width: 60px;margin-right: 8px;" v-model="startPileDiameter" />

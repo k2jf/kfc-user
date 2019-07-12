@@ -17,11 +17,29 @@ export default [
     children: [
       {
         path: '/payloads',
-        name: 'payloads',
         meta: {
           breadName: '载荷版本管理'
         },
-        component: () => import(/* webpackChunkName: "Payload" */ '@/views/Payload')
+        component: () => import(/* webpackChunkName: "Payload" */ '@/views/Payload'),
+        children: [
+          {
+            path: '',
+            name: 'payloads',
+            meta: {
+              breadName: '项目列表',
+              ignore: true
+            },
+            component: () => import(/* webpackChunkName: "Payload" */ '@/views/Payload/PayloadList')
+          },
+          {
+            path: '/edit-load/:loadId',
+            name: 'edit-load',
+            meta: {
+              breadName: '编辑载荷数据'
+            },
+            component: () => import(/* webpackChunkName: "Payload" */ '@/views/Payload/EditLoad')
+          }
+        ]
       },
       {
         path: '/projects',

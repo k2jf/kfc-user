@@ -182,7 +182,7 @@ export default {
             if (data[i][k] === 0) {
               value = 0
             } else {
-              value = Number(data[i][k].toPrecision(8))
+              value = Number(data[i][k].toFixed(8))
             }
           } else {
             value = data[i][k] || ''

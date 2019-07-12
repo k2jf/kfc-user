@@ -5,19 +5,16 @@
       <Input
         style="width: 180px;margin-right: 20px;"
         placeholder="请输入项目名称"
-        icon="ios-search"
         v-model="projectName" />
       <span>塔架高度（m）：</span>
       <Input
         style="width: 180px;margin-right: 20px;"
         placeholder="请输入塔底高度"
-        icon="ios-search"
         v-model="towerHeight" />
       <span>塔底直径（m）：</span>
       <Input
         style="width: 180px"
         placeholder="请输入塔底直径"
-        icon="ios-search"
         v-model="bottomDiameter" />
       <Button class="mx-3" type="primary" @click="filtrate">
         查询
@@ -26,6 +23,8 @@
         新增任务
       </Button>
       <Modal
+        :closable="false"
+        :mask-closable="false"
         title="新增塔架设计任务"
         :loading="loading"
         ok-text="创建任务"

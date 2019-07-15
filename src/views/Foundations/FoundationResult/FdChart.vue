@@ -1,11 +1,11 @@
 <template>
   <div class="h-full overflow-hidden">
     <Row style="height:50%">
-      <h3 class="text-xs pl-3">
+      <h3 class="text-sm pl-3 h-8">
         几何尺寸图
       </h3>
       <ICol
-        class="h-full"
+        style="height:calc(100% - 32px)"
         span="8"
         v-for="(opt, key) in geoOpts"
         :key="key">
@@ -13,11 +13,11 @@
       </ICol>
     </Row>
     <Row style="height:50%">
-      <h3 class="text-xs pl-3">
+      <h3 class="text-sm pl-3 h-8">
         位移图
       </h3>
       <ICol
-        class="h-full"
+        style="height:calc(100% - 32px)"
         span="8"
         v-for="(opt, key) in placeOpts"
         :key="key">
@@ -89,7 +89,7 @@ export default {
           ...options.grid,
           right: 30,
           left: 50,
-          bottom: 80
+          bottom: 100
         },
         legend: {
           show: false

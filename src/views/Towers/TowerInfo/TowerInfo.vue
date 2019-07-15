@@ -18,19 +18,11 @@
               <span>{{ towerFormValidate.taskName }}</span>
             </FormItem>
           </div>
-          <div class="w-1/2">
+          <!-- <div class="w-1/2">
             <FormItem label="载荷数据来源：" prop="loadDatasource" class="w-9/10">
               {{ towerFormValidate.loadDatasource }}
-              <!-- <Select disabled placeholder="请选择载荷数据来源" v-model="towerFormValidate.dataOrigin">
-                <Option value="0">
-                  LCC载荷
-                </Option>
-                <Option value="1">
-                  载荷门户
-                </Option>
-              </Select> -->
             </FormItem>
-          </div>
+          </div> -->
           <div class="w-1/2" v-if="isOnline">
             <FormItem label="仿真任务标号：" prop="simulationId" class="w-9/10">
               <!-- <Input v-model="towerFormValidate.simulationId" /> -->

@@ -70,7 +70,7 @@
               </Option>
             </Select>
           </FormItem>
-          <FormItem label="载荷来源：" prop="loadDatasource" v-if="formValidate.integratedDesign === '0'">
+          <!-- <FormItem label="载荷来源：" prop="loadDatasource" v-if="formValidate.integratedDesign === '0'">
             <Select placeholder="请选择载荷数据来源" v-model="formValidate.loadDatasource">
               <Option value="0">
                 LCC载荷
@@ -79,7 +79,7 @@
                 载荷门户
               </Option>
             </Select>
-          </FormItem>
+          </FormItem> -->
           <FormItem label="基础类型：" prop="foundationForm" v-if="formValidate.integratedDesign === '0'">
             <Select placeholder="请选择基础类型" v-model="formValidate.foundationForm">
               <Option value="1">
@@ -218,7 +218,7 @@ export default {
         projectId: '0',
         integratedDesign: '0',
         designPhase: 'B',
-        loadDatasource: '0',
+        // loadDatasource: '0',
         foundationForm: '1',
         checkType: '1'
       },
@@ -232,9 +232,9 @@ export default {
         designPhase: [
           { required: true, message: '设计阶段不能为空', trigger: 'blur' }
         ],
-        loadDatasource: [
-          { required: true, message: '载荷数据来源不能为空', trigger: 'blur' }
-        ],
+        // loadDatasource: [
+        //   { required: true, message: '载荷数据来源不能为空', trigger: 'blur' }
+        // ],
         foundationForm: [
           { required: true, message: '基础类型不能为空', trigger: 'blur' }
         ],
@@ -396,7 +396,7 @@ export default {
             const res = await this.$post('foundations', {
               json: {
                 projectId: Number(this.formValidate.projectId),
-                loadDatasource: Number(this.formValidate.loadDatasource),
+                // loadDatasource: Number(this.formValidate.loadDatasource),
                 foundationForm: Number(this.formValidate.foundationForm),
                 creator: this.userName,
                 integratedDesign: 0,
@@ -462,7 +462,7 @@ export default {
         projectId: '0',
         integratedDesign: '0',
         designPhase: 'B',
-        loadDatasource: '0',
+        // loadDatasource: '0',
         foundationForm: '1',
         checkType: '1'
       }

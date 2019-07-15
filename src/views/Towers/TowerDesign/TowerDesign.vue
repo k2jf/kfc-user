@@ -43,7 +43,7 @@
               </Option>
             </Select>
           </FormItem>
-          <FormItem label="载荷数据来源：" prop="loadDatasource">
+          <!-- <FormItem label="载荷数据来源：" prop="loadDatasource">
             <Select placeholder="请选择载荷数据来源" v-model="formValidate.loadDatasource" @on-change="onChange">
               <Option value="0">
                 LCC载荷
@@ -52,7 +52,7 @@
                 载荷门户
               </Option>
             </Select>
-          </FormItem>
+          </FormItem> -->
           <div v-if="isOnline">
             <FormItem label="仿真任务标号：" prop="simulationId">
               <Input v-model="formValidate.simulationId" />
@@ -135,16 +135,16 @@ export default {
       loading: true,
       visible: false,
       formValidate: {
-        projectId: 0,
-        loadDatasource: ''
+        projectId: 0
+        // loadDatasource: ''
       },
       ruleValidate: {
         projectId: [
           { required: true, trigger: 'blur', message: '不能为空' }
-        ],
-        loadDatasource: [
-          { required: true, trigger: 'blur', message: '不能为空' }
         ]
+        // loadDatasource: [
+        //   { required: true, trigger: 'blur', message: '不能为空' }
+        // ]
       }
     }
   },
@@ -288,7 +288,7 @@ export default {
             const res = await this.$post('towerTasks', {
               json: {
                 projectId: this.formValidate.projectId,
-                loadDatasource: Number(this.formValidate.loadDatasource),
+                // loadDatasource: Number(this.formValidate.loadDatasource),
                 creator: this.userName
               }
             })
@@ -308,8 +308,8 @@ export default {
     onCancel () {
       this.$refs.formValidate.resetFields()
       this.formValidate = {
-        projectId: 0,
-        loadDatasource: ''
+        projectId: 0
+        // loadDatasource: ''
       }
     },
     getFiltrate () {

@@ -105,7 +105,9 @@ export default {
     }
   },
   computed: mapState({
-    fileId: state => state.foundation.capacity.fileId
+    fileId: state => state.foundation.capacity.fileId,
+    fileName: state => state.foundation.capacity.fileName,
+    config: state => state.foundation.capacity.config
   }),
   watch: {
     fileId: {
@@ -113,6 +115,17 @@ export default {
         this.getExcel(id)
       },
       immediate: true
+    },
+    config: {
+      handler: function (values) {
+        if (values) {
+          this.inlaidRock = values.type === 'inlaidRock'
+          this.mediumWeathering = values.mediumWeathering
+          this.dragReductionFactor = values.dragReductionFactor
+          this.pileShaft = values.pileShaft
+          this.slope = values.slope || ''
+        }
+      }
     }
   },
   mounted () {
@@ -129,6 +142,7 @@ export default {
       let data
       if (id) {
         data = await this.$ky(`foundations/stream?fileId=${id}`).arrayBuffer()
+        this.excelName = this.fileName
       } else {
         data = await this.$ky.get(`foundations/${this.$route.params.foundationId}/BC/fileTemplate?type=${type}`).arrayBuffer()
       }

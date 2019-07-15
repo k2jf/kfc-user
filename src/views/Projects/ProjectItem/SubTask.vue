@@ -1,5 +1,5 @@
 <template>
-  <div class="subtask">
+  <div class="subtask overflow-hidden">
     <div class="pb-4 text-sm font-bold">
       当前轮次：{{ loop }}
     </div>
@@ -47,7 +47,7 @@
           :key="item.id">
           <div class="text-center leading-loose">
             <Avatar size="large" :src="item.avatarUrls['48x48']" />
-            <h5 class="font-normal text-xs">
+            <h5 class="font-normal text-xs" :title="item.name">
               {{ item.name }}
             </h5>
             <span>{{ item.people }}</span>
@@ -114,6 +114,11 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
-
+<style lang="less" scoped>
+.font-normal {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  width: 100%;
+}
 </style>

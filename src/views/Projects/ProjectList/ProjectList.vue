@@ -1,8 +1,14 @@
 <template>
-  <div class="ido-projects h-full">
+  <div class="ido-projects h-full relative">
+    <Spin fix size="large" v-if="loading" />
     <div class="h-16 p-3">
-      <RadioGroup type="button">
-        <Radio :label="item.value" v-for="item in radioGroup" :key="item.id" />
+      <Button @click="syncJiraProjects">
+        <Icon class="text-sm" title="同步jira" type="md-sync" />
+      </Button>
+      <RadioGroup type="button" class="ml-3" v-model="status">
+        <Radio :label="item.id" v-for="item in radioGroup" :key="item.id">
+          {{ item.value }}
+        </Radio>
       </RadioGroup>
       <Input
         class="ml-3"
@@ -27,14 +33,27 @@
                 {{ item.projectName }}
               </div>
               <div class="status py-1 text-grey-dark text-xs">
-                状态：
-                <Tag><span class="text-xs">{{ item.status }}</span></Tag>
+                <div class="inline-block w-16">
+                  状态：
+                </div> {{ returnStatus(item.status) }}
               </div>
               <div class="text-xs py-1 text-grey-dark">
-                负责人：{{ item.riskOwner }}
+                <div class="inline-block w-16">
+                  负责人：
+                </div>
+                {{ item.riskOwner }}
               </div>
               <div class="text-xs py-1 text-grey-dark">
-                项目截止日期：{{ D(item.endTime).format('YYYY-MM-DD') }}
+                <div class="inline-block w-16">
+                  设计阶段：
+                </div>
+                {{ returnDesignStatus(item.designPhase) }}
+              </div>
+              <div class="text-xs py-1 text-grey-dark">
+                <div class="inline-block w-16">
+                  截止日期：
+                </div>
+                {{ D(item.endTime).format('YYYY-MM-DD') }}
               </div>
             </div>
           </Card>
@@ -48,40 +67,88 @@
 </template>
 
 <script>
-import { RadioGroup, Radio, Input, Card, Divider, Row, Col, Tag } from 'iview'
+import { RadioGroup, Radio, Input, Card, Row, Col, Tag, Icon, Button, Spin } from 'iview'
 import D from 'dayjs'
+import _ from 'lodash'
 
 export default {
   name: 'ProjectList',
   components: {
-    RadioGroup,
-    Radio,
     Input,
     Card,
-    // Divider,
+    Button,
     Row,
     ICol: Col,
-    Tag
+    Tag,
+    Icon,
+    Spin,
+    RadioGroup,
+    Radio
   },
   data () {
     return {
-      radioGroup: [
-        { id: 'all', value: '全部' },
-        { id: 'processing', value: '进行中' },
-        { id: 'done', value: '已完成' }
-      ],
+      loading: false,
       value: '',
       projects: [],
-      D
+      D,
+      status: 'all',
+      radioGroup: [
+        { id: 'all', value: '全部' },
+        { id: '0', value: '进行中' },
+        { id: '1', value: '完成' }
+        // { id: '2', value: '超时' }
+      ]
     }
   },
+  watch: {
+    status (value) {
+      const searchParams = {}
+      if (value !== 'all') {
+        searchParams.status = value
+      }
+      this.getProjects(searchParams)
+    },
+    value: _.debounce(function (projectName) {
+      this.getProjects({ projectName })
+    }, 300)
+  },
   async mounted () {
-    const res = await this.$get('projects')
-    this.projects = res.body.items
+    this.getProjects()
   },
   methods: {
+    async getProjects (searchParams) {
+      try {
+        this.loading = true
+        const res = await this.$get('projects', {
+          searchParams
+        })
+        this.projects = res.body.items
+        this.loading = false
+      } catch (error) {
+        this.loading = false
+      }
+    },
     linkToInfo (projectId) {
       this.$router.push({ name: 'project-info', params: { projectId } })
+    },
+    async syncJiraProjects () {
+      try {
+        this.loading = true
+        await this.$post('projects/sync')
+        this.getProjects()
+      } catch (error) {
+        this.loading = false
+      }
+    },
+    returnStatus (status) {
+      return ['进行中', '完成'][status]
+    },
+    returnDesignStatus (status) {
+      return ({
+        A: '标前',
+        B: '投标',
+        D: '中标'
+      })[status]
     }
   }
 }

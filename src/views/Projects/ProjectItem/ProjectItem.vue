@@ -4,9 +4,6 @@
     <div class="border-grey-light border-solid border rounded p-3">
       <div class="h-10 font-bold text-sm" style="line-height: 2.5rem">
         {{ projectName }}
-        <!-- <Tag color="warning" style="transform:scale(.8)">
-          黄色预警
-        </Tag> -->
       </div>
       <Row class="p-3 pl-0">
         <ICol span="8">
@@ -16,19 +13,14 @@
           业主：{{ owner.join('，') }}
         </ICol>
         <ICol span="8">
+          设计阶段：投标
+        </ICol>
+        <ICol span="8" class="my-3">
           创建时间：{{ created }}
         </ICol>
-      </Row>
-      <Row class="p-3 pl-0">
-        <!-- <ICol span="8">
-          创建时间：{{ created }}
+        <ICol span="8" class="my-3">
+          截止日期：
         </ICol>
-        <ICol span="8">
-          计划完成时间：{{ planFinished }}
-        </ICol>
-        <ICol span="8">
-          过期时间：10天
-        </ICol> -->
         <ICol span="24">
           <span class="overflow-hidden">描述：</span>
           <pre class="description">{{ description }}</pre>
@@ -50,7 +42,7 @@
               {{ item.name }}
               <div slot="content">
                 <div class="font-bold text-sm">
-                  负责人：小龙女
+                  负责人：xxx
                 </div>
                 <div>
                   <p>计划完成时间：2019-03-03</p>
@@ -73,45 +65,8 @@
       </div>
       <div>
         <Tabs v-if="subtasks.length >0">
-          <TabPane :label="item.key" v-for="item in subtasks" :key="item.id">
+          <TabPane :label="item.fields.summary" v-for="item in subtasks" :key="item.id">
             <SubTask :taskId="item.id" />
-            <!-- <div class="subtask">
-              <div class="pb-2 text-sm font-bold">
-                当前轮次：xx
-              </div>
-              <div class="pb-4 text-sm font-bold">
-                处理进度
-              </div>
-              <Steps :current="(subTaskStatus.findIndex(s => s.id === item.fields.status.id))">
-                <Step
-                  content=""
-                  block
-                  v-for="status in subTaskStatus"
-                  :key="status.id">
-                  <div slot="title">
-                    <Poptip
-                      transfer
-                      trigger="hover"
-                      content="content">
-                      <span class="text-xs">{{ status.name }}</span>
-                      <div slot="content">
-                        <div class="font-bold text-sm">
-                          负责人：小龙女
-                        </div>
-                        <div>
-                          <p>计划完成时间：2019-03-03</p>
-                          <p>滞后时间：12小时</p>
-                          <p>耗时：xx</p>
-                        </div>
-                      </div>
-                    </Poptip>
-                  </div>
-                </Step>
-              </steps>
-              <div class="h-10 font-bold text-sm mb-4" style="line-height: 2.5rem">
-                人员分配
-              </div>
-            </div> -->
           </TabPane>
         </Tabs>
         <div v-else>
@@ -123,7 +78,7 @@
 </template>
 
 <script>
-import { Tag, Row, Col, Poptip, Tabs, TabPane, Card, Spin } from 'iview'
+import { Row, Col, Poptip, Tabs, TabPane, Spin } from 'iview'
 import Steps from '@/components/Steps'
 import g6 from '@antv/g6'
 import { jiraUrl } from '@/config'
@@ -135,7 +90,6 @@ import SubTask from './SubTask'
 export default {
   name: 'ProjectItem',
   components: {
-    Tag,
     Row,
     ICol: Col,
     Steps,
@@ -143,7 +97,6 @@ export default {
     Poptip,
     Tabs,
     TabPane,
-    Card,
     Spin,
     SubTask
   },

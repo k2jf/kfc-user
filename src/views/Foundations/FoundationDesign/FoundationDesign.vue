@@ -59,6 +59,9 @@
           </FormItem>
           <FormItem label="设计阶段：" prop="designPhase">
             <Select placeholder="请选择设计阶段：" v-model="formValidate.designPhase">
+              <Option value="A">
+                标前
+              </Option>
               <Option value="B">
                 投标
               </Option>

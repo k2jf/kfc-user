@@ -3,7 +3,6 @@
 </template>
 <script>
 import XLSX from 'xlsx'
-// import Handsontable from 'handsontable'
 import canvasDatagrid from 'canvas-datagrid'
 
 export default {
@@ -47,22 +46,21 @@ export default {
     cDg.style.cellFont = '12px sans-serif'
     cDg.style.activeCellFont = '12px sans-serif'
     cDg.style.editCellFontSize = '14px'
+    cDg.style.cellWidth = 100
+    cDg.style.gridBackgroundColor = '#fff'
     cDg.style.rowHeaderCellFont = '12px sans-serif'
     cDg.style.columnHeaderCellFont = '12px sans-serif'
     /* eslint-enable */
     this.dataGrid = cDg
-    if (this.name === 'geometry') {
-      const clientW = document.getElementById('ido-body').offsetWidth - 90
-      let cellWidth = Math.floor(clientW / 6)
-      if (cellWidth < 260) {
-        cellWidth = Math.floor((clientW - 260) / 5)
-        this.dataGrid.style.cellWidth = cellWidth
-        this.dataGrid.setColumnWidth(4, 260)
-      } else {
-        this.dataGrid.style.cellWidth = cellWidth
-      }
-      // const elWidth = Math.floor((this.gridWidth - 260) / 5)
-    }
+
+    // setTimeout(() => {
+    // const maxCol = this.sheetdata.reduce((pre, next) => Math.max(pre, next.length), 0)
+    // const clientW = document.getElementById('ido-body').offsetWidth - 90
+    // const cellWidth = Math.floor(clientW / maxCol)
+    // this.dataGrid.style.cellWidth = cellWidth
+    // console.log(maxCol, clientW, cellWidth)
+    // }, 0)
+
     this.dataGrid.addEventListener('beforesortcolumn', this.preventDefault)
     this.dataGrid.addEventListener('contextmenu', this.preventDefault)
     this.dataGrid.addEventListener('beforeendedit', this.endedit)

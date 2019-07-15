@@ -224,10 +224,10 @@
         </Row>
       </Form>
       <Row>
-        <ICol span="2" style="text-align:right">
+        <ICol style="text-align:right;width:88px;" class="float-left">
           参数配置
         </ICol>
-        <ICol span="20" style="padding-left:10px">
+        <ICol span="21" style="padding-left:10px;" class="overflow-hidden">
           <Table
             disabled-hover
             border

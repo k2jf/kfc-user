@@ -79,13 +79,6 @@ export default {
       }
     }
   }
-  // watch: {
-  //   datContent (value) {
-  //     if (value && value.length > 0) {
-  //       this.modal = true
-  //     }
-  //   }
-  // }
 }
 </script>
 

@@ -1,5 +1,5 @@
 <template>
-  <div class="foundation-chart-result h-full overflow-auto">
+  <div class="foundation-chart-result h-full overflow-hidden">
     <Row style="height:100%;">
       <ICol class="h-half">
         <h3 class="text-center">
@@ -101,6 +101,7 @@ export default {
   methods: {
     async initGeo () {
       const res = await this.$get(`foundations/${this.$route.params.foundationId}/geometry`)
+      console.log(res)
       this.geoAxes = res.body.schema.filter(s => s.show)
       this.geoYaxis = res.body.schema[0].name
       this.items = res.body.items

@@ -17,7 +17,7 @@
 <script>
 import { Tabs, TabPane } from 'iview'
 import TableResult from './FoundationTableResult'
-import ChartResult from './FoundationChartResult'
+import ChartResult from './FdChart'
 
 export default {
   name: 'FoundationResult',

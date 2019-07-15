@@ -85,11 +85,12 @@ export default {
         // canvas-datagrid default set value to stirng,so we need to
         // manually transform to number
         let value = e.newValue
-        console.log(e.newValue, e.oldValue)
-        console.log(typeof e.newValue, typeof e.oldValue)
+        // console.log(e.newValue, e.oldValue)
+        // console.log(typeof e.newValue, typeof e.oldValue)
         if (typeof e.oldValue === 'number') {
           value = Number(e.newValue)
         }
+        if (e.newValue === '') value = null
         const [i, k] = e.cell.gridId.split(':')
         const data = this.dataGrid.data
         const key = Object.keys(data[i])[k]

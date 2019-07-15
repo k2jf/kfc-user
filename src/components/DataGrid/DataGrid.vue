@@ -120,7 +120,9 @@ export default {
         let value = e.newValue
         if (typeof e.oldValue === 'number') {
           value = Number(e.newValue)
+          // console.log(e.oldValue, e.newValue)
         }
+        if (e.newValue === '') value = null
         const [i, k] = e.cell.gridId.split(':')
         const data = this.dataGrid.data
         const key = Object.keys(data[i])[k]

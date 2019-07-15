@@ -53,9 +53,9 @@ export default {
       this.geoOpts = [1, 2, 3].map(item => Object.assign({}, options, {
         grid: {
           ...options.grid,
-          right: 80,
+          right: 30,
           left: 50,
-          bottom: 100
+          bottom: 40
         },
         legend: {
           show: false
@@ -87,9 +87,9 @@ export default {
       this.placeOpts = [1, 2, 3].map(item => Object.assign({}, options, {
         grid: {
           ...options.grid,
-          right: 80,
+          right: 30,
           left: 50,
-          bottom: 100
+          bottom: 80
         },
         legend: {
           show: false

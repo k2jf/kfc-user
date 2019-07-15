@@ -1,6 +1,6 @@
 <template>
-  <div class="wrap">
-    <div class="split-left">
+  <div class="wrap" :style="wrapStyle">
+    <div class="h-full">
       <h2 class="text-sm bg-grey-lighter pl-2 relative">
         <aside class="absolute pin-t pin-r w-24 h-8 z-10" @click="modal = !modal">
           <span class="open-dat pr-2">{{ modal ? '关闭' : '打开' }}dat文件</span>
@@ -8,11 +8,13 @@
         </aside>
         {{ excelName }}
       </h2>
-      <ExcelTable
-        :name="paramType"
-        :sheetdata="sheetdata"
-        :ws="ws"
-        ref="excelTable" />
+      <div style="height:calc(100% - 40px)">
+        <ExcelTable
+          :name="paramType"
+          :sheetdata="sheetdata"
+          :ws="ws"
+          ref="excelTable" />
+      </div>
     </div>
     <Modal
       draggable
@@ -69,7 +71,14 @@ export default {
   },
   data: () => ({
     modal: false
-  })
+  }),
+  computed: {
+    wrapStyle () {
+      return {
+        height: this.sheetdata.length * 25 + 40 + 'px'
+      }
+    }
+  }
   // watch: {
   //   datContent (value) {
   //     if (value && value.length > 0) {
@@ -82,14 +91,14 @@ export default {
 
 <style lang="less" scoped>
   .wrap {
-    height: 340px;
+    // height: 340px;
     border: 1px solid #d9d9d9;
     border-radius: 4px;
     overflow: hidden;
   }
 
   .split-left {
-    height: 300px;
+    // height: 300px;
   }
 
   .split-right {

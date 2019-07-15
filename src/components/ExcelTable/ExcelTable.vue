@@ -43,6 +43,7 @@ export default {
     // custom styles
     cDg.style.width = '100%'
     cDg.style.height = '100%'
+    cDg.style.overflowX = 'auto'
     cDg.style.cellFont = '12px sans-serif'
     cDg.style.activeCellFont = '12px sans-serif'
     cDg.style.editCellFontSize = '14px'

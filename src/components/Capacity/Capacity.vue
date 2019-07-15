@@ -53,15 +53,17 @@
         </Button>
       </ICol>
     </Row>
-    <div class="wrap">
+    <div class="wrap" :style="wrapStyle">
       <h2 class="text-sm bg-grey-lighter pl-2 relative">
         {{ excelName }}
       </h2>
-      <ExcelTable
-        name="capacity"
-        :sheetdata="sheetdata"
-        :ws="originSheets"
-        ref="capacityTable" />
+      <div style="height:calc(100% - 40px)">
+        <ExcelTable
+          name="capacity"
+          :sheetdata="sheetdata"
+          :ws="originSheets"
+          ref="capacityTable" />
+      </div>
     </div>
   </div>
 </template>
@@ -104,11 +106,18 @@ export default {
       excelName: 'inlaidRock_BC.xlsx'
     }
   },
-  computed: mapState({
-    fileId: state => state.foundation.capacity.fileId,
-    fileName: state => state.foundation.capacity.fileName,
-    config: state => state.foundation.capacity.config
-  }),
+  computed: {
+    ...mapState({
+      fileId: state => state.foundation.capacity.fileId,
+      fileName: state => state.foundation.capacity.fileName,
+      config: state => state.foundation.capacity.config
+    }),
+    wrapStyle () {
+      return {
+        height: this.sheetdata.length * 25 + 40 + 'px'
+      }
+    }
+  },
   watch: {
     fileId: {
       handler: function (id) {
@@ -225,7 +234,7 @@ export default {
 
 <style lang="less" scoped>
 .wrap {
-    height: 340px;
+    // height: 340px;
     border: 1px solid #d9d9d9;
     border-radius: 4px;
     overflow: hidden;

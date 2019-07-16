@@ -21,6 +21,7 @@
   },
   "dependencies": {
     "@antv/g6": "^3.0.4",
+    "@handsontable/vue": "^4.0.0",
     "canvas-datagrid": "^0.22.9",
     "clipboard": "^2.0.4",
     "dayjs": "^1.8.8",

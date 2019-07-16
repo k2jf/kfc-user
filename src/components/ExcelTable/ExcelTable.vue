@@ -24,6 +24,10 @@ export default {
   watch: {
     sheetdata (value) {
       this.dataGrid.data = this.transformData(value)
+      const maxCol = this.sheetdata.reduce((pre, next) => Math.max(pre, next.length), 0)
+      const clientW = document.getElementById('ido-body').offsetWidth - 70
+      const cellWidth = Math.floor(clientW / maxCol)
+      this.dataGrid.style.cellWidth = cellWidth
     }
   },
   mounted () {

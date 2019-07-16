@@ -51,37 +51,69 @@ export default {
     async initGeo () {
       const res = await this.$get(`foundations/${this.$route.params.foundationId}/geometry`)
       if (res.body.items.length > 0) {
-        this.geoOpts = [1, 2, 3].map(item => Object.assign({}, options, {
-          grid: {
-            ...options.grid,
-            right: 30,
-            left: 50,
-            bottom: 40
-          },
-          legend: {
-            show: false
-          },
-          yAxis: {
-            ...options.yAxis,
-            name: res.body.schema[0].name,
-            nameLocation: 'center',
-            nameGap: 40
-          },
-          xAxis: {
-            ...options.xAxis,
-            name: res.body.schema[item].name,
-            nameLocation: 'center',
-            nameGap: 30,
-            axisLine: { onZero: true }
-          },
-          series: [{
-            name: res.body.schema[item].name,
-            type: 'line',
-            data: res.body.items.map(ele => [ele[item], ele[0]]),
-            lineStyle: { width: 1 },
-            symbolSize: 1
-          }]
-        }))
+        const items = res.body.items.map(item => [item[0], item[1] / 2, item[2], item[3]])
+        this.geoOpts = [1, 2, 3].map(item => {
+          let data = items.map(ele => [ele[item], ele[0]])
+          let markLine = null
+          if (item === 1) {
+            const leftData = items.map(ele => [-ele[item], ele[0]])
+            data = [...leftData, ...data]
+          }
+          if (item === 3) {
+            markLine = {
+              symbol: 'none',
+              label: {
+                position: 'middle',
+                formatter: ''
+              },
+              lineStyle: {
+                color: '#666'
+              },
+              data: [
+                { xAxis: 120 }
+              ]
+            }
+          }
+          data.sort((first, second) => first[0] - second[0])
+          return Object.assign({}, options, {
+            grid: {
+              ...options.grid,
+              right: 30,
+              left: 50,
+              bottom: 40
+            },
+            legend: {
+              show: false
+            },
+            yAxis: {
+              ...options.yAxis,
+              name: res.body.schema[0].name,
+              nameLocation: 'center',
+              nameGap: 40,
+              axisLine: {
+                onZero: item === 1
+              }
+            },
+            xAxis: {
+              ...options.xAxis,
+              name: item === 1 ? 'm' : res.body.schema[item].name,
+              nameLocation: 'center',
+              nameGap: 30,
+              axisLine: { onZero: true },
+              max: item === 3 ? function (value) {
+                return Math.min(value.max + 20, 125)
+              } : undefined
+            },
+            series: [{
+              name: res.body.schema[item].name,
+              type: 'line',
+              data,
+              lineStyle: { width: 1 },
+              symbolSize: 1,
+              markLine
+            }]
+          })
+        })
       }
     },
     async initPlace () {
@@ -113,7 +145,7 @@ export default {
           series: [{
             name: res.body.schema[item].name,
             type: 'line',
-            data: res.body.items.map(ele => [ele[item], ele[0]]),
+            data: res.body.items.map(ele => [ele[item], -ele[0]]),
             lineStyle: { width: 1 },
             symbolSize: 1
           }]

@@ -25,6 +25,7 @@ export default {
     sheetdata (value) {
       this.dataGrid.data = this.transformData(value)
       const maxCol = this.sheetdata.reduce((pre, next) => Math.max(pre, next.length), 0)
+      console.log(maxCol, this.ws)
       const clientW = document.getElementById('ido-body').offsetWidth - 70
       const cellWidth = Math.floor(clientW / maxCol)
       this.dataGrid.style.cellWidth = cellWidth
@@ -69,16 +70,36 @@ export default {
     this.dataGrid.addEventListener('contextmenu', this.preventDefault)
     this.dataGrid.addEventListener('beforeendedit', this.endedit)
     this.dataGrid.addEventListener('beginedit', this.beginedit)
+    this.dataGrid.addEventListener('rendercell', this.rendercell)
   },
   beforeDestroy () {
     this.dataGrid.removeEventListener('beforesortcolumn', this.preventDefault)
     this.dataGrid.removeEventListener('contextmenu', this.preventDefault)
     this.dataGrid.removeEventListener('beforeendedit', this.endedit)
     this.dataGrid.removeEventListener('beginedit', this.beginedit)
+    this.dataGrid.removeEventListener('rendercell', this.rendercell)
   },
   methods: {
     preventDefault (e) {
       e.preventDefault()
+    },
+    rendercell (e) {
+      // if ([
+      //   '2:2',
+      //   '3:2',
+      //   '4:2',
+      //   '5:2',
+      //   '2:4',
+      //   '3:4',
+      //   '4:4',
+      //   '5:4',
+      //   '2:6',
+      //   '3:6',
+      //   '4:6',
+      //   '5:6'
+      // ].includes(e.cell.gridId)) {
+      //   e.ctx.fillStyle = '#BEE9F6'
+      // }
     },
     endedit (e) {
       // Abort the edit, We self take over it!!!

@@ -61,10 +61,10 @@
       </form>
     </Fiche>
     <Fiche title="约束条件" class="mt-6">
-      <p class="pl-6 pb-2">
+      <p class="pb-2">
         约束条件配置：
       </p>
-      <div class="px-6">
+      <div>
         <ConstraintTable
           :type="constraintType"
           :baseConfig="baseConfig"

@@ -53,7 +53,7 @@
                 分布迭代
               </Option>
               <Option value="1">
-                一体化设计校核
+                整体化设计
               </Option>
             </Select>
           </FormItem>

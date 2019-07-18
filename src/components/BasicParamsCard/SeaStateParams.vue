@@ -86,7 +86,7 @@
         @on-blur="onBlur($event.target.value, 'direction02')" />
     </ICol>
     <ICol span="4" :class="'windSpeed' === errKey ? 'ivu-form-item-error' : ''">
-      <span class="inline-block w-16 text-right">风速(m/s)：</span>
+      <span class="inline-block text-right" style="width: 82px">10m风速V<sub>50</sub>：</span>
       <Input
         style="width: 60px"
         :value="windSpeed || ''"

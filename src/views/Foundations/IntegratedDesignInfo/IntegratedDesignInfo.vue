@@ -14,7 +14,7 @@
           </div>
           <div class="w-1/2">
             <FormItem label="任务类型：" prop="integratedDesign" class="w-9/10">
-              一体化设计校核
+              整体化设计
             </FormItem>
           </div>
           <div class="w-1/2">

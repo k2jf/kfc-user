@@ -6,7 +6,7 @@ const stress = {
   dead: '1.00',
   members: '1.10',
   waveLoad: '1.35',
-  windLoad: '1.35',
+  windLoad: '1.50',
   limitedValue: [
     {
       name: 'mast',
@@ -126,12 +126,12 @@ const mode = {
     {
       name: 'frequency',
       operator: 'gt',
-      value: 1
+      value: 0.2
     },
     {
       name: 'frequency',
       operator: 'lt',
-      value: 1.1
+      value: 0.35
     }
   ]
 }

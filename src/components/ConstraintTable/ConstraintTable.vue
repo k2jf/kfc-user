@@ -20,7 +20,7 @@
       <template slot="config" slot-scope="{ row }">
         <div v-if="row.name !== 'mode'">
           <div
-            class="px-4"
+            class="px-2"
             :class="{
               'has-border': (row.multiple && ind < row.limitedValue.length - 1),
               'multiple-row': row.multiple
@@ -54,7 +54,7 @@
           </div>
         </div>
         <div v-else>
-          <div class="px-4">
+          <div class="px-2">
             <Row>
               <ICol span="4">
                 <Input
@@ -119,7 +119,7 @@
       <template slot="expression" slot-scope="{ row }">
         <div v-if="row.name !== 'mode'">
           <div
-            class="px-4 expression-item"
+            class="px-2 expression-item"
             :class="{
               'has-border': (row.multiple && ind < row.limitedValue.length - 1),
               'multiple-row': row.multiple,
@@ -141,7 +141,7 @@
           </div>
         </div>
         <div v-else>
-          <div class="px-4 expression-item single-row">
+          <div class="px-2 expression-item single-row">
             <span
               :class="err ? 'text-red': ''"
               v-if="(row.limitedValue)[0].name && (row.limitedValue)[0].operator && (row.limitedValue)[0].value && (row.limitedValue)[1].operator && (row.limitedValue)[1].value">
@@ -268,37 +268,45 @@ const columns = [
   {
     title: '校核类型',
     slot: 'name',
-    width: 100
+    width: 100,
+    className: 'ido-narrow-padding'
   },
   {
     title: '阈值配置',
     slot: 'config',
-    width: 300
+    width: 300,
+    className: 'ido-narrow-padding'
   },
   {
     title: '表达式',
     slot: 'expression',
-    width: 200
+    width: 180,
+    className: 'ido-narrow-padding'
   },
   {
     title: '风机载荷',
-    slot: 'windLoad'
+    slot: 'windLoad',
+    className: 'ido-narrow-padding'
   },
   {
     title: '波流载荷',
-    slot: 'waveLoad'
+    slot: 'waveLoad',
+    className: 'ido-narrow-padding'
   },
   {
     title: '自重',
-    slot: 'dead'
+    slot: 'dead',
+    className: 'ido-narrow-padding'
   },
   {
     title: '载荷组合系数',
-    slot: 'combination'
+    slot: 'combination',
+    className: 'ido-narrow-padding'
   },
   {
     title: '结构重要性系数',
-    slot: 'members'
+    slot: 'members',
+    className: 'ido-narrow-padding'
   }
 ]
 
@@ -477,5 +485,11 @@ export default {
   &.single-row {
   line-height: 53px;
 }
+}
+</style>
+<style lang="less">
+.ido-narrow-padding .ivu-table-cell{
+  padding-left: 4px;
+  padding-right: 4px;
 }
 </style>

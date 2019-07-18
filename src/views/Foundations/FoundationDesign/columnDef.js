@@ -86,6 +86,16 @@ export default [
     }
   },
   {
+    title: '任务类型',
+    width: 80,
+    className: 'ido-less-padding',
+    render: (h, params) => {
+      const { integratedDesign } = params.row
+      const display = integratedDesign === 0 ? '分布式迭代' : '整体化设计'
+      return h('div', [display])
+    }
+  },
+  {
     title: '校核类型',
     minWidth: 80,
     className: 'ido-less-padding',
@@ -152,6 +162,6 @@ export default [
     title: '操作',
     className: 'ido-less-padding',
     slot: 'operation',
-    width: 246
+    width: 256
   }
 ]

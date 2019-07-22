@@ -150,7 +150,6 @@ export default {
     async getLoadInfo () {
       try {
         const res = await this.$get(`loads/${this.$route.params.loadId}`)
-        console.log(res)
         this.loadFormValidate = {
           code: res.body.code,
           foundationForm: String(res.body.foundationForm),

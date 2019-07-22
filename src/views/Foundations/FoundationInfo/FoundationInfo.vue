@@ -191,7 +191,7 @@ export default {
         towerTaskId: res.body.towerTaskId,
         mudlineElevation: res.body.mudlineElevation,
         baseUltimate: res.body.baseUltimate,
-        integratedDesign: ['分布迭代', '极限强度', '疲劳损伤'][res.body.integratedDesign],
+        integratedDesign: ['分步迭代', '极限强度', '疲劳损伤'][res.body.integratedDesign],
         designPhase: { 'B': '投标', 'D': '中标' }[res.body.designPhase]
       }
       this.constraintType = res.body.foundationForm
@@ -321,7 +321,6 @@ export default {
         }
         _baseConfig.splice(index, 1, _config)
       }
-      console.log(_baseConfig)
       this.baseConfig = _baseConfig
     },
     cancel () {

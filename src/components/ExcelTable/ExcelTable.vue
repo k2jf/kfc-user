@@ -4,6 +4,7 @@
 <script>
 import XLSX from 'xlsx'
 import canvasDatagrid from 'canvas-datagrid'
+import heightlight from './hightlight'
 
 export default {
   name: 'ExcelTable',
@@ -19,31 +20,51 @@ export default {
     sheetdata: {
       type: Array,
       required: true
+    },
+    wsname: {
+      type: String,
+      required: true
     }
   },
   watch: {
     sheetdata (value) {
       this.dataGrid.data = this.transformData(value)
       const maxCol = this.sheetdata.reduce((pre, next) => Math.max(pre, next.length), 0)
-      console.log(maxCol, this.ws)
       const clientW = document.getElementById('ido-body').offsetWidth - 70
       const cellWidth = Math.floor(clientW / maxCol)
       this.dataGrid.style.cellWidth = cellWidth
+    },
+    wsname (newValue, oldValue) {
+      if (['Rock', 'unRock'].includes(newValue) && ['Rock', 'unRock'].includes(oldValue)) {
+        this.dataGrid.dispose()
+        this.init()
+      }
     }
   },
   mounted () {
-    const cDg = canvasDatagrid({
-      parentNode: this.$refs[this.name],
-      data: this.transformData(this.sheetdata),
-      allowSorting: false,
-      allowFreezingColumns: true,
-      allowColumnReordering: false,
-      showColumnHeaders: false,
-      allowColumnResizeFromCell: true,
-      showRowHeaders: false,
-      selectionMode: 'none'
-    })
-    /* eslint-disable */
+    this.init()
+  },
+  beforeDestroy () {
+    this.dataGrid.removeEventListener('beforesortcolumn', this.preventDefault)
+    this.dataGrid.removeEventListener('contextmenu', this.preventDefault)
+    this.dataGrid.removeEventListener('beforeendedit', this.endedit)
+    this.dataGrid.removeEventListener('beginedit', this.beginedit)
+    this.dataGrid.removeEventListener('rendercell', this.rendercell)
+  },
+  methods: {
+    init () {
+      const cDg = canvasDatagrid({
+        parentNode: this.$refs[this.name],
+        data: this.transformData(this.sheetdata),
+        allowSorting: false,
+        allowFreezingColumns: true,
+        allowColumnReordering: false,
+        showColumnHeaders: false,
+        allowColumnResizeFromCell: true,
+        showRowHeaders: false,
+        selectionMode: 'none'
+      })
+      /* eslint-disable */
     // custom styles
     cDg.style.width = '100%'
     cDg.style.height = '100%'
@@ -56,50 +77,27 @@ export default {
     cDg.style.rowHeaderCellFont = '12px sans-serif'
     cDg.style.columnHeaderCellFont = '12px sans-serif'
     /* eslint-enable */
-    this.dataGrid = cDg
+      this.dataGrid = cDg
 
-    // setTimeout(() => {
-    // const maxCol = this.sheetdata.reduce((pre, next) => Math.max(pre, next.length), 0)
-    // const clientW = document.getElementById('ido-body').offsetWidth - 90
-    // const cellWidth = Math.floor(clientW / maxCol)
-    // this.dataGrid.style.cellWidth = cellWidth
-    // console.log(maxCol, clientW, cellWidth)
-    // }, 0)
+      this.dataGrid.removeEventListener('beforesortcolumn', this.preventDefault)
+      this.dataGrid.removeEventListener('contextmenu', this.preventDefault)
+      this.dataGrid.removeEventListener('beforeendedit', this.endedit)
+      this.dataGrid.removeEventListener('beginedit', this.beginedit)
+      this.dataGrid.removeEventListener('rendercell', this.rendercell)
 
-    this.dataGrid.addEventListener('beforesortcolumn', this.preventDefault)
-    this.dataGrid.addEventListener('contextmenu', this.preventDefault)
-    this.dataGrid.addEventListener('beforeendedit', this.endedit)
-    this.dataGrid.addEventListener('beginedit', this.beginedit)
-    this.dataGrid.addEventListener('rendercell', this.rendercell)
-  },
-  beforeDestroy () {
-    this.dataGrid.removeEventListener('beforesortcolumn', this.preventDefault)
-    this.dataGrid.removeEventListener('contextmenu', this.preventDefault)
-    this.dataGrid.removeEventListener('beforeendedit', this.endedit)
-    this.dataGrid.removeEventListener('beginedit', this.beginedit)
-    this.dataGrid.removeEventListener('rendercell', this.rendercell)
-  },
-  methods: {
+      this.dataGrid.addEventListener('beforesortcolumn', this.preventDefault)
+      this.dataGrid.addEventListener('contextmenu', this.preventDefault)
+      this.dataGrid.addEventListener('beforeendedit', this.endedit)
+      this.dataGrid.addEventListener('beginedit', this.beginedit)
+      this.dataGrid.addEventListener('rendercell', this.rendercell)
+    },
     preventDefault (e) {
       e.preventDefault()
     },
     rendercell (e) {
-      // if ([
-      //   '2:2',
-      //   '3:2',
-      //   '4:2',
-      //   '5:2',
-      //   '2:4',
-      //   '3:4',
-      //   '4:4',
-      //   '5:4',
-      //   '2:6',
-      //   '3:6',
-      //   '4:6',
-      //   '5:6'
-      // ].includes(e.cell.gridId)) {
-      //   e.ctx.fillStyle = '#BEE9F6'
-      // }
+      if (heightlight[this.wsname].includes(e.cell.gridId)) {
+        e.ctx.fillStyle = '#BEE9F6'
+      }
     },
     endedit (e) {
       // Abort the edit, We self take over it!!!

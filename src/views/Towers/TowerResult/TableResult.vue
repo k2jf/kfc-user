@@ -203,7 +203,7 @@ export default {
         this.$Message.success('保存成功')
         this.getResults({ towerId: this.$route.params.taskId })
       } catch (err) {
-        console.log(err)
+        console.error(err)
       }
     },
     cancel () {

@@ -396,7 +396,6 @@ export default {
       this.magicConfig = _magicConfig
     },
     onConfigChange (value, ind, key) {
-      console.log(...arguments)
       const row = this.magicConfig[ind]
       const _row = Object.assign({}, row, { [key]: value })
       this.updateMagic(_row, ind)

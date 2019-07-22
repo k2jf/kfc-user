@@ -59,6 +59,7 @@
       </h2>
       <div style="height:calc(100% - 40px)">
         <ExcelTable
+          :wsname="flagname"
           name="capacity"
           :sheetdata="sheetdata"
           :ws="originSheets"
@@ -103,7 +104,8 @@ export default {
       slope: '',
       sheetdata: [],
       originSheets: {},
-      excelName: 'inlaidRock_BC.xlsx'
+      excelName: 'inlaidRock_BC.xlsx',
+      wsname: ''
     }
   },
   computed: {
@@ -116,6 +118,16 @@ export default {
       return {
         height: this.sheetdata.length * 25 + 40 + 'px'
       }
+    },
+    flagname () {
+      if (this.wsname) {
+        if (this.inlaidRock) {
+          return 'Rock'
+        } else {
+          return 'unRock'
+        }
+      }
+      return ''
     }
   },
   watch: {
@@ -158,6 +170,7 @@ export default {
       this._originData = data
       const workbook = XLSX.read(data, { type: 'array' })
       const wsname = Object.keys(workbook.Sheets)[0]
+      this.wsname = wsname
       const ws = workbook.Sheets[wsname]
       // ======================================================
       // !IMPORTANT

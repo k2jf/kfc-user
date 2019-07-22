@@ -17,33 +17,33 @@ export const monopile = [
   },
   {
     title: '变形-D泥面(cm)',
-    key: 'D_mudline',
+    key: 'd_mudline',
     render: (h, params) => {
-      const value = params.row.D_mudline || '-'
+      const value = params.row.d_mudline || '-'
       return h('div', [value])
     }
   },
   {
     title: '变形-D桩端(cm)',
-    key: 'D_pileTip',
+    key: 'd_pileTip',
     render: (h, params) => {
-      const value = params.row.D_pileTip || '-'
+      const value = params.row.d_pileTip || '-'
       return h('div', [value])
     }
   },
   {
     title: '变形-R转角(rad)',
-    key: 'D_tilt',
+    key: 'd_tilt',
     render: (h, params) => {
-      const value = params.row.D_tilt || '-'
+      const value = params.row.d_tilt || '-'
       return h('div', [value])
     }
   },
   {
     title: '变形-S沉降(cm)',
-    key: 'D_settlement',
+    key: 'd_settlement',
     render: (h, params) => {
-      const value = params.row.D_settlement || '-'
+      const value = params.row.d_settlement || '-'
       return h('div', [value])
     }
   },
@@ -93,17 +93,17 @@ export const highMonopile = [
   {
     title: '变形-R基础顶转角(rad)',
     width: 180,
-    key: 'D_tilt',
+    key: 'd_tilt',
     render: (h, params) => {
-      const value = params.row.D_tilt || '-'
+      const value = params.row.d_tilt || '-'
       return h('div', [value])
     }
   },
   {
     title: '变形-S沉降(cm)',
-    key: 'D_settlement',
+    key: 'd_settlement',
     render: (h, params) => {
-      const value = params.row.D_settlement || '-'
+      const value = params.row.d_settlement || '-'
       return h('div', [value])
     }
   },

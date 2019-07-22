@@ -50,7 +50,7 @@
           <FormItem label="任务类型：" prop="integratedDesign">
             <Select placeholder="请选择任务类型" v-model="formValidate.integratedDesign">
               <Option value="0">
-                分布迭代
+                分步迭代
               </Option>
               <Option value="1">
                 整体化设计
@@ -486,7 +486,6 @@ export default {
       this.$router.replace({ query: searchParams })
     },
     beforeUpload (file) {
-      console.log(file)
       this.sacsinFile = file
       return false
     },

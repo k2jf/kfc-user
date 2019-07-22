@@ -172,7 +172,6 @@ export default {
         XLSX.utils.book_append_sheet(workbook, ws, this.wsname)
         const wopts = { bookType: 'xlsx', type: 'array' }
         const wbout = XLSX.write(workbook, wopts, this.wsname)
-        console.log(wbout, ws)
         const formdata = new FormData()
         const data = new Blob([wbout], { type: 'application/octet-stream' })
         formdata.append('file', data, this.fileName)

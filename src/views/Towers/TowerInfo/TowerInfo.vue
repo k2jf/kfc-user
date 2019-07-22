@@ -488,7 +488,6 @@ export default {
         const data = await this.$ky.get(`towerTasks/stream?fileId=${this.file.fileId}`).arrayBuffer()
         this.originData = data
         var workbook = XLSX.read(data, { type: 'array' })
-        console.log(workbook)
         const sheets = {}
         for (let wsname in workbook.Sheets) {
           const ws = workbook.Sheets[wsname]
@@ -500,7 +499,7 @@ export default {
         this.sheets = sheets
         this.originSheets = workbook.Sheets
       } catch (error) {
-        console.log('see errors ======> ', error)
+        console.error('see errors ======> ', error)
       }
     },
     // remove tower input file

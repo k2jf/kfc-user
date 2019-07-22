@@ -10,6 +10,7 @@
       </h2>
       <div style="height:calc(100% - 40px)">
         <ExcelTable
+          :wsname="wsname"
           :name="paramType"
           :sheetdata="sheetdata"
           :ws="ws"
@@ -66,6 +67,10 @@ export default {
     },
     ws: {
       type: Object,
+      required: true
+    },
+    wsname: {
+      type: String,
       required: true
     }
   },

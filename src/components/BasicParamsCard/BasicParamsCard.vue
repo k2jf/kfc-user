@@ -28,6 +28,7 @@
     <ExcelWithDat
       :excelName="fileName"
       :datName="datName"
+      :wsname="wsname"
       :datContent="datContent"
       :paramType="basicType"
       :sheetdata="sheetdata"
@@ -73,7 +74,8 @@ export default {
       originSheets: {},
       datContent: '',
       datName: datMap[this.basicType],
-      isSplit: false
+      isSplit: false,
+      wsname: ''
     }
   },
   computed: {

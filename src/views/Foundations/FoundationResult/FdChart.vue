@@ -56,8 +56,11 @@ export default {
           let data = items.map(ele => [ele[item], ele[0]])
           let markLine = null
           if (item === 1) {
-            const leftData = items.map(ele => [-ele[item], ele[0]])
-            data = [...leftData, ...data]
+            const leftData = []
+            for (let i = items.length - 1; i > -1; i--) {
+              leftData.push([-items[i][item], items[i][0]])
+            }
+            data = [...data, ...leftData]
           }
           if (item === 3) {
             markLine = {
@@ -74,7 +77,7 @@ export default {
               ]
             }
           }
-          data.sort((first, second) => first[0] - second[0])
+          // data.sort((first, second) => first[0] - second[0])
           return Object.assign({}, options, {
             grid: {
               ...options.grid,
@@ -91,7 +94,7 @@ export default {
               nameLocation: 'center',
               nameGap: 40,
               axisLine: {
-                onZero: item === 1
+                onZero: true
               }
             },
             xAxis: {
@@ -102,14 +105,30 @@ export default {
               axisLine: { onZero: true },
               max: item === 3 ? function (value) {
                 return Math.min(value.max + 20, 125)
-              } : undefined
+              } : undefined,
+              min: item !== 1 ? 0 : undefined
+            },
+            tooltip: {
+              trigger: 'item',
+              formatter: function (obj) {
+                const value = obj.value
+                const title = item === 1 ? 'm' : res.body.schema[item].name
+
+                return `
+                <div>${title}: ${value[0]}</div>
+                `
+              },
+              axisPointer: {
+                type: 'cross'
+              },
+              padding: 10
             },
             series: [{
               name: res.body.schema[item].name,
               type: 'line',
               data,
               lineStyle: { width: 1 },
-              symbolSize: 1,
+              symbolSize: 2,
               markLine
             }]
           })
@@ -142,12 +161,27 @@ export default {
             nameGap: 30,
             axisLine: { onZero: true }
           },
+          tooltip: {
+            trigger: 'item',
+            formatter: function (obj) {
+              const value = obj.value
+              const title = res.body.schema[item].name
+
+              return `
+                <div>${title}: ${value[0]}</div>
+                `
+            },
+            axisPointer: {
+              type: 'cross'
+            },
+            padding: 10
+          },
           series: [{
             name: res.body.schema[item].name,
             type: 'line',
             data: res.body.items.map(ele => [ele[item], -ele[0]]),
             lineStyle: { width: 1 },
-            symbolSize: 1
+            symbolSize: 2
           }]
         }))
       }

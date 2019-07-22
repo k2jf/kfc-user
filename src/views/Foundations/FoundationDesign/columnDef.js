@@ -91,7 +91,7 @@ export default [
     className: 'ido-less-padding',
     render: (h, params) => {
       const { integratedDesign } = params.row
-      const display = integratedDesign === 0 ? '分布式迭代' : '整体化设计'
+      const display = integratedDesign === 0 ? '分步迭代' : '整体化设计'
       return h('div', [display])
     }
   },

@@ -104,7 +104,6 @@ export default {
       // if (typeof e.cell.value === 'number') {
       //   e.cell.value = Number(e.cell.value.toPrecision(8))
       //   e.value = Number(e.cell.value.toPrecision(8))
-      console.log(e.cell.value)
       // }
     },
     preventDefault (e) {

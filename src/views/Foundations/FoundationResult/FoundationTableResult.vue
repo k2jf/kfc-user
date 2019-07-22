@@ -4,7 +4,7 @@
       <ICol span="24" class="mb-3">
         <div class="h-8 font-bold text-sm">
           校核结果
-          <a href="javascript:void(0)" class="float-right underline ido-link font-normal text-xs" @click="exportCsv">
+          <a href="javascript:void(0)" class="float-right underline ido-link font-normal text-xs" @click="exportExcel">
             导出为CSV
           </a>
         </div>
@@ -44,6 +44,7 @@
 
 <script>
 import D from 'dayjs'
+import { baseUrl } from '@/config'
 import { Row, Col, Table } from 'iview'
 import exportCsv, { csv as Csv } from '@/libs/csv'
 import { monopile, highMonopile } from '@/config/foundationResult'
@@ -82,7 +83,7 @@ export default {
       this.materialData = data.body.map(d => {
         let obj = {}
         data.header.forEach((h, i) => {
-          obj[h] = d[i]
+          obj[h] = typeof d[i] === 'number' ? d[i].toFixed(2) : d[i]
         })
         return obj
       })
@@ -114,6 +115,22 @@ export default {
       })
       const filename = '基础任务结果_' + this.taskName + '_' + D().format('YYYY_MM_DD_HH_mm_ss') + '.csv'
       exportCsv.download(filename, content)
+    },
+    async exportExcel () {
+      try {
+        const res = await this.$ky(`foundations/${this.$route.params.foundationId}/foToLo`)
+        if (!res.ok) {
+          const result = await res.json()
+          if (result.code === 1) {
+            throw Error(result.message)
+          }
+        } else {
+          window.open(`${baseUrl}foundations/${this.$route.params.foundationId}/foToLo`)
+        }
+      } catch (error) {
+        console.error(error)
+        this.$Message.error(error.message)
+      }
     }
   }
 }

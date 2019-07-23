@@ -26,7 +26,7 @@ export default [
   },
   {
     title: '载荷文件名称',
-    key: 'fileName',
+    key: 'ultimateFile',
     minWidth: 80
   },
   {

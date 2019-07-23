@@ -1,6 +1,6 @@
 <template>
   <div class="p-3">
-    <Fiche title="塔架信息">
+    <Fiche title="载荷信息">
       <Form
         :model="loadFormValidate"
         :rules="loadRuleValidate"
@@ -55,6 +55,22 @@
               <Icon class="text-green" type="md-checkmark-circle" v-if="loadFormValidate.file" />
             </FormItem>
           </div>
+          <div class="w-1/2">
+            <FormItem label="马尔科夫矩阵：" class="w-9/10" prop="markov">
+              <UploadButton
+                :action="markovAction"
+                v-model="markovFiles"
+                @on-close="onClose"
+                @on-remove="removeSigleMarkov"
+                @on-clear="clearMarkov" />
+              <span class="inline-block ml-3">
+                已上传
+                <!-- <a class="ido-link">&ensp;{{ markovFiles.length }}&ensp;</a> -->
+                <b>{{ markovFiles.length }}</b>
+                个文件
+              </span>
+            </FormItem>
+          </div>
           <div class="w-full">
             <FormItem label="备注：" style="width: 95%;" prop="remark">
               <Input
@@ -80,6 +96,7 @@
 <script>
 import Fiche from '@/components/Fiche'
 import { baseUrl } from '@/config'
+import { UploadButton } from '@/components/MultipleUpload'
 import { Button, Input, Form, FormItem, Select, Option, Upload, Icon } from 'iview'
 
 export default {
@@ -93,7 +110,8 @@ export default {
     Select,
     Option,
     Upload,
-    Icon
+    Icon,
+    UploadButton
   },
   data () {
     const towerBottomDValidate = (rule, value, cb) => {
@@ -117,6 +135,8 @@ export default {
     }
     return {
       action: '',
+      markovAction: '',
+      markovFiles: [],
       loadFormValidate: {
         code: '',
         foundationForm: '',
@@ -143,7 +163,8 @@ export default {
     }
   },
   mounted () {
-    this.action = baseUrl + `loads/${this.$route.params.loadId}/upload`
+    this.action = baseUrl + `loads/${this.$route.params.loadId}/upload?fileKey=ultimate`
+    this.markovAction = baseUrl + `loads/${this.$route.params.loadId}/upload?fileKey=markov`
     this.getLoadInfo()
   },
   methods: {
@@ -157,7 +178,14 @@ export default {
           designer: res.body.designer,
           remark: res.body.remark,
           projectName: res.body.projectName,
-          file: res.body.fileName
+          file: res.body.ultimate
+        }
+
+        if (res.body.markov.length > 0) {
+          this.markovFiles = res.body.markov.map(f => ({
+            name: f.fileName,
+            fileId: f.fileId
+          }))
         }
       } catch (error) {
         console.error(error)
@@ -170,6 +198,31 @@ export default {
     onUploadSuccess (res, file, fileList) {
       this.$Message.success('上传成功')
       this.loadFormValidate.file = file.name
+    },
+    async clearMarkov () {
+      try {
+        const res = await this.$delete(`loads/file/batch?loadId=${this.$route.params.loadId}&fileKey=markov`, { silent: true })
+        if (res.code === 0) {
+          this.markovFiles = []
+          this.Message.success('清空成功')
+        }
+      } catch (error) {
+        this.Message.error('清空失败')
+      }
+    },
+    async removeSigleMarkov (file) {
+      try {
+        const res = await this.$delete(`loads/file?fileId=${file.fileId}`, { silent: true })
+        if (res.code === 0) {
+          this.$Message.success('已删除：' + file.name)
+          this.markovFiles = this.markovFiles.filter(m => m.fileId !== file.fileId)
+        }
+      } catch (error) {
+        this.$Message.error('删除失败')
+      }
+    },
+    onClose () {
+      this.getLoadInfo()
     },
     async save () {
       this.$refs.formValidate.validate(async (valid) => {

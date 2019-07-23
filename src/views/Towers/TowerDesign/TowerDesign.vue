@@ -37,33 +37,19 @@
           :label-width="140"
           ref="formValidate">
           <FormItem label="项目名称：" prop="projectId">
-            <Select placeholder="请选择一个项目" v-model="formValidate.projectId">
+            <Select placeholder="请选择一个项目" v-model="formValidate.projectId" @on-change="onChange">
               <Option :value="item.projectId + ''" v-for="item in projects" :key="item.id">
                 {{ item.projectName }}
               </Option>
             </Select>
           </FormItem>
-          <!-- <FormItem label="载荷数据来源：" prop="loadDatasource">
-            <Select placeholder="请选择载荷数据来源" v-model="formValidate.loadDatasource" @on-change="onChange">
-              <Option value="0">
-                LCC载荷
-              </Option>
-              <Option value="1">
-                载荷门户
+          <FormItem label="载荷编码：" prop="loadId">
+            <Select placeholder="请选择载荷数据来源" v-model="formValidate.loadId">
+              <Option :value="String(item.id)" v-for="item in loadList" :key="item.id">
+                {{ item.code }}
               </Option>
             </Select>
-          </FormItem> -->
-          <div v-if="isOnline">
-            <FormItem label="仿真任务标号：" prop="simulationId">
-              <Input v-model="formValidate.simulationId" />
-            </FormItem>
-            <FormItem label="极限后处理任务编号：" prop="limitBackTaskId">
-              <Input v-model="formValidate.limitBackTaskId" />
-            </FormItem>
-            <FormItem label="疲劳后处理任务编号：" prop="fatigueBackTaskId">
-              <Input v-model="formValidate.fatigueBackTaskId" />
-            </FormItem>
-          </div>
+          </FormItem>
         </Form>
       </Modal>
     </div>
@@ -125,6 +111,7 @@ export default {
       towerHeight: '',
       bottomDiameter: '',
       columns,
+      loadList: [],
       data: [],
       isOnline: false,
       projects: [],
@@ -135,16 +122,16 @@ export default {
       loading: true,
       visible: false,
       formValidate: {
-        projectId: 0
-        // loadDatasource: ''
+        projectId: 0,
+        loadId: ''
       },
       ruleValidate: {
         projectId: [
-          { required: true, trigger: 'blur', message: '不能为空' }
+          { required: true, trigger: 'blur', message: '项目不能为空' }
+        ],
+        loadId: [
+          { required: true, trigger: 'blur', message: '载荷编码不能为空' }
         ]
-        // loadDatasource: [
-        //   { required: true, trigger: 'blur', message: '不能为空' }
-        // ]
       }
     }
   },
@@ -172,6 +159,7 @@ export default {
       ...searchParams
     })
     // this.setListInterval()
+    this.getLoadList()
   },
   beforeDestroy () {
     if (this.timer) {
@@ -192,6 +180,19 @@ export default {
           pageSize: res.body.pageInfo.pageSize,
           total: res.body.pageInfo.total
         }
+      }
+    },
+    async getLoadList (projectId) {
+      let searchParams = projectId !== undefined ? { projectId } : {}
+      const res = await this.$get('loads', {
+        searchParams
+      })
+      this.loadList = res.body.items
+    },
+    onChange (value) {
+      if (value && !Number.isNaN(Number(value))) {
+        this.getLoadList(Number(value))
+        this.formValidate.loadId = ''
       }
     },
     onPageChange (pageNum) {
@@ -217,9 +218,6 @@ export default {
         ...searchParams,
         ...this.pageInfo
       } })
-    },
-    onChange (value) {
-      this.isOnline = value === '1'
     },
     async createNewTask () {
       const res = await this.$get('projects')
@@ -288,7 +286,7 @@ export default {
             const res = await this.$post('towerTasks', {
               json: {
                 projectId: this.formValidate.projectId,
-                // loadDatasource: Number(this.formValidate.loadDatasource),
+                loadId: Number(this.formValidate.loadId),
                 creator: this.userName
               }
             })
@@ -308,8 +306,8 @@ export default {
     onCancel () {
       this.$refs.formValidate.resetFields()
       this.formValidate = {
-        projectId: 0
-        // loadDatasource: ''
+        projectId: 0,
+        loadId: ''
       }
     },
     getFiltrate () {

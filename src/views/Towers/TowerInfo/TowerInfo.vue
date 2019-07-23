@@ -1,6 +1,9 @@
 <template>
   <div class="tower-info h-full p-3">
     <Fiche title="塔架信息">
+      <template slot="extra">
+        {{ towerFormValidate.taskName }} / {{ towerFormValidate.loadCode }}
+      </template>
       <Form
         :model="towerFormValidate"
         :rules="towerRuleValidate"
@@ -39,6 +42,16 @@
             <FormItem label="疲劳后处理任务编号：" prop="fatigueBackTaskId" class="w-9/10">
               <!-- <Input v-model="towerFormValidate.fatigueBackTaskId" /> -->
               {{ towerFormValidate.fatigueBackTaskId }}
+            </FormItem>
+          </div>
+          <div class="w-1/2">
+            <FormItem label="任务类型：" prop="taskType" class="w-9/10">
+              {{ towerFormValidate.taskType }}
+            </FormItem>
+          </div>
+          <div class="w-1/2">
+            <FormItem label="载荷编码：" prop="loadCode" class="w-9/10">
+              {{ towerFormValidate.loadCode }}
             </FormItem>
           </div>
           <!-- <Divider style="margin-top:0;" /> -->
@@ -111,23 +124,6 @@
             </FormItem>
           </div>
           <!-- <Divider style="margin-top:0;" /> -->
-          <!-- Section 3 Markov -->
-          <div class="w-1/2">
-            <FormItem label="马尔科夫矩阵：" prop="markov" class="w-9/10">
-              <UploadButton
-                :action="markovAction"
-                v-model="markovFiles"
-                @on-close="onClose"
-                @on-remove="removeSigleMarkov"
-                @on-clear="clearMarkov" />
-              <span class="inline-block ml-3">
-                已上传
-                <!-- <a class="ido-link">&ensp;{{ markovFiles.length }}&ensp;</a> -->
-                <b>{{ markovFiles.length }}</b>
-                个文件
-              </span>
-            </FormItem>
-          </div>
           <div class="w-1/2">
             <FormItem
               label="塔底疲劳载荷My(kNm)："
@@ -306,7 +302,6 @@ import {
 import Fiche from '@/components/Fiche'
 import Excel from '@/components/Excel'
 import VisualModal from '@/components/VisualModal'
-import { UploadButton } from '@/components/MultipleUpload'
 
 import XLSX from 'xlsx'
 import { baseUrl, sheetJSFT } from '@/config'
@@ -342,7 +337,6 @@ export default {
     ISwitch: Switch,
     Icon,
     Excel,
-    UploadButton,
     Table,
     // Divider,
     VisualModal
@@ -397,11 +391,8 @@ export default {
     }
   },
   computed: {
-    display () {
-      return this.markovFiles.length > 0 ? '重新上传' : '上传文件'
-    },
     checkDisabled () {
-      return !(this.file.name && this.markovFiles.length > 0)
+      return !this.file.name
     },
     canSave () {
       return this.btnChecks.some(Boolean)
@@ -409,7 +400,6 @@ export default {
   },
   mounted () {
     this.action = `${baseUrl}towerTasks/${this.$route.params.taskId}/upload?fileKey=towerInput`
-    this.markovAction = `${baseUrl}towerTasks/${this.$route.params.taskId}/upload?fileKey=markov`
     this.getTaskInfo()
     const width = document.body.clientWidth
     const height = document.body.clientHeight
@@ -429,7 +419,8 @@ export default {
           towerHeight: res.body.towerHeight,
           towerDiameter: res.body.bottomDiameter,
           towerLegNum: res.body.sectionNumber,
-          loadDatasource: res.body.loadDatasource === 1 ? '载荷门户' : 'LCC载荷',
+          loadCode: res.body.loadCode,
+          taskType: '',
           fatiguePalyload: res.body.bottomFatigue,
           limitPayload: res.body.bottomUltimate,
           comment: res.body.remark
@@ -451,13 +442,6 @@ export default {
           }
           this.href = `${baseUrl}towerTasks/stream?fileId=${this.file.fileId}`
           this.getSingleExcel()
-        }
-
-        if (res.body.markov.length > 0) {
-          this.markovFiles = res.body.markov.map(f => ({
-            name: f.fileName,
-            fileId: f.fileId
-          }))
         }
 
         if (res.body.towerAlgParams) {
@@ -516,34 +500,6 @@ export default {
       } catch (error) {
         Message.error('删除失败')
       }
-    },
-    // clear up all markov files
-    async clearMarkov () {
-      try {
-        const res = await this.$delete(`towerTasks/file/batch?taskId=${this.$route.params.taskId}&fileKey=markov`, { silent: true })
-        if (res.code === 0) {
-          this.markovFiles = []
-          this.btnChecks = [false, false, false]
-          Message.success('清空成功')
-        }
-      } catch (error) {
-        Message.error('清空失败')
-      }
-    },
-    // remove single markov file when close btn triggered
-    async removeSigleMarkov (file) {
-      try {
-        const res = await this.$delete(`towerTasks/file?fileId=${file.fileId}`, { silent: true })
-        if (res.code === 0) {
-          Message.success('已删除：' + file.name)
-          this.markovFiles = this.markovFiles.filter(m => m.fileId !== file.fileId)
-        }
-      } catch (error) {
-        Message.error('删除失败')
-      }
-    },
-    onClose () {
-      this.getTaskInfo()
     },
     viewTable () {
       this.visible = true

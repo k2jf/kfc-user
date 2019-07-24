@@ -44,11 +44,11 @@
               {{ towerFormValidate.fatigueBackTaskId }}
             </FormItem>
           </div>
-          <div class="w-1/2">
+          <!-- <div class="w-1/2">
             <FormItem label="任务类型：" prop="taskType" class="w-9/10">
               {{ towerFormValidate.taskType }}
             </FormItem>
-          </div>
+          </div> -->
           <div class="w-1/2">
             <FormItem label="载荷编码：" prop="loadCode" class="w-9/10">
               {{ towerFormValidate.loadCode }}

@@ -43,6 +43,13 @@
               </Option>
             </Select>
           </FormItem>
+          <!-- <FormItem label="任务类型：" prop="taskType">
+            <Select placeholder="请选择载荷数据来源" v-model="formValidate.loadId">
+              <Option :value="String(item.id)" v-for="item in loadList" :key="item.id">
+                {{ item.code }}
+              </Option>
+            </Select>
+          </FormItem> -->
           <FormItem label="载荷编码：" prop="loadId">
             <Select placeholder="请选择载荷数据来源" v-model="formValidate.loadId">
               <Option :value="String(item.id)" v-for="item in loadList" :key="item.id">

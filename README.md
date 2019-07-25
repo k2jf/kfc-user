@@ -30,3 +30,7 @@ youli
 </script>
 
 ```
+
+## 说明
+1. 同时依赖kfc-transfer组件，确保同时安装
+2. 引入tailwind.css

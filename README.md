@@ -30,3 +30,6 @@ youli
 </script>
 
 ```
+
+## 注意
+此组件依赖 kfc-transfer 组件，请确保同时安装

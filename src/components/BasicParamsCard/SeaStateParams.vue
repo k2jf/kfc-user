@@ -16,36 +16,6 @@
         </Button>
       </Upload>
     </ICol>
-    <ICol span="5" style="line-height: 32px;">
-      <span class="inline-block w-16 text-right">
-        载荷参数：
-      </span>
-      <Upload
-        class="inline-block"
-        :action="loadAction"
-        :show-upload-list="false"
-        :on-error="onUploadError"
-        :on-success="onLoadUploadSuccess">
-        <Button size="small" icon="ios-cloud-upload-outline">
-          上传文件
-        </Button>
-      </Upload>
-    </ICol>
-    <ICol span="5" style="line-height: 32px;" v-if="hasFatigue && form === 1">
-      <span class="inline-block w-16 text-right">
-        马尔科夫：
-      </span>
-      <Upload
-        class="inline-block"
-        :action="markvoAction"
-        :show-upload-list="false"
-        :on-error="onUploadError"
-        :on-success="onMarkvoUploadSuccess">
-        <Button size="small" icon="ios-cloud-upload-outline">
-          上传文件
-        </Button>
-      </Upload>
-    </ICol>
     <ICol span="4" :class="'wave' === errKey ? 'ivu-form-item-error' : ''">
       <span class="inline-block w-16 text-right">波浪类型：</span>
       <Select
@@ -53,7 +23,7 @@
         placeholder=""
         :value="wave || ''"
         @on-change="onChange($event, 'wave')">
-        <Option :value="item" v-for="item in waveTypes">
+        <Option :value="item" v-for="(item, key) in waveTypes" :key="key">
           {{ item }}
         </Option>
       </Select>
@@ -65,7 +35,7 @@
         placeholder=""
         :value="degree || ''"
         @on-change="onChange($event, 'degree')">
-        <Option :value="item" v-for="item in orders">
+        <Option :value="item" v-for="(item, key) in orders" :key="key">
           {{ item }}
         </Option>
       </Select>
@@ -78,8 +48,7 @@
         @on-blur="onBlur($event.target.value, 'direction01')" />
     </ICol>
     <ICol span="5" :class="'direction02' === errKey ? 'ivu-form-item-error' : ''">
-      <span class="inline-block w-16 text-right" v-if="hasFatigue && form === 1">方向2/°：</span>
-      <span class="inline-block w-24 text-right" v-else>方向2/°：</span>
+      <span class="inline-block w-24 text-right">方向2/°：</span>
       <Input
         style="width: 60px"
         :value="direction02 ? direction02 : direction02 === 0 ? 0 : ''"
@@ -122,8 +91,6 @@ export default {
   data () {
     return {
       action: '',
-      loadAction: '',
-      markvoAction: '',
       errKey: '',
       waveTypes: ['STRE', 'STRN', 'AIRY', 'AIRC', 'STOK', 'CNOI', 'SOLI', 'LINE', 'REPT'],
       orders: ['', '3', '4', '5', '6', '7', '8', '9', '10', '11'],
@@ -138,7 +105,6 @@ export default {
   computed: {
     ...mapState({
       config: state => state.foundation.seaState.config || {},
-      hasFatigue: state => state.foundation.hasFatigue,
       form: state => state.foundation.form
     })
   },
@@ -149,9 +115,6 @@ export default {
   },
   mounted () {
     this.action = baseUrl + `foundations/${this.$route.params.foundationId}/upload?fileKey=seaStateBase`
-    this.loadAction = baseUrl + `foundations/${this.$route.params.foundationId}/upload?fileKey=seaStateLoad`
-    this.markvoAction = baseUrl + `foundations/${this.$route.params.foundationId}/upload?fileKey=markov`
-    // this.setDefaultConfig()
     this.$store.commit('foundation/syncSeaState', {
       config: {
         wave: this.wave,
@@ -199,27 +162,6 @@ export default {
         fileName: res.body.fileName
       })
       this.$parent.$parent.getExcel(this.$parent.$parent.fileId)
-    },
-    onMarkvoUploadSuccess (res, file, fileList) {
-      this.$Message.success('上传成功')
-    },
-    async onLoadUploadSuccess (res, file, fileList) {
-      this.$Message.success('上传成功')
-      this.$store.commit(`foundation/${mutationMap['seaState']}`, {
-        fileId: res.body.fileId,
-        fileName: res.body.fileName
-      })
-      this.$parent.$parent.getExcel(this.$parent.$parent.fileId)
-      this.$parent.$parent.$parent.$parent.$parent.$parent.updateMxy()
-      const tId = this.$store.state.foundation.towerId
-      const fId = this.$route.params.foundationId
-      if (tId > -1 && this.$store.state.foundation.towerId && this.$store.state.foundation.towerId > -1) {
-        try {
-          await this.$get(`foundations/checkLoad?fId=${fId}&tId=${tId}`)
-        } catch (error) {
-          console.error(error)
-        }
-      }
     }
   }
 }

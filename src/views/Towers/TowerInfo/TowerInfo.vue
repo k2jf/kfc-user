@@ -2,7 +2,7 @@
   <div class="tower-info h-full p-3">
     <Fiche title="塔架信息">
       <template slot="extra">
-        {{ towerFormValidate.taskName }} / {{ towerFormValidate.loadCode }}
+        {{ topCode }}
       </template>
       <Form
         :model="towerFormValidate"
@@ -21,26 +21,18 @@
               <span>{{ towerFormValidate.taskName }}</span>
             </FormItem>
           </div>
-          <!-- <div class="w-1/2">
-            <FormItem label="载荷数据来源：" prop="loadDatasource" class="w-9/10">
-              {{ towerFormValidate.loadDatasource }}
-            </FormItem>
-          </div> -->
           <div class="w-1/2" v-if="isOnline">
             <FormItem label="仿真任务标号：" prop="simulationId" class="w-9/10">
-              <!-- <Input v-model="towerFormValidate.simulationId" /> -->
               {{ towerFormValidate.simulationId }}
             </FormItem>
           </div>
           <div class="w-1/2" v-if="isOnline">
             <FormItem label="极限后处理任务编号：" prop="limitBackTaskId" class="w-9/10">
-              <!-- <Input v-model="towerFormValidate.limitBackTaskId" /> -->
               {{ towerFormValidate.limitBackTaskId }}
             </FormItem>
           </div>
           <div class="w-1/2" v-if="isOnline">
             <FormItem label="疲劳后处理任务编号：" prop="fatigueBackTaskId" class="w-9/10">
-              <!-- <Input v-model="towerFormValidate.fatigueBackTaskId" /> -->
               {{ towerFormValidate.fatigueBackTaskId }}
             </FormItem>
           </div>
@@ -396,6 +388,12 @@ export default {
     },
     canSave () {
       return this.btnChecks.some(Boolean)
+    },
+    topCode () {
+      if (this.towerFormValidate.loadCode && this.towerFormValidate.taskName) {
+        return `${this.towerFormValidate.loadCode} / ${this.towerFormValidate.taskName}`
+      }
+      return ''
     }
   },
   mounted () {

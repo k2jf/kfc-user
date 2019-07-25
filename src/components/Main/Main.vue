@@ -85,9 +85,9 @@ const navList = [
   { id: 1, name: '载荷管理', to: 'payloads', icon: 'ios-search' },
   { id: 2, name: '塔架设计', to: 'towers', icon: 'md-build' },
   { id: 3, name: '基础设计', to: 'foundations', icon: 'md-document' },
-  { id: 4, name: '数据分析', to: 'analytics', icon: 'md-analytics' }
+  { id: 4, name: '数据分析', to: 'analytics', icon: 'md-analytics' },
   // { id: 5, name: '数据管理', to: 'data-management', icon: 'md-podium' },
-  // { id: 5, name: '用户管理', to: 'users', icon: 'md-contact' }
+  { id: 5, name: '用户管理', to: 'users', icon: 'md-contact' }
 ]
 
 export default {

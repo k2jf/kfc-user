@@ -1,6 +1,10 @@
 <template>
   <div class="basic-info h-full p-3">
     <Fiche title="基础信息">
+      <template slot="extra">
+        {{ topCode }}
+        <!-- {{ basicFormValidate.loadCode }} / {{ towerCode }} / {{ basicFormValidate.taskName }} -->
+      </template>
       <Form
         :model="basicFormValidate"
         :rules="basicRuleValidate"
@@ -25,6 +29,11 @@
           <div class="w-1/2">
             <FormItem label="任务名称：" class="w-9/10">
               {{ basicFormValidate.taskName }}
+            </FormItem>
+          </div>
+          <div class="w-1/2">
+            <FormItem label="载荷编码：" prop="loadCode" class="w-9/10">
+              {{ basicFormValidate.loadCode }}
             </FormItem>
           </div>
           <div class="w-1/2">
@@ -169,6 +178,13 @@ export default {
     }),
     slotClass (item, index) {
       return item.length > 1 && index < item.length - 1 ? 'has-border' : ''
+    },
+    topCode () {
+      if (this.basicFormValidate.loadCode &&
+      this.basicFormValidate.taskName) {
+        return `${this.basicFormValidate.loadCode} / ${this.towerCode || '--'} / ${this.basicFormValidate.taskName}`
+      }
+      return ''
     }
   },
   mounted () {
@@ -182,7 +198,7 @@ export default {
     async init () {
       if (this.$route.params.foundationId === 'create') return
       const res = await this.$get(`foundations/${this.$route.params.foundationId}`)
-      this.getTowerTaskList(res.body.projectId)
+      this.getTowerTaskList(res.body.loadId)
       this.integratedDesignId = res.body.integratedDesign
       this.basicFormValidate = {
         foundationForm: res.body.foundationForm,
@@ -191,10 +207,13 @@ export default {
         towerTaskId: res.body.towerTaskId,
         mudlineElevation: res.body.mudlineElevation,
         baseUltimate: res.body.baseUltimate,
+        loadCode: res.body.loadCode,
         integratedDesign: ['分步迭代', '极限强度', '疲劳损伤'][res.body.integratedDesign],
         designPhase: { 'B': '投标', 'D': '中标' }[res.body.designPhase]
       }
       this.constraintType = res.body.foundationForm
+
+      if (res.body.towerTaskName) this.towerCode = res.body.towerTaskName
 
       if (res.body.towerTaskId) {
         this.syncTowerId({ towerId: res.body.towerTaskId })
@@ -246,9 +265,9 @@ export default {
         baseUltimate: res.body.baseUltimate
       }
     },
-    async getTowerTaskList (projectId) {
+    async getTowerTaskList (loadId) {
       const res = await this.$get('towerTasks', {
-        searchParams: { pageNum: 1, pageSize: 9999, status: 2, projectId }
+        searchParams: { pageNum: 1, pageSize: 9999, status: 2, loadId }
       })
       this.towerTaskList = res.body.items
     },
@@ -335,15 +354,9 @@ export default {
       this.baseConfig = value
     },
     async onTowerChange (tId) {
-      const seaStateFileId = this.$store.state.foundation.seaState.fileId
-      this.syncTowerId({ towerId: tId })
-      if (seaStateFileId) {
-        const fId = this.$route.params.foundationId
-        try {
-          await this.$get(`foundations/checkLoad?fId=${fId}&tId=${tId}`)
-        } catch (error) {
-          console.error(error)
-        }
+      const index = this.towerTaskList.findIndex(t => t.id === Number(tId))
+      if (index > -1) {
+        this.towerCode = this.towerTaskList[index].taskName
       }
     },
     syncCapacityConfig (values) {

@@ -41,24 +41,32 @@
           :label-width="140"
           ref="formValidate">
           <FormItem label="项目名称：" prop="projectId">
-            <Select placeholder="请选择一个项目" v-model="formValidate.projectId">
+            <Select placeholder="请选择一个项目" v-model="formValidate.projectId" @on-change="onChange">
               <Option :value="item.projectId + ''" v-for="item in projects" :key="item.id">
                 {{ item.projectName }}
               </Option>
             </Select>
           </FormItem>
-          <FormItem label="任务类型：" prop="integratedDesign">
-            <Select placeholder="请选择任务类型" v-model="formValidate.integratedDesign">
-              <Option value="0">
-                分步迭代
-              </Option>
-              <Option value="1">
-                整体化设计
+          <FormItem label="载荷编码：" prop="loadId">
+            <Select placeholder="请选择载荷编码" v-model="formValidate.loadId">
+              <Option :value="String(item.id)" v-for="item in loadList" :key="item.id">
+                {{ item.code }}
               </Option>
             </Select>
           </FormItem>
           <FormItem label="设计阶段：" prop="designPhase">
-            <Select placeholder="请选择设计阶段：" v-model="formValidate.designPhase">
+            <RadioGroup v-model="formValidate.designPhase">
+              <Radio label="A">
+                标前
+              </Radio>
+              <Radio label="B">
+                投标
+              </Radio>
+              <Radio label="D">
+                中标
+              </Radio>
+            </RadioGroup>
+            <!-- <Select placeholder="请选择设计阶段：" v-model="formValidate.designPhase">
               <Option value="A">
                 标前
               </Option>
@@ -68,8 +76,27 @@
               <Option value="D">
                 中标
               </Option>
-            </Select>
+            </Select> -->
           </FormItem>
+          <FormItem label="任务类型：" prop="integratedDesign">
+            <RadioGroup v-model="formValidate.integratedDesign">
+              <Radio label="0">
+                分步迭代
+              </Radio>
+              <Radio label="1">
+                整体化设计
+              </Radio>
+            </RadioGroup>
+            <!-- <Select placeholder="请选择任务类型" v-model="formValidate.integratedDesign">
+              <Option value="0">
+                分步迭代
+              </Option>
+              <Option value="1">
+                整体化设计
+              </Option>
+            </Select> -->
+          </FormItem>
+
           <!-- <FormItem label="载荷来源：" prop="loadDatasource" v-if="formValidate.integratedDesign === '0'">
             <Select placeholder="请选择载荷数据来源" v-model="formValidate.loadDatasource">
               <Option value="0">
@@ -81,24 +108,40 @@
             </Select>
           </FormItem> -->
           <FormItem label="基础类型：" prop="foundationForm" v-if="formValidate.integratedDesign === '0'">
-            <Select placeholder="请选择基础类型" v-model="formValidate.foundationForm">
+            <RadioGroup v-model="formValidate.foundationForm">
+              <Radio label="1">
+                单桩
+              </Radio>
+              <Radio label="2">
+                高桩
+              </Radio>
+            </RadioGroup>
+            <!-- <Select placeholder="请选择基础类型" v-model="formValidate.foundationForm">
               <Option value="1">
                 单桩
               </Option>
               <Option value="2">
                 高桩
               </Option>
-            </Select>
+            </Select> -->
           </FormItem>
           <FormItem label="校核类型：" prop="checkType" v-if="formValidate.integratedDesign !== '0'">
-            <Select placeholder="请选择校核类型：" v-model="formValidate.checkType">
+            <RadioGroup v-model="formValidate.checkType">
+              <Radio label="1">
+                极限强度
+              </Radio>
+              <Radio label="2">
+                疲劳损伤
+              </Radio>
+            </RadioGroup>
+            <!-- <Select placeholder="请选择校核类型：" v-model="formValidate.checkType">
               <Option value="1">
                 极限强度
               </Option>
               <Option value="2">
                 疲劳损伤
               </Option>
-            </Select>
+            </Select> -->
           </FormItem>
           <FormItem label="天然泥面高程(m)：" prop="mudlineElevation" v-if="formValidate.integratedDesign === '0'">
             <Input v-model="formValidate.mudlineElevation" />
@@ -174,7 +217,7 @@
   </div>
 </template>
 <script>
-import { Input, Upload, Button, Table, Page, Modal, Form, FormItem, Select, Option, Message, Dropdown, DropdownMenu, DropdownItem, Icon } from 'iview'
+import { Input, RadioGroup, Radio, Button, Table, Page, Modal, Form, FormItem, Select, Option, Message, Dropdown, DropdownMenu, DropdownItem, Icon } from 'iview'
 import columns from './columnDef'
 import { baseUrl } from '@/config'
 import { mapState, mapMutations } from 'vuex'
@@ -194,7 +237,9 @@ export default {
     Option,
     Dropdown,
     DropdownMenu,
-    DropdownItem
+    DropdownItem,
+    RadioGroup,
+    Radio
   },
   data () {
     return {
@@ -204,6 +249,7 @@ export default {
       foundationForm: '',
       sacsinFile: {},
       columns,
+      loadList: [],
       data: [],
       baseUrl,
       resultList: [],
@@ -218,7 +264,7 @@ export default {
         projectId: '0',
         integratedDesign: '0',
         designPhase: 'B',
-        // loadDatasource: '0',
+        loadId: '0',
         foundationForm: '1',
         checkType: '1'
       },
@@ -232,9 +278,9 @@ export default {
         designPhase: [
           { required: true, message: '设计阶段不能为空', trigger: 'blur' }
         ],
-        // loadDatasource: [
-        //   { required: true, message: '载荷数据来源不能为空', trigger: 'blur' }
-        // ],
+        loadId: [
+          { required: true, message: '载荷编码不能为空', trigger: 'blur' }
+        ],
         foundationForm: [
           { required: true, message: '基础类型不能为空', trigger: 'blur' }
         ],
@@ -274,6 +320,7 @@ export default {
       ...this.pageInfo,
       ...searchParams
     })
+    this.getLoadList()
   },
   beforeDestroy () {
     if (this.timer) {
@@ -294,6 +341,19 @@ export default {
           pageSize: res.body.pageInfo.pageSize,
           total: res.body.pageInfo.total
         }
+      }
+    },
+    async getLoadList (projectId) {
+      let searchParams = projectId !== undefined ? { projectId } : {}
+      const res = await this.$get('loads', {
+        searchParams
+      })
+      this.loadList = res.body.items
+    },
+    onChange (value) {
+      if (value && !Number.isNaN(Number(value))) {
+        this.getLoadList(Number(value))
+        this.formValidate.loadId = ''
       }
     },
     onPageChange (pageNum) {
@@ -396,7 +456,7 @@ export default {
             const res = await this.$post('foundations', {
               json: {
                 projectId: Number(this.formValidate.projectId),
-                // loadDatasource: Number(this.formValidate.loadDatasource),
+                loadId: Number(this.formValidate.loadId),
                 foundationForm: Number(this.formValidate.foundationForm),
                 creator: this.userName,
                 integratedDesign: 0,
@@ -425,6 +485,7 @@ export default {
               json: {
                 projectId: Number(this.formValidate.projectId),
                 creator: this.userName,
+                loadId: Number(this.formValidate.loadId),
                 designPhase: this.formValidate.designPhase,
                 integratedDesign: Number(this.formValidate.checkType),
                 topElevation: this.formValidate.checkType === '2' ? this.formValidate.topElevation : undefined,

@@ -121,7 +121,7 @@ export default {
     }
   },
   mounted () {
-    this.$axios.get(`${api.groups}`)
+    this.$get(`${api.groups}`)
       .then(res => {
         this.userGroups = res.data.body.userGroups
       })

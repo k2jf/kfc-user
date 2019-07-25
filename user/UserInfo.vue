@@ -1,6 +1,6 @@
 <!-- 用户信息 -->
 <template>
-  <div>
+  <div class="h-full">
     <Button
       type="default"
       long

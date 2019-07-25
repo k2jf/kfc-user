@@ -1,7 +1,7 @@
 <template>
-  <Card class="container">
+  <Card class="container" style="max-width:100%;">
     <Split v-model="split">
-      <div slot="left">
+      <div class="h-full" slot="left">
         <UserList :isReloadUserList="isReloadUserList" @on-user-change="getCurrentUser" />
       </div>
       <div slot="right">
@@ -16,12 +16,6 @@
               :currentUser="currentUser"
               v-if="currentUser"
               @on-modify-user="onModifyUser" />
-          </TabPane>
-          <TabPane
-            label="用户组"
-            name="group"
-            class="tab-pane">
-            <UserGroup :currentUser="currentUser" v-if="currentUser" />
           </TabPane>
           <TabPane
             label="权限"

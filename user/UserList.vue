@@ -1,6 +1,6 @@
 <!-- 用户列表信息 -->
 <template>
-  <div>
+  <div class="h-full">
     <CellGroup class="aside-list-panel" @on-click="onSelectClick">
       <Cell
         :selected="currentUser && userItem.id === currentUser.id"
